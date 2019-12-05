@@ -1,0 +1,75 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/commons-collections-3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/commons-fileupload-1.2.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/log4jdbc-remix-0.2.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/asm-3.3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/spring-webmvc-3.1.2.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/spring-jdbc-3.1.2.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/jboss-logging-3.1.0.GA.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/aspectjweaver-1.7.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/grizzly-framework-2.2.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/hibernate-validator-4.3.0.Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/mysql-connector-java-5.1.13.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/esspdf-itext-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/bcprov-jdk14-1.38.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/slf4j-log4j12-1.7.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/hibernate-commons-annotations-3.2.0.Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/spring-data-jpa-1.2.0.RC1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/jai_core-1.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/jackson-annotations-2.0.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/aopalliance-1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/spring-web-3.1.2.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/jackson-jaxrs-json-provider-2.0.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/jackson-core-2.0.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/management-api-3.0.0-b012.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/fastjson-1.2.60.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/spring-beans-3.1.2.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/spring-data-commons-core-1.4.0.RC1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/itext-2.1.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/commons-io-2.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/jstl-1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/hibernate-core-3.5.5-Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/jackson-databind-2.0.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/bctsp-jdk14-1.38.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/jcl-over-slf4j-1.7.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/dom4j-1.6.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/bcpkix-jdk15on-1.47.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/jackson-module-jaxb-annotations-2.0.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/jai_codec-1.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/commons-dbcp-1.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/spring-asm-3.1.2.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/spring-core-3.1.2.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/hibernate-jpa-2.0-api-1.0.0.Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/mybatis-3.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/sitemesh-2.4.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/bcmail-jdk14-1.38.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/mybatis-spring-1.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/spring-tx-3.1.2.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/aspectjrt-1.7.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/bcprov-jdk15on-1.47.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/slf4j-api-1.7.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/bcmail-jdk14-138.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/hibernate-annotations-3.5.5-Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/gmbal-api-only-3.0.0-b023.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/spring-expression-3.1.2.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/esspdf-core-1.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/spring-orm-3.1.2.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/spring-context-support-3.1.2.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/commons-lang3-3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/bcprov-jdk14-138.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/cglib-2.2.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/antlr-2.7.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/jta-1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/spring-aop-3.1.2.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/commons-pool-1.5.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/log4j-1.2.17.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/spring-context-3.1.2.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/validation-api-1.0.0.GA.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/servlet-api.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

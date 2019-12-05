@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="cn.org.bjca.zk.platform.dao.RoleDao">
+
+	<!-- 分页查询 -->
+	<select id="findPage" parameterType="cn.org.bjca.zk.platform.web.page.RolePage" resultType="Role">
+		SELECT * 
+		FROM BO_Role
+		WHERE 1=1 
+		<if test="roleName != null">
+			AND ROLENAME like #{roleName}
+		</if>
+		ORDER BY OPTTIME DESC 
+	</select>
+	
+	<!-- 保存数据 -->
+	<insert id="save" parameterType="Role">
+		INSERT INTO BO_Role (
+			ID, 
+			ROLENAME, 
+			ORGID, 
+			ORGFLAG, 
+			USEDRULE, 
+			DESCRIPTION, 
+			USERID,
+			STATUS, 
+			OPTTIME)
+		VALUES (
+			#{id}, 
+			#{roleName}, 
+			#{orgId}, 
+			#{orgFlag}, 
+			#{usedRule}, 
+			#{description}, 
+			#{userId}, 
+			#{status}, 
+			#{optTime})
+	</insert>
+	
+	<!-- 更新数据 -->
+	<insert id="update" parameterType="Role">
+		UPDATE BO_Role SET
+        	ROLENAME = #{roleName}, 
+			ORGID = #{orgId}, 
+			ORGFLAG = #{orgFlag},
+			USEDRULE = #{usedRule}, 
+			DESCRIPTION = #{description}, 
+			USERID = #{userId},
+			STATUS = #{status}, 
+			OPTTIME = #{optTime}
+        WHERE 
+	        ID = #{id} 
+	</insert>
+	
+	<!-- 根据ID查询对象 -->
+	<select id="findRoleById" parameterType="String" resultType="Role">
+		SELECT * FROM BO_Role WHERE ID = #{id}
+	</select>
+</mapper> 

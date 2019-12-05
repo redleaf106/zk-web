@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="cn.org.bjca.zk.platform.dao.MenuDao">
+
+	<resultMap id="menuMap" type="Menu">
+		<result property="id" column="ID"/>
+        <result property="menuName" column="MENUNAME"/>
+        <result property="parentId" column="PARENTID"/>
+        <result property="link" column="LINK"/>
+        <result property="target" column="TARGET"/>
+        <result property="rel" column="REL"/>
+        <result property="showOrder" column="SHOWORDER"/>
+        <result property="userId" column="USERID"/>
+        <result property="optTime" column="OPTTIME"/>
+        <result property="ext1" column="EXT1"/>
+        <result property="ext2" column="EXT2"/>
+        <result property="ext3" column="EXT3"/>
+        <collection property="subMenuList" column="ID" javaType="ArrayList" select="getAllByParentId" />
+	</resultMap>
+	
+	<!-- 根据ID查询对象 -->
+	<select id="getAllByParentId" parameterType="String" resultMap="menuMap" >
+		SELECT * FROM BO_MENU 
+		WHERE PARENTID = #{id}
+		ORDER BY SHOWORDER
+	</select>
+	
+	<!-- 根据PARENTID与状态查询列表 -->
+	<select id="getAllByParentIdAndStatus" parameterType="String" resultMap="menuMap" >
+		SELECT * FROM BO_MENU 
+		WHERE PARENTID=#{parentid} and STATUS = #{status}
+		ORDER BY SHOWORDER
+	</select>
+	
+	<!-- 根据PARENTID获取所有非系统菜单 -->
+	<select id="getNoSystemMenuByParentIdAndStatus" parameterType="String" resultMap="menuMap" >
+		SELECT * FROM BO_MENU 
+		WHERE PARENTID=#{parentid} and STATUS != '1'
+		ORDER BY SHOWORDER
+	</select>
+	
+	<!-- 根据ID查询对象MAP -->
+	<select id="findUniqueMapById" parameterType="String" resultMap="menuMap">
+		SELECT * FROM BO_MENU 
+		WHERE ID = #{id}
+		ORDER BY SHOWORDER
+	</select>
+	
+		<!-- 更新数据 -->
+	<update id="update" parameterType="cn.org.bjca.zk.db.entity.Menu">
+		UPDATE BO_Menu SET
+			STATUS = #{status,jdbcType=VARCHAR}, 
+			OPTTIME = #{optTime,jdbcType=DATE}
+        WHERE 
+	        ID = #{id} 
+	</update>
+	
+</mapper> 
