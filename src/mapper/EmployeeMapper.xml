@@ -16,7 +16,7 @@
         <result property="departmentId" column="DEPARTMENTID"/>
         <result property="userId" column="USERID"/>
         <result property="optTime" column="OPTTIME"/>
-        <result property="ext1" column="EXT1"/>
+        <result property="checkPower" column="CHECKPOWER"/>
         <result property="ext2" column="EXT2"/>
         <result property="ext3" column="EXT3"/>
         <association property="department" javaType="cn.org.bjca.zk.db.entity.Department" column="DEPARTMENTID" select="cn.org.bjca.zk.platform.dao.DepartmentDao.findUniqueById"/>
@@ -30,6 +30,17 @@
 		<if test="employeeName != null">
 			AND EMPLOYEENAME like #{employeeName}
 		</if>
+		ORDER BY OPTTIME DESC
+	</select>
+
+	<select id="getAllNotActive" parameterType="cn.org.bjca.zk.platform.web.page.EmployeePage" resultMap="employeeMap">
+		SELECT *
+		FROM BO_EMPLOYEE
+		WHERE 1=1
+		<if test="employeeName != null">
+			AND EMPLOYEENAME like #{employeeName}
+		</if>
+		AND picfile IS NULL
 		ORDER BY OPTTIME DESC
 	</select>
 	
@@ -47,7 +58,7 @@
 			PICFILE, 
 			DEPARTMENTID, 
 			USERID, 
-			EXT1,
+			CHECKPOWER,
 			EXT2,
 			EXT3,
 			OPTTIME
@@ -63,7 +74,7 @@
 			#{picFile}, 
 			#{departmentId}, 
 			#{userId},
-			#{ext1}, 
+			#{checkPower},
 			#{ext2}, 
 			#{ext3},
 			#{optTime}
@@ -85,7 +96,7 @@
         
         	DEPARTMENTID = #{departmentId}, 
         	USERID = #{userId}, 
-        	EXT1 = #{ext1}, 
+        	CHECKPOWER = #{checkPower},
         	EXT2 = #{ext2},
 			EXT3 = #{ext3},
         	OPTTIME = #{optTime}

@@ -18,6 +18,10 @@ public class Employee extends IdEntity {
 	private String employeeName;
 
 	/**
+	 * 是否有检查权限
+	 */
+	private int checkPower;
+	/**
 	 * 员工编号
 	 */
 	private String employeeNumber;
@@ -56,6 +60,18 @@ public class Employee extends IdEntity {
 	 * 部门
 	 */
 	private Department department;
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
+
+	public int getCheckPower() {
+		return checkPower;
+	}
+
+	public void setCheckPower(int checkPower) {
+		this.checkPower = checkPower;
+	}
 
 	public String getEmployeeName() {
 		return employeeName;

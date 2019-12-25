@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.util.encoders.Hex;
@@ -85,6 +86,7 @@ public class SoftwarePackageController extends BaseController{
 		softwarePackagePage.setVersion(version);
 		
 		modelMap.put("softwarePackagePage", softwarePackagePage);
+
 		return "/systemConfig/softwarePackage/softwarePackageList";
 	}
 	
@@ -111,7 +113,7 @@ public class SoftwarePackageController extends BaseController{
 	/**
 	  * <p>保存或更新表单信息</p>
 	  * @Description:
-	  * @param user
+	  * @param
 	  * @return
 	 */
 	@RequestMapping(value = "saveOrUpdate")
@@ -128,8 +130,9 @@ public class SoftwarePackageController extends BaseController{
 //			softwarePackage.setSoftwarePackage(mFile.getBytes());
 			FileUtils.writeByteArrayToFile(new File(storePath), mFile.getBytes());
 			softwarePackage.setStorePath(storePath);
-			softwarePackage.setSize(mFile.getBytes().length);
+			softwarePackage.setSize(mFile.getBytes().length/1024);
 			byte[] digest = PDFSealUtil.digest(mFile.getBytes(),"md5");
+			System.out.println("md5=============="+digest);
 			softwarePackage.setDigest(new String(Hex.encode(digest)));
 		}
 		
@@ -149,7 +152,7 @@ public class SoftwarePackageController extends BaseController{
 	  * <p>根据id删除记录</p>
 	  * @Description:
 	  * @param id ,id主键
-	  * @param model
+	  * @param
 	  * @return
 	 * @throws IOException 
 	 */

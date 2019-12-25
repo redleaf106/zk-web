@@ -25,7 +25,8 @@
 				<select name="cabinetPosition" id="cabinetPosition" class="required">
 					<option value="北京市" <c:if test="${cabinet.cabinetPosition}=='北京市'  ">selected="selected"</c:if> >北京市</option>
 					<option value="上海市" <c:if test="${cabinet.cabinetPosition}=='上海市'  ">selected="selected"</c:if> >上海市</option>
-					<option value="河北省" <c:if test="${cabinet.cabinetPosition}=='河北省'  ">selected="selected"</c:if> >河北省</option> 
+					<option value="天津市" <c:if test="${cabinet.cabinetPosition}=='天津市'  ">selected="selected"</c:if> >天津市</option>
+					<option value="河北省" <c:if test="${cabinet.cabinetPosition}=='河北省'  ">selected="selected"</c:if> >河北省</option>
 				</select>
 			</div> 
 			<div class="divider"></div>

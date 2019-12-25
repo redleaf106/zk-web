@@ -40,6 +40,10 @@ public class Cabinet extends IdEntity {
 	 */
 	private int doorCount;
 	/**
+	 * 正在使用的柜门数量
+	 */
+	private int fullDoorCount;
+	/**
 	 * 左摄像头ip
 	 */
 	private String leftCameraIP;
@@ -119,5 +123,11 @@ public class Cabinet extends IdEntity {
 		this.cabinetDoorList = cabinetDoorList;
 	}
 
-	
+	public int getFullDoorCount() {
+		return fullDoorCount;
+	}
+
+	public void setFullDoorCount(int fullDoorCount) {
+		this.fullDoorCount = fullDoorCount;
+	}
 }

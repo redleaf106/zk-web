@@ -59,7 +59,7 @@
 						<td>${item.cabinetPosition}-${item.cabinetPositionDetail}</td>
 						<td>${item.cabinetIP}</td>
 						<td><fmt:formatDate value="${item.optTime}" type="both" pattern="yyyy-MM-dd HH:mm:ss"/></td>
-						<td>0/${item.doorCount}/${item.doorCount}</td>
+						<td>${item.fullDoorCount}/${item.doorCount-item.fullDoorCount}/${item.doorCount}</td>
 						<td>不可用
 						</td>
 						<td>0/0</td>

@@ -37,7 +37,7 @@ public class CabinetDoorService {
 	/**
 	  * <p>分页查询</p>
 	  * @Description:
-	  * @param CabinetDoorPage
+	  * @param cabinetDoorPage
 	  * @return
 	 */
 	public CabinetDoorPage<CabinetDoor> findPage(CabinetDoorPage<CabinetDoor> cabinetDoorPage){
@@ -52,14 +52,14 @@ public class CabinetDoorService {
 	  * @param id
 	 */
 	@Transactional(readOnly = false)
-	public void delCabinetDoorById(String id){
-		cabinetDoorDao.delCabinetDoorById(id);
+	public int delCabinetDoorById(String id){
+		return cabinetDoorDao.delCabinetDoorById(id);
 	}
 	
 	/**
 	  * <p>保存或更新记录</p>
 	  * @Description:
-	  * @param role
+	  * @param cabinetDoor
 	 */
 	@Transactional(readOnly = false)
 	public void saveOrUpdate(CabinetDoor cabinetDoor){
@@ -102,4 +102,13 @@ public class CabinetDoorService {
 		cabinetDoorPO.setCabinetDoorNumber(cabinetDoorNumber);
 		return cabinetDoorDao.findByCondition(cabinetDoorPO);
 	}
+
+	/**
+	 * 根据员工id查看柜门
+	 */
+	public CabinetDoor selectDoorByEmployeeId(String employeeId){
+		return cabinetDoorDao.selectDoorByEmployeeId(employeeId);
+	}
+
+
 }

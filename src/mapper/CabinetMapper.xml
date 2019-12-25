@@ -28,6 +28,7 @@
 			RIGHTCAMERAIP, 
 			SOFTWARE,
 			DOORCOUNT,
+			FULLDOORCOUNT,
 			USERID,
 			OPTTIME)
 		VALUES (
@@ -40,7 +41,8 @@
 			#{frontCameraIP}, 
 			#{rightCameraIP}, 
 			#{software}, 
-			#{doorCount}, 
+			#{doorCount},
+			#{fullDoorCount},
 			#{userId}, 
 			#{optTime})
 	</insert>
@@ -57,6 +59,7 @@
 			RIGHTCAMERAIP = #{rightCameraIP},
 			SOFTWARE = #{software},
 			DOORCOUNT = #{doorCount},
+			FULLDOORCOUNT = #{fullDoorCount},
 			USERID = #{userId},
 			OPTTIME = #{optTime}
         WHERE 

@@ -3,10 +3,14 @@
  */
 package cn.org.bjca.zk.platform.web.controller.cabinet;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import cn.org.bjca.zk.platform.tools.CabinetDoorServer;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -60,7 +64,7 @@ public class CabinetDoorController extends BaseController {
 	/**
 	  * <p>角色管理列表</p>
 	  * @Description:
-	  * @param model
+	  * @param modelMap
 	  * @param request
 	  * @return
 	 */
@@ -128,23 +132,32 @@ public class CabinetDoorController extends BaseController {
 	/**
 	  * <p>保存或更新表单信息</p>
 	  * @Description:
-	  * @param signKey
+	  * @param cabinetDoor
 	  * @return
 	 */
 	@RequestMapping(value = "saveOrUpdate")
 	public ModelAndView saveOrUpdate(CabinetDoor cabinetDoor,HttpServletRequest request) throws DialogException {
+		System.out.println(cabinetDoor.toString());
 		try{
 			Message message = new Message();
+			boolean flag = false;
 			if(StringUtils.isNotBlank(cabinetDoor.getId()))
 				message.setContent(this.UPDATE);//内容提示
 			else{
 				message.setContent(this.SAVE);//内容提示
+				flag = true;
 			}
 			User user = (User) request.getSession().getAttribute(PDFSealConstants.SESSION_USER);
 			if(null!=user) {
 				cabinetDoor.setUserId(user.getId());
 			}
 			cabinetDoorService.saveOrUpdate(cabinetDoor);
+			//已使用柜门+1
+			if(flag){
+				Cabinet cabinet = cabinetService.findUniqueById(cabinetDoor.getCabinetId());
+				cabinet.setFullDoorCount(cabinet.getFullDoorCount()+1);
+				cabinetService.saveOrUpdate(cabinet);
+			}
 			message.setStatusCode(this.SUCCESS);
 			message.setCallbackType("closeCurrent");
 			message.setNavTabId("cabinetDoor");
@@ -158,14 +171,25 @@ public class CabinetDoorController extends BaseController {
 	  * <p>根据id删除记录</p>
 	  * @Description:
 	  * @param id ,id主键
-	  * @param model
+	  * @param id
 	  * @return
 	 * @throws DialogException 
 	 */
 	@RequestMapping(value = "delete/{id}")
 	public @ResponseBody String delete(@PathVariable("id") String id) throws DialogException {
 		try{
-			cabinetDoorService.delCabinetDoorById(id);
+			CabinetDoor cabinetDoor = cabinetDoorService.findUniqueById(id);
+			Cabinet cabinet = cabinetService.findUniqueById(cabinetDoor.getCabinetId());
+			int result = cabinetDoorService.delCabinetDoorById(id);
+			//已使用柜门-1
+			System.out.println(result);
+			if(result>0){
+				System.out.println("使用中的柜门数量为："+cabinet.getFullDoorCount());
+				if(cabinet.getFullDoorCount()>0){
+					cabinet.setFullDoorCount(cabinet.getFullDoorCount()-1);
+					cabinetService.saveOrUpdate(cabinet);
+				}
+			}
 			Message message = new Message();
 			message.setStatusCode(this.SUCCESS);
 			message.setContent(this.DELETE);//内容提示
@@ -173,6 +197,31 @@ public class CabinetDoorController extends BaseController {
 		}catch(Exception ex){
 			throw new DialogException(ex);
 		}
+	}
+
+	@RequestMapping(value = "selectDoorByEmployeeId")
+	public void selectDoorByEmployeeId(HttpServletRequest request, HttpServletResponse response){
+		String employeeId = request.getParameter("employeeId");
+		CabinetDoor cabinetDoor = cabinetDoorService.selectDoorByEmployeeId(employeeId);
+		JSONObject jsonObject = new JSONObject();
+		try {
+			response.getWriter().write(jsonObject.toJSONString(cabinetDoor));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@RequestMapping(value = "openCabinetDoor/{id}")
+	public @ResponseBody String openCabinetDoor(@PathVariable("id") String id){
+		System.out.println("获取到id为："+id);
+		CabinetDoor cabinetDoor = cabinetDoorService.findUniqueById(id);
+		CabinetDoorServer cabinetDoorServer = CabinetDoorServer.getInstance();
+		System.out.println(cabinetDoor.getCabinetDoorNumber());
+		cabinetDoorServer.openDoor("192.168.3.140", cabinetDoor.getCabinetDoorNumber());
+		Message message = new Message();
+		message.setStatusCode(this.SUCCESS);
+		message.setContent(this.OPENDOOR);//内容提示
+		return this.toJsonString(message);
 	}
 	
 }

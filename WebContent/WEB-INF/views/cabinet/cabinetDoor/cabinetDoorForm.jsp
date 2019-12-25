@@ -4,12 +4,12 @@
 <script type="text/javascript">
  $('#employeeId').select2();
   $('#cabinetId').select2();
-</script>	
+</script>
 <div class="pageContent">
 	<form:form method="post" action="${ctx}/cabinet/cabinetDoor/saveOrUpdate"   modelAttribute="cabinetDoor" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
 		<input type="hidden" name="id" value="${cabinetDoor.id}" />
 		<div class="pageFormContent" layoutH="58">
-			
+
 			<div class="unit">
 				<label>机柜编号：</label>
 				<select name="cabinetId" id="cabinetId" class="required">
@@ -18,17 +18,17 @@
 				  	 <option value="${cabinetObj.id}" <c:if test="${cabinetObj.id==cabinetDoor.cabinetId}">selected="selected"</c:if> > ${cabinetObj.cabinetNumber} </option>
 				  </c:forEach>
 				</select>
-			
+
 			</div>
 			<div class="divider"></div>
-		
-		
+
+
 			<div class="unit">
 				<label>柜门编号：</label>
 				<input type="text" name="cabinetDoorNumber" size="40" minlength="1" maxlength="20" class="required" value="${cabinetDoor.cabinetDoorNumber}" <c:if test="${not empty cabinetDoor.id}">readonly</c:if>/>
 			</div>
 			<div class="divider"></div>
-				
+
 			<div class="unit">
 				<label>使用人：</label>
 				<select name="employeeId" id="employeeId" class="required">
@@ -37,9 +37,9 @@
 				  	 <option value="${employeeObj.id}" <c:if test="${employeeObj.id==cabinetDoor.employeeId}">selected="selected"</c:if> > ${employeeObj.employeeName} - ${employeeObj.icCardNumber}</option>
 				  </c:forEach>
 				</select>
-			</div> 
+			</div>
 			<div class="divider"></div>
-			
+
 		</div>
 		<div class="formBar">
 			<ul>

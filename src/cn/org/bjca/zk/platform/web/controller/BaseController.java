@@ -38,7 +38,9 @@ public abstract class BaseController {
 	
 	protected  final String UPDATE_ERROR = "信息修改失败！"; 
 	
-	protected  final String DELETE = "信息删除成功！"; 
+	protected  final String DELETE = "信息删除成功！";
+
+	protected final String OPENDOOR = "柜门开启成功！";
 	
 	protected  final String DELETE_ERROR = "信息删除失败！"; 
 	

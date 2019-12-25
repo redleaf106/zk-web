@@ -54,10 +54,10 @@
 			               		<label>时间段：</label>   	
 		              			 <input id="startTime" type="text" class="Wdate" name="startTime" 
 	                               value= ""
-	                               onClick="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
+	                               onClick="WdatePicker({dateFmt:'HH:mm:ss',readOnly:true})"/>
 				                  <input id="endTime" type="text" class="Wdate" name="endTime" 
 		                              value= "" 
-		                               onClick="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
+		                               onClick="WdatePicker({dateFmt:'HH:mm:ss',readOnly:true})"/>
 		                    	  <input  type="button" value="添加时间段" onclick="addTimeAreasDiv()"/>
 						          <input class="input_param" type="button" value="删除时间段"/>
 		                    </div>

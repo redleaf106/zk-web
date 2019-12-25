@@ -68,6 +68,7 @@
       <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/spring-context-3.1.2.RELEASE.jar!/" />
       <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/validation-api-1.0.0.GA.jar!/" />
       <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/servlet-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/javax.mail-1.5.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

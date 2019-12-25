@@ -127,4 +127,17 @@ public class CabinetDoor extends IdEntity {
 		this.cabinet = cabinet;
 	}
 
+	@Override
+	public String toString() {
+		return "CabinetDoor{" +
+				"cabinetDoorNumber='" + cabinetDoorNumber + '\'' +
+				", cabinetId='" + cabinetId + '\'' +
+				", employeeId='" + employeeId + '\'' +
+				", accessCount=" + accessCount +
+				", status='" + status + '\'' +
+				", doorOptTime=" + doorOptTime +
+				", employee=" + employee +
+				", cabinet=" + cabinet +
+				'}';
+	}
 }

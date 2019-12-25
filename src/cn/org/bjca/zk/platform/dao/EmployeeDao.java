@@ -86,7 +86,19 @@ public interface EmployeeDao {
 	 */
 	@Select("SELECT * FROM BO_EMPLOYEE")
 	List<Employee> getAll();
-	
-	
+
+	/**
+	 * <p>查询所有未激活员工</p>
+	 * @return
+	 */
+	List<Employee> getAllNotActive(EmployeePage<Employee> webPage);
+
+	/**
+	 * 根据ic卡号查询员工
+	 * @param icCardNumber
+	 * @return
+	 */
+	@Select("SELECT * FROM BO_EMPLOYEE WHERE ICCARDNUMBER = #{icCardNumber}")
+	Employee findByIcCardNumber(String icCardNumber);
 
 }

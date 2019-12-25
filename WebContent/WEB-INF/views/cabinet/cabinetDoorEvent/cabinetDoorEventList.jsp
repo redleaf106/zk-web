@@ -24,6 +24,7 @@
 		
 	</div>
 	</form>
+	<li><a class="add" href="${ctx}/cabinet/cabinetDoorEvent/jumpMedia" target="navTab"><span>查看监控</span></a></li>
 </div>
 <div class="pageContent">
 	<div class="panelBar">

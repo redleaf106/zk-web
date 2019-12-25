@@ -168,7 +168,7 @@ public class EmployeeService {
 	/**
 	  * <p>根据员工编号部门ID查询对象集合</p>
 	  * @Description:
-	  * @param orgId
+	  * @param cardNumber
 	  * @return
 	 */
 	public List<Employee> findEmployeesByCardNumber(String cardNumber){
@@ -206,6 +206,12 @@ public class EmployeeService {
 		employeePage.setData(list);
 		return employeePage;
 	}
+
+	public EmployeePage<Employee> getAllNotActive(EmployeePage<Employee> employeePage) {
+		List<Employee> list = employeeDao.getAllNotActive(employeePage);
+		employeePage.setData(list);
+		return employeePage;
+	}
 	
 	/**
 	  * <p>查询所有列表</p>
@@ -216,5 +222,13 @@ public class EmployeeService {
 		return employeeDao.getAll();
 	}
 
+	/**
+	 * 根据ic卡号查询员工
+	 * @param icCardNumber
+	 * @return
+	 */
+	public Employee findByicCardNumber(String icCardNumber){
+		return employeeDao.findByIcCardNumber(icCardNumber);
+	}
 
 }

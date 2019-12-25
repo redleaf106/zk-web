@@ -44,7 +44,7 @@ public interface CabinetDoorDao {
 	  * @param id
 	 */
 	@Delete("DELETE FROM BO_CABINETDOOR WHERE id = #{id}")
-	void delCabinetDoorById(String id);
+	int delCabinetDoorById(String id);
 	
 	/**
 	  * <p>保存记录</p>
@@ -84,5 +84,10 @@ public interface CabinetDoorDao {
 	  * @return
 	 */
 	List<CabinetDoor> findByCondition(CabinetDoorPO cabinetPO);
-	
+
+	/**
+	 * 根据员工id查看柜门
+	 */
+	@Select("SELECT * FROM BO_CABINETDOOR WHERE employeeid = #{employeeId}")
+	CabinetDoor selectDoorByEmployeeId(String employeeId);
 }

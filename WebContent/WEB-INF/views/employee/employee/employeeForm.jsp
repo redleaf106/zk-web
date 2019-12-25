@@ -13,7 +13,9 @@ $("#showPicId").click(function(){
 		       $("#picDivId", navTab.getCurrentPanel()).css("display", "");
 		       $("#picId", navTab.getCurrentPanel()).attr('src', '${ctx}/employee/employee/showPic?id=' + id + "&" + Math.floor(Math.random() * 100));
 	       } else {
+
 		       alertMsg.error("请先上传图片!");
+			   //alertMsg.error("123456!");
 	       }
 	  }
 	   return false;//<%-- 解决firefox自动提交 --%>
@@ -56,14 +58,15 @@ function scaleImg(obj){
 			<div class="divider"></div>
 				
 			<div class="unit">
-				<label>IC卡号：</label>
+				<label>员工工号：</label>
 				<input type="text" name="icCardNumber" size="40" minlength="2" maxlength="32" class="required" value="${employee.icCardNumber}"/>
 			</div>
 			<div class="divider"></div>		
 				
 			<div class="unit">
-				<label>员工编号：</label>
-				<input type="text" name="employeeNumber" size="40" minlength="2" maxlength="32" class="required" value="${employee.employeeNumber}"/>
+				<label>员工邮箱：</label>
+				<input type="text" name="employeeNumber" style="display: none" size="40" minlength="2" maxlength="32" class="required" value="${employee.employeeNumber}"/>
+				<input type="text" name="email" size="40" minlength="2" maxlength="32" class="required" value="${employee.email}"/>
 			</div>
 			<div class="divider"></div>		
 		
@@ -110,7 +113,7 @@ function scaleImg(obj){
                         <input type="hidden" id="attachmentSize" name="attachment.attachmentSize" value="" >
                         <input type="hidden" id="attachmentMaxSize" name="attachment.attachmentMaxSize" value="" > 
                         <input class="readonly" name="attachment.fileName" value="" readonly="readonly" type="text" size="40"/>
-                        <span id="imgSPAN" class="info" style="color:red;">*</span>
+<%--                        <span id="imgSPAN" class="info" style="color:red;">*</span>--%>
                         <a class="btnAttach" href="${ctx}/employee/employee/toAttachmentLookUpPage" lookupGroup="attachment" width="560" height="300" title="员工图片">员工图片</a>
                         <span class="info">(选择)&nbsp;&nbsp;</span>
                         <span class="unit">

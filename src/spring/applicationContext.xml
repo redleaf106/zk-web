@@ -62,7 +62,14 @@
                 <value>classpath*:sysConfig.properties</value>
             </list>
         </property>
-    </bean>	
+    </bean>
+	<bean id="EmailConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="locations">
+			<list>
+				<value>classpath*:EmailConfig.properties</value>
+			</list>
+		</property>
+	</bean>
 	
 	<!-- 数据源配置, 使用应用中的DBCP数据库连接池 -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
