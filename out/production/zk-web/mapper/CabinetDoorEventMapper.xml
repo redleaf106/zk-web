@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="cn.org.bjca.zk.platform.dao.CabinetDoorEventDao">
+
+
+	<!-- 分页查询 -->
+	<select id="findPage" parameterType="cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage" resultType="CabinetDoorEvent">
+		SELECT * 
+		FROM BO_CABINETDOOREVENT
+		WHERE 1=1
+		<if test="cabinetNumber != null">
+			AND CABINETNUMBER LIKE #{cabinetNumber})
+		</if> 
+		<if test="cabinetIp != null">
+			AND CABINETIp LIKE #{cabinetIp})
+		</if>
+		<if test="cabinetDoorNumber != null">
+			AND CABINETDOORNUMBER LIKE #{cabinetDoorNumber}
+		</if>
+		<if test="employeeCardNumber != null">
+			AND EMPLOYEECARDNUMBER LIKE #{employeeCardNumber})
+		</if>
+		<if test="actionCardNumber != null">
+			AND ACTIONCARDNUMBER LIKE #{actionCardNumber})
+		</if>
+		ORDER BY DOOROPTTIME DESC 
+	</select>
+	
+	<!-- 保存数据 -->
+	<insert id="save" parameterType="CabinetDoorEvent">
+		INSERT INTO BO_CABINETDOOREVENT (
+			ID, 
+			CABINETIP,
+			CABINETNUMBER,
+			CABINETDOORNUMBER, 
+			EMPLOYEECARDNUMBER,
+			ACTIONCARDNUMBER,
+			STATUS, 
+			DOOROPTTIME,
+			REMARK)
+		VALUES (
+			#{id}, 
+			#{cabinetIp},
+			#{cabinetNumber} ,
+			#{cabinetDoorNumber}, 
+			#{employeeCardNumber},
+			#{actionCardNumber}, 
+			#{status}, 
+			#{doorOptTime},
+			#{remark})
+	</insert>
+	
+</mapper> 

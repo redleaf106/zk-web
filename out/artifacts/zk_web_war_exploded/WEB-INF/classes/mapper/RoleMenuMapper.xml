@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="cn.org.bjca.zk.platform.dao.RoleMenuDao">
+	<resultMap id="roleMenuMap" type="cn.org.bjca.zk.db.entity.RoleMenu">
+        <result property="id" column="ID"/>
+        <result property="roleId" column="ROLEID"/>
+        <result property="menuId" column="MENUID"/>
+        <association property="menu" javaType="cn.org.bjca.zk.db.entity.Menu" column="MENUID" select="cn.org.bjca.zk.platform.dao.MenuDao.findUniqueMapById"/>
+	</resultMap>
+	
+	<!-- 根据roleId查询列表 -->
+	<select id="findMapsByRoleId" parameterType="String" resultMap="roleMenuMap">
+		SELECT * FROM RL_ROLE_MENU 
+		WHERE ROLEID = #{roleId}
+	</select>
+</mapper> 
