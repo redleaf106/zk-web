@@ -4,6 +4,7 @@
 package cn.org.bjca.zk.platform.web.controller.cabinet;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -101,6 +102,9 @@ public class CabinetDoorController extends BaseController {
 		cabinetDoorPage.setCabinetNumber(cabinetNumber);
 		cabinetDoorPage.setCabinetDoorNumber(cabinetDoorNumber);
 		cabinetDoorPage.setEmployeeName(employeeName);
+		for (CabinetDoor cabinetDoor:cabinetDoorPage.getData()){
+			System.out.println(cabinetDoor.getDoorOptTime());
+		}
 		modelMap.put("cabinetDoorPage", cabinetDoorPage);
 		return "/cabinet/cabinetDoor/cabinetDoorList";
 	}
@@ -120,9 +124,7 @@ public class CabinetDoorController extends BaseController {
 		}
 		
 		List<Cabinet> cabinetList = cabinetService.getAll(); 
-		
-		List<Employee> employeeList = employeeService.getAll(); 
-		
+		List<Employee> employeeList = employeeService.findAllNoDoor();
 		modelMap.put("cabinetDoor",cabinetDoor);
 		modelMap.put("cabinetList", cabinetList);
 		modelMap.put("employeeList", employeeList);
@@ -138,33 +140,54 @@ public class CabinetDoorController extends BaseController {
 	@RequestMapping(value = "saveOrUpdate")
 	public ModelAndView saveOrUpdate(CabinetDoor cabinetDoor,HttpServletRequest request) throws DialogException {
 		System.out.println(cabinetDoor.toString());
-		try{
-			Message message = new Message();
-			boolean flag = false;
-			if(StringUtils.isNotBlank(cabinetDoor.getId()))
-				message.setContent(this.UPDATE);//内容提示
-			else{
-				message.setContent(this.SAVE);//内容提示
-				flag = true;
-			}
-			User user = (User) request.getSession().getAttribute(PDFSealConstants.SESSION_USER);
-			if(null!=user) {
-				cabinetDoor.setUserId(user.getId());
-			}
-			cabinetDoorService.saveOrUpdate(cabinetDoor);
-			//已使用柜门+1
-			if(flag){
-				Cabinet cabinet = cabinetService.findUniqueById(cabinetDoor.getCabinetId());
-				cabinet.setFullDoorCount(cabinet.getFullDoorCount()+1);
-				cabinetService.saveOrUpdate(cabinet);
-			}
-			message.setStatusCode(this.SUCCESS);
+		Message message = new Message();
+		CabinetDoor cabinetDoorResult = cabinetDoorService.selectDoorByCabinetIdAndCabinetDoorNumber(cabinetDoor.getCabinetId(),cabinetDoor.getCabinetDoorNumber());
+		if(cabinetDoorResult!=null){
+			message.setContent(this.OCCUPIED);
+			message.setStatusCode(this.FAIL);
 			message.setCallbackType("closeCurrent");
 			message.setNavTabId("cabinetDoor");
 			return this.ajaxDone(message);
-		}catch(Exception ex){
-			throw new DialogException(ex);
+		}else{
+			try{
+				boolean flag = false;
+				if(StringUtils.isNotBlank(cabinetDoor.getId()))
+					message.setContent(this.UPDATE);//内容提示
+				else{
+					message.setContent(this.SAVE);//内容提示
+					flag = true;
+				}
+				User user = (User) request.getSession().getAttribute(PDFSealConstants.SESSION_USER);
+				if(null!=user) {
+					cabinetDoor.setUserId(user.getId());
+				}
+				//已使用柜门+1
+				if(flag){
+					Cabinet cabinet = cabinetService.findUniqueById(cabinetDoor.getCabinetId());
+					if(cabinet.getFullDoorCount()<cabinet.getDoorCount()){
+						cabinet.setFullDoorCount(cabinet.getFullDoorCount()+1);
+						cabinetService.saveOrUpdate(cabinet);
+						cabinetDoorService.saveOrUpdate(cabinetDoor);
+					}else{
+						message.setContent(this.DOORFULL);
+						message.setStatusCode(this.FAIL);
+						message.setCallbackType("closeCurrent");
+						message.setNavTabId("cabinetDoor");
+						return this.ajaxDone(message);
+					}
+				}else {
+					cabinetDoorService.saveOrUpdate(cabinetDoor);
+				}
+
+				message.setStatusCode(this.SUCCESS);
+				message.setCallbackType("closeCurrent");
+				message.setNavTabId("cabinetDoor");
+				return this.ajaxDone(message);
+			}catch(Exception ex){
+				throw new DialogException(ex);
+			}
 		}
+
 	}
 	
 	/**

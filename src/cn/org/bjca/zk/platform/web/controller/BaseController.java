@@ -41,6 +41,10 @@ public abstract class BaseController {
 	protected  final String DELETE = "信息删除成功！";
 
 	protected final String OPENDOOR = "柜门开启成功！";
+
+	protected final String OCCUPIED = "柜门被占用！";
+
+	protected final String DOORFULL = "柜门已达上限!";
 	
 	protected  final String DELETE_ERROR = "信息删除失败！"; 
 	

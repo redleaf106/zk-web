@@ -36,7 +36,7 @@
 		<if test="employeeName != null">
 			AND EMPLOYEEID IN (SELECT ID FROM BO_EMPLOYEE WHERE EMPLOYEENAME LIKE #{employeeName})
 		</if>
-		ORDER BY OPTTIME DESC 
+		ORDER BY OPTTIME DESC
 	</select>
 	
 	<!-- 保存数据 -->

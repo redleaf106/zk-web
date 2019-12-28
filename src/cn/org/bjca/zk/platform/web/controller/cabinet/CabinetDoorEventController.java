@@ -17,6 +17,10 @@ import cn.org.bjca.zk.platform.service.EmailService;
 import cn.org.bjca.zk.platform.tools.CabinetDoorServer;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -31,8 +35,11 @@ import cn.org.bjca.zk.platform.web.controller.BaseController;
 import cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 /***************************************************************************
 
@@ -120,14 +127,11 @@ public class CabinetDoorEventController extends BaseController {
 			}
 			//User user = (User) request.getSession().getAttribute(PDFSealConstants.SESSION_USER);
 			cabinetDoorEventService.saveOrUpdate(CabinetDoorEvent);
-			//TODO
 			List<CabinetDoor> list = cabinetDoorService.findByCabinetNumberAndDoorNumber(CabinetDoorEvent.getCabinetNumber(), CabinetDoorEvent.getCabinetDoorNumber());
 			System.out.println("sssssssssssssssssssssss"+list.size());
 			CabinetDoor cabinetDoor = list.get(0);
 			//存取次数+1
 			cabinetDoor.setAccessCount(cabinetDoor.getAccessCount()+1);
-			String cabinetNumber = list.get(0).getCabinet().getCabinetNumber();
-			String cabinetDoorNumber = list.get(0).getCabinetDoorNumber();
 			message.setStatusCode(this.SUCCESS);
 			message.setCallbackType("closeCurrent");
 			message.setNavTabId("cabinetDoorEvent");
@@ -165,6 +169,52 @@ public class CabinetDoorEventController extends BaseController {
 		CabinetDoorServer cabinetDoorServer = CabinetDoorServer.getInstance();
 		cabinetDoorServer.openDoor("192.168.3.140", "1");
 		return "success";
+	}
+
+	/**
+	 * 生成日报表月报表
+	 * @param type
+	 * @return
+	 */
+	@RequestMapping(value = "createExcel")
+	@ResponseBody
+	public String jsonToExecl(String type) throws IOException {
+		List list = cabinetDoorEventService.getAll();
+		JSONObject jsonObject = new JSONObject();
+		Set<String> keys = null;
+		// 创建HSSFWorkbook对象
+		HSSFWorkbook wb = new HSSFWorkbook();
+		// 创建HSSFSheet对象
+		HSSFSheet sheet = wb.createSheet("sheet0");
+		int roleNo = 0;
+		int rowNo = 0;
+		// 创建HSSFRow对象
+		HSSFRow row = sheet.createRow(roleNo++);
+		jsonObject.put("data", list);
+		// 创建HSSFCell对象
+		if (keys == null) {
+			//标题
+			keys = jsonObject.keySet();
+			for (String s : keys) {
+				HSSFCell cell = row.createCell(rowNo++);
+				cell.setCellValue(s);
+			}
+			rowNo = 0;
+			row = sheet.createRow(roleNo++);
+		}
+
+		for (String s : keys) {
+			HSSFCell cell = row.createCell(rowNo++);
+			cell.setCellValue(jsonObject.getString(s));
+		}
+		rowNo = 0;
+		System.out.println(rowNo);
+		FileOutputStream output = new FileOutputStream("c://target.xls");
+		wb.write(output);
+		output.flush();
+		output.close();
+
+		return jsonObject.toJSONString(list);
 	}
 
 

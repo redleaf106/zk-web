@@ -1,6 +1,7 @@
 package cn.org.bjca.zk.platform.service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -229,6 +230,17 @@ public class EmployeeService {
 	 */
 	public Employee findByicCardNumber(String icCardNumber){
 		return employeeDao.findByIcCardNumber(icCardNumber);
+	}
+
+	public List<Employee> findAllNoDoor(){
+		List<Employee> list = employeeDao.getAll();
+		List<Employee> listResult = new ArrayList<>();
+		for(Employee employee:list){
+			if(cabinetDoorDao.selectDoorByEmployeeId(employee.getId())==null){
+				listResult.add(employee);
+			}
+		}
+		return listResult;
 	}
 
 }

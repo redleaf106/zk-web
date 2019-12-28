@@ -119,7 +119,6 @@ public class DepartmentController extends BaseController {
 			if(null!=user) {
 				department.setUserId(user.getId());
 			}
-			
 			departmentService.saveOrUpdate(department);
 			message.setStatusCode(this.SUCCESS);
 			message.setCallbackType("closeCurrent");

@@ -110,5 +110,15 @@ public class CabinetDoorService {
 		return cabinetDoorDao.selectDoorByEmployeeId(employeeId);
 	}
 
+	/**
+	 * 根据机柜id和柜门号查找柜门
+	 * @param cabinetId
+	 * @param cabinetDoorNumber
+	 * @return
+	 */
+	public CabinetDoor selectDoorByCabinetIdAndCabinetDoorNumber(String cabinetId, String cabinetDoorNumber){
+		return cabinetDoorDao.selectDoorByCabinetIdAndCabinetDoorNumber(cabinetId,cabinetDoorNumber);
+	}
+
 
 }

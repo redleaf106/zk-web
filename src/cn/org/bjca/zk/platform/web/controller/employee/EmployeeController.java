@@ -12,6 +12,7 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.org.bjca.zk.platform.service.EmailService;
 import cn.org.bjca.zk.platform.vo.EmailVO;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.io.FileUtils;
@@ -381,13 +382,12 @@ public class EmployeeController extends BaseController{
 		Message message = new Message();
 		JSONObject json = new JSONObject();
 		boolean hasErrors = false; // 成功失败标识 ： true表示有错误
+		boolean repeat = false; //员工是否存在：false表示存在
 		Employee employeeExist = employeeService.findByicCardNumber(employee.getIcCardNumber());
-		Employee employee1 = new Employee();
 		//根据ic卡号查看是否有这个员工
 		if (employeeExist==null){
-
-		}else{
-			employee1 = employeeExist;
+			employeeExist = new Employee();
+			repeat = true;
 		}
 		try {
 			String departmentName = employee.getDepartmentId();
@@ -397,17 +397,22 @@ public class EmployeeController extends BaseController{
 				json.put("errmsg","部门不存在!");
 			}else{
 				Department d = list.get(0);
-				employeeExist.setDepartmentId(list.get(0).getId());
+				employeeExist.setDepartmentId(d.getId());
+				if(!"稽核部".equals(d.getDepartmentName())){
+					employeeExist.setCheckPower(1);
+				}
 			}
 			employeeExist.setEmployeeName(employee.getEmployeeName());
 			employeeExist.setEmail(employee.getEmail());
 			employeeExist.setMobilePhone(employee.getMobilePhone());
-			if (StringUtils.isNotBlank(employee.getIcCardNumber())) {
+			employeeExist.setIcCardNumber(employee.getIcCardNumber());
+			if (!repeat) {
 				message.setContent(UPDATE); // 内容提示
 			} else {
+				System.out.println("新增员工");
 				message.setContent(SAVE); // 内容提示
-				employee.setEmployeeNumber(EssPdfUtil.genrRandomUUID());
-				if (employeeExist != null) {
+				employeeExist.setEmployeeNumber(EssPdfUtil.genrRandomUUID());
+				if (employeeExist.getId() != null) {
 					message.setContent("员工编号已存在，请重新输入!"); // 内容提示
 					json.put("errmsg","员工编号已存在，请重新输入!");
 					hasErrors = true;
@@ -418,7 +423,7 @@ public class EmployeeController extends BaseController{
 				if (null != loginUser) {
 					employee.setUserId(loginUser.getId());
 				}
-				employeeService.saveOrUpdate(employee);
+				employeeService.saveOrUpdate(employeeExist);
 				json.put("msg","success");
 			}
 		}catch (Exception ex) {

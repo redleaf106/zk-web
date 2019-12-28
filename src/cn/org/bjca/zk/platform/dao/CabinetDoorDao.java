@@ -90,4 +90,13 @@ public interface CabinetDoorDao {
 	 */
 	@Select("SELECT * FROM BO_CABINETDOOR WHERE employeeid = #{employeeId}")
 	CabinetDoor selectDoorByEmployeeId(String employeeId);
+
+	/**
+	 * 根据机柜id和柜门号查找柜门
+	 * @param cabinetId
+	 * @param cabinetDoorNumber
+	 * @return
+	 */
+	@Select("SELECT * FROM BO_CABINETDOOR WHERE CABINETID = #{0} AND CABINETDOORNUMBER = #{1}")
+	CabinetDoor selectDoorByCabinetIdAndCabinetDoorNumber(String cabinetId, String cabinetDoorNumber);
 }

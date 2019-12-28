@@ -68,10 +68,10 @@
 							                <label>时间段：</label>   	
 						                	<input id="startTime" type="text" class="Wdate" name="startTime"
 					                               value= "<fmt:formatDate value='${item.startTime}' type='both' pattern='yyyy-MM-dd'/> "
-					                               onClick="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
+					                               onClick="WdatePicker({dateFmt:'HH:mm:ss',readOnly:true})"/>
 					                  		<input id="endTime" type="text" class="Wdate" name="endTime"
 					                              value= "<fmt:formatDate value='${item.endTime}' type='both' pattern='yyyy-MM-dd'/>" 
-					                               onClick="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
+					                               onClick="WdatePicker({dateFmt:'HH:mm:ss',readOnly:true})"/>
 						                    	<input  type="button" value="添加时间段" onclick="addTimeAreasDiv()"/>
 						                    	<input class="input_param" type="button" value="删除时间段"/>
 					                  </div>
@@ -107,11 +107,11 @@ function addTimeAreasDiv(){
             	"<label>时间段：</label>   	"+
            		"<input id='startTime' type='text' class='Wdate' name='startTime'"+
                 "       value='' "+
-                 "      onClick='WdatePicker({readOnly:true})'/>"+
+                 "      onClick='WdatePicker({dateFmt:\"HH:mm:ss\",readOnly:true})'/>"+
                  "<label>&nbsp;&nbsp;&nbsp;&nbsp;</label>   	"+
           		"<input id='endTime' type='text' class='Wdate' name='endTime'"+
                 "       value= '' "+
-                "       onClick='WdatePicker({readOnly:true})'/> "+
+                "       onClick='WdatePicker({dateFmt:\"HH:mm:ss\",readOnly:true})'/> "+
             	"<input  type='button' value='添加时间段' onclick='addTimeAreasDiv()'/> "+
                 "	<input class='input_param' type='button' value='删除时间段' onclick='delTimeAreasDiv($(this)); '/> "+
             	"</div>"

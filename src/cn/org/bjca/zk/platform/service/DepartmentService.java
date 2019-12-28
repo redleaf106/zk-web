@@ -43,7 +43,7 @@ public class DepartmentService {
 	/**
 	  * <p>分页查询</p>
 	  * @Description:
-	  * @param CabinetPage
+	  * @param departmentPage
 	  * @return
 	 */
 	public DepartmentPage<Department> findPage(DepartmentPage<Department> departmentPage){
@@ -75,7 +75,7 @@ public class DepartmentService {
 	/**
 	  * <p>保存或更新记录</p>
 	  * @Description:
-	  * @param role
+	  * @param department
 	 */
 	@Transactional(readOnly = false)
 	public void saveOrUpdate(Department department) throws Exception{
@@ -90,10 +90,10 @@ public class DepartmentService {
 					TimeArea timeArea = new TimeArea();
 					timeArea.setId(EssPdfUtil.genrRandomUUID());
 					timeArea.setDepartmentId(department.getId());
-					SimpleDateFormat sdfStart = new SimpleDateFormat("yyyy-MM-dd");
+					SimpleDateFormat sdfStart = new SimpleDateFormat("HH:mm:ss");
 					Date startTimeDate = sdfStart.parse(startTimeList.get(i));
 					timeArea.setStartTime(new Timestamp(startTimeDate.getTime()));
-					SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd");
+					SimpleDateFormat sdfEnd = new SimpleDateFormat("HH:mm:ss");
 					Date endTimeDate = sdfEnd.parse(endTimeList.get(i));
 					timeArea.setEndTime(new Timestamp(endTimeDate.getTime()));
 					timeArea.setUserId(department.getUserId());
@@ -117,10 +117,10 @@ public class DepartmentService {
 					TimeArea timeArea = new TimeArea();
 					timeArea.setId(EssPdfUtil.genrRandomUUID());
 					timeArea.setDepartmentId(department.getId());
-					SimpleDateFormat sdfStart = new SimpleDateFormat("yyyy-MM-dd");
+					SimpleDateFormat sdfStart = new SimpleDateFormat("HH:mm:ss");
 					Date startTimeDate = sdfStart.parse(startTimeList.get(i));
 					timeArea.setStartTime(new Timestamp(startTimeDate.getTime()));
-					SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd");
+					SimpleDateFormat sdfEnd = new SimpleDateFormat("HH:mm:ss");
 					Date endTimeDate = sdfEnd.parse(endTimeList.get(i));
 					timeArea.setEndTime(new Timestamp(endTimeDate.getTime()));
 					timeArea.setUserId(department.getUserId());
@@ -150,7 +150,7 @@ public class DepartmentService {
 	/**
 	  * <p>根据部门印章名称查询列表</p>
 	  * @Description:
-	  * @param roleName 印章名称
+	  * @param depatmentName 印章名称
 	  * @return
 	 */
 	public List<Department> findByDepartmentName(String depatmentName) {
