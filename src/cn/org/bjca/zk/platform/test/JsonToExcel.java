@@ -3,10 +3,11 @@ package cn.org.bjca.zk.platform.test;
 import com.alibaba.fastjson.JSONObject;
 import com.sun.org.apache.bcel.internal.generic.PUSH;
 import jxl.CellView;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class JsonToExcel {
     public static void main(String[] args) throws Exception {
         HSSFWorkbook mWorkbook = new HSSFWorkbook();
 
-        HSSFSheet mSheet = mWorkbook.createSheet("Student");
+        HSSFSheet mSheet = mWorkbook.createSheet("日报表");
 
         // 创建Excel标题行，第一行。
         HSSFRow headRow = mSheet.createRow(0);
@@ -32,10 +33,8 @@ public class JsonToExcel {
         headRow.createCell(8).setCellValue("异常存取原因");
         headRow.createCell(9).setCellValue("备注");
 
-        // 往Excel表中写入3行测试数据。
-//        createCell(1, "zhang", "男", 18, mSheet);
-//        createCell(2, "phil", "男", 19, mSheet);
-//        createCell(3, "fly", "男", 20, mSheet);
+        //单元格格式
+        headRow.setHeightInPoints((short) 20);
         List<String> startTime = new ArrayList<>();
         startTime.add("12月05日 09时28分09秒");
         startTime.add("12月05日 12时58分23秒");
@@ -52,15 +51,15 @@ public class JsonToExcel {
         createCell( "指数量化部","吴振翔","1",startTime,pushStatus,endTime,pullStatus,"null","null","考勤：出差", mSheet);
         createCell( "指数量化部","吴振翔","1",startTime,pushStatus,endTime,pullStatus,"null","null","考勤：出差", mSheet);
         createCell( "指数量化部","吴振翔","1",startTime,pushStatus,endTime,pullStatus,"null","null","考勤：出差", mSheet);
-        FileOutputStream output = new FileOutputStream("c://target.xls");
+        FileOutputStream output = new FileOutputStream("d://target.xls");
         mWorkbook.write(output);
+        output.close();
     }
 
     // 创建Excel的一行数据。
     private static void createCell(String department, String name, String doorNumber, List<String> startTime, List<String> pushStatus, List<String> endTime,
                                    List<String> pullStatus, String authorizer, String reason, String remake, HSSFSheet sheet) {
         HSSFRow dataRow = sheet.createRow(sheet.getLastRowNum() + 1);
-
         dataRow.createCell(0).setCellValue(department);
         dataRow.createCell(1).setCellValue(name);
         dataRow.createCell(2).setCellValue(doorNumber);

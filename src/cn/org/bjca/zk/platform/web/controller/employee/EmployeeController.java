@@ -7,17 +7,26 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import cn.org.bjca.zk.platform.service.EmailService;
-import cn.org.bjca.zk.platform.vo.EmailVO;
+import cn.org.bjca.zk.platform.service.MessageService;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.OMNamespace;
+import org.apache.axis2.addressing.EndpointReference;
+import org.apache.axis2.client.Options;
+import org.apache.axis2.client.ServiceClient;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.codehaus.xfire.client.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -28,7 +37,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ModelAndView;
-
 import com.cn.bjca.seal.esspdf.core.pagination.page.Page;
 import com.cn.bjca.seal.esspdf.core.pagination.page.Pagination;
 
@@ -63,6 +71,9 @@ public class EmployeeController extends BaseController{
 	private EmployeeService employeeService;
 	@Autowired
 	private DepartmentService departmentService;
+	@Autowired
+	private MessageService messageService;
+
 	@Value("#{sysConfig['picMaxSize']}")
 	private String picMaxSizeStr ;
 
@@ -267,7 +278,7 @@ public class EmployeeController extends BaseController{
 			}
 			if (imgExt != null) {
 				if (picSize <= picMaxSize * PDFSealConstants.SIZE_KB) {
-					String  picfileName= EssPdfUtil.genrRandomUUID()+".pic";
+					String  picfileName= EssPdfUtil.genrRandomUUID()+".png";
 					String filePath = EssPdfUtil.getCurrPath()+"upload/"+picfileName;
 					System.out.println("图片路径为："+filePath);
 					FileUtils.writeByteArrayToFile(new File(filePath), imgBty);
@@ -446,5 +457,40 @@ public class EmployeeController extends BaseController{
 		response.getWriter().write(json.toJSONString());
 		return null;
 	}
+
+	@ResponseBody
+	@RequestMapping(value = "getOAInfo",produces="text/html;charset=UTF-8")
+	public String getOA(String startdate,String enddate,String objno) throws Exception {
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("startdate",startdate);
+		jsonObj.put("enddate",enddate);
+		jsonObj.put("objno",objno);
+		jsonObj.put("secret","4028818230db6dbd0130fe847d6742ba");
+		String finalR = "";
+		try {
+			Client client = new Client(new URL("http://10.50.115.190:8288/services/checkLeaveByEMP?wsdl"));
+			Object[] results = client.invoke("GetInfoByEmp", new Object[] { jsonObj.toJSONString() });
+			for (Object o:results){
+				System.out.println(o);
+				finalR += o;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+
+		return finalR;
+
+	}
+
+	@RequestMapping(value = "sendMessageTest",produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	public String sendMessageTest(String tel){
+		List<String> list = new ArrayList<>();
+		list.add(tel);
+		String result = messageService.sendMessage(list);
+		return result;
+
+	}
+
 
 }

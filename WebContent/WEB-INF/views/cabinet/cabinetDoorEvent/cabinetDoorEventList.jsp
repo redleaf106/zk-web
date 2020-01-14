@@ -24,7 +24,7 @@
 		
 	</div>
 	</form>
-	<li><a class="add" href="${ctx}/cabinet/cabinetDoorEvent/jumpMedia" target="navTab"><span>查看监控</span></a></li>
+	<%--<li><a class="add" href="${ctx}/cabinet/cabinetDoorEvent/jumpMedia" target="navTab"><span>查看监控</span></a></li>--%>
 </div>
 <div class="pageContent">
 	<div class="panelBar">
@@ -55,11 +55,11 @@
 						<td><fmt:formatDate value="${item.doorOptTime}" type="both" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 						<td>
 							<c:choose>
-								<c:when test="${item.status=='0'}">正常开门</c:when>
-								<c:when test="${item.status=='1'}">正常关门</c:when>
+								<c:when test="${item.status=='0'}">正常存件</c:when>
+								<c:when test="${item.status=='1'}">正常取件</c:when>
 								<c:when test="${item.status=='2'}">晚存件</c:when>
-								<c:when test="${item.status=='3'}">紧急取</c:when>
-								<c:when test="${item.status=='4'}">未存</c:when>
+								<c:when test="${item.status=='3'}">早取件</c:when>
+								<c:when test="${item.status=='4'}">紧急开门</c:when>
 								<c:otherwise>-</c:otherwise>
 							</c:choose>
 						</td>

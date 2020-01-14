@@ -25,7 +25,7 @@
 <script src="${ctx}/scripts/dwz.core.js" type="text/javascript"></script>
 <script src="${ctx}/scripts/dwz.util.date.js" type="text/javascript"></script>
 <script src="${ctx}/scripts/dwz.validate.method.js" type="text/javascript"></script>
-<script src="${ctx}/scripts/dwz.regional.zh.js" type="text/javascript"></script>
+<script src="${ctx}/scripts/dwz.regional.zh.js" type="text/javascript" charset="UTF-8"></script>
 <script src="${ctx}/scripts/dwz.barDrag.js" type="text/javascript"></script>
 <script src="${ctx}/scripts/dwz.drag.js" type="text/javascript"></script>
 <script src="${ctx}/scripts/dwz.tree.js" type="text/javascript"></script>
@@ -57,7 +57,7 @@
 <!--
 <script src="bin/dwz.min.js" type="text/javascript"></script>
 -->
-<script src="${ctx}/scripts/dwz.regional.zh.js" type="text/javascript"></script>
+<script src="${ctx}/scripts/dwz.regional.zh.js" type="text/javascript" charset="UTF-8"></script>
 
 
 <!-- 新添加日历控件 -->

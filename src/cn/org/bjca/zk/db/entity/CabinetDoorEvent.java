@@ -16,13 +16,13 @@ public class CabinetDoorEvent extends IdEntity {
 	private static final long serialVersionUID = 7366604581739614154L;
 	
 	/**
-	 * 正常开门
+	 * 正常存
 	 */
-	public static final String NORMAL_OPEN  = "0" ;
+	public static final String NORMAL_PUSH  = "0" ;
 	/**
-	 * 正常关门
+	 * 正常取
 	 */
-	public static final String NORMAL_CLOSE  = "1" ;
+	public static final String NORMAL_PULL  = "1" ;
 			
 	/**
 	 * 晚存件
@@ -30,14 +30,14 @@ public class CabinetDoorEvent extends IdEntity {
 	public static final String LATE_STORE  = "2" ;
 	
 	/**
-	 * 紧急取
+	 * 早取件
 	 */
-	public static final String EMERGENCY_FETCH  = "3" ;
+	public static final String ERRLY_STORE  = "3" ;
 	
 	/**
-	 * 未存
+	 * 紧急开门
 	 */
-	public static final String NOT_STORE  = "4" ;
+	public static final String EMERGENCY_FETCH  = "4" ;
 	
 	
 	/**
@@ -55,7 +55,7 @@ public class CabinetDoorEvent extends IdEntity {
 	private String cabinetIp;
 	
 	/**
-	 * 动作状态：0正常开门 1 正常关门 2存件晚 3紧急取件  4未存
+	 * 动作状态：0正常存 1 正常取 2晚存 3早取  4紧急
 	 *    
 	 */
 	private String status;

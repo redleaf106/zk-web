@@ -63,12 +63,13 @@ function scaleImg(obj){
 			</div>
 			<div class="divider"></div>		
 				
-			<div class="unit">
-				<label>员工邮箱：</label>
-				<input type="text" name="employeeNumber" style="display: none" size="40" minlength="2" maxlength="32" class="required" value="${employee.employeeNumber}"/>
-				<input type="text" name="email" size="40" minlength="2" maxlength="32" class="required" value="${employee.email}"/>
-			</div>
-			<div class="divider"></div>		
+			<%--<div class="unit">--%>
+				<%--<label>员工邮箱：</label>--%>
+				<%--<input type="text" name="employeeNumber" style="display: none" size="40" minlength="2" maxlength="32" class="required" value="${employee.employeeNumber}"/>--%>
+				<%--<input type="text" name="email" size="40" minlength="2" maxlength="32" class="required" value="${employee.email}"/>--%>
+			<%--</div>--%>
+			<div class="divider"></div>
+
 		
 			<div class="unit">
 				<label>手机号码1：</label>

@@ -30,13 +30,13 @@
 			<div class="unit">
 				<label>工作时间：</label>
 				 <input id="startTime" type="text" class="Wdate" name="startTime" size="30"
-                               value= "<fmt:formatDate value='${startTime}' type='both' pattern='yyyy-MM-dd HH:mm:ss'/> "
+                               value= "<fmt:formatDate value='${startTime}' type='both' pattern='HH:mm:ss'/> "
                                onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',readOnly:true,
                        minDate: '%y-%M-%d',maxDate:'#F{$dp.$D(\'endTime\')}'})"/>
                        
                   <label>&nbsp;&nbsp;&nbsp;&nbsp;</label>
                   <input id="endTime" type="text" class="Wdate" name="endTime" size="30"
-                               value= "<fmt:formatDate value='${endTime}' type='both' pattern='yyyy-MM-dd HH:mm:ss'/> "
+                               value= "<fmt:formatDate value='${endTime}' type='both' pattern='HH:mm:ss'/> "
                                onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',readOnly:true})"/>
                   <div class="pageContent sortDrag" style="border: 0px dotted #B8D0D6" id="sortbox">
                                
@@ -67,10 +67,10 @@
 				                		<div style='border: 0px solid #B8D0D6; margin: 0; padding: 5px 0;' class='unit'>
 							                <label>时间段：</label>   	
 						                	<input id="startTime" type="text" class="Wdate" name="startTime"
-					                               value= "<fmt:formatDate value='${item.startTime}' type='both' pattern='yyyy-MM-dd'/> "
+					                               value= "<fmt:formatDate value='${item.startTime}' type='both' pattern='HH:mm:ss'/> "
 					                               onClick="WdatePicker({dateFmt:'HH:mm:ss',readOnly:true})"/>
 					                  		<input id="endTime" type="text" class="Wdate" name="endTime"
-					                              value= "<fmt:formatDate value='${item.endTime}' type='both' pattern='yyyy-MM-dd'/>" 
+					                              value= "<fmt:formatDate value='${item.endTime}' type='both' pattern='HH:mm:ss'/>"
 					                               onClick="WdatePicker({dateFmt:'HH:mm:ss',readOnly:true})"/>
 						                    	<input  type="button" value="添加时间段" onclick="addTimeAreasDiv()"/>
 						                    	<input class="input_param" type="button" value="删除时间段"/>

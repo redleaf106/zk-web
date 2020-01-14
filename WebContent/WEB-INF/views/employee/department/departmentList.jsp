@@ -55,7 +55,7 @@
 						<td>${item.departmentName}</td>
 						<td>
 							<c:forEach var="timeAreaItem" items="${item.timeAreas}" varStatus="serial">
-								<fmt:formatDate value="${timeAreaItem.startTime}" type="both" pattern="yyyy-MM-dd"/>至<fmt:formatDate value="${timeAreaItem.endTime}" type="both" pattern="yyyy-MM-dd"/> &nbsp;&nbsp;
+								<fmt:formatDate value="${timeAreaItem.startTime}" type="both" pattern="HH:mm:ss"/>至<fmt:formatDate value="${timeAreaItem.endTime}" type="both" pattern="HH:mm:ss"/> &nbsp;&nbsp;
 							</c:forEach>
 
 						</td>
@@ -63,7 +63,7 @@
 						
 						<td>&nbsp;
 							<a title="确定要删除吗?" target="ajaxTodo" href="${ctx}/employee/department/delete/${item.id}" class="btnDel">删除</a>&nbsp;&nbsp;   
-							<a title="修改机柜信息" href="${ctx}/employee/department/toEditFormPage/${item.id}" class="btnEdit" target="navTab">修改</a>&nbsp;&nbsp;
+							<a title="修改部门信息" href="${ctx}/employee/department/toEditFormPage/${item.id}" class="btnEdit" target="navTab">修改</a>&nbsp;&nbsp;
 						</td>
 					</tr>
 				</c:forEach>

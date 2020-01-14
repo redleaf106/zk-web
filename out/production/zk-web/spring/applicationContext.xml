@@ -70,6 +70,13 @@
 			</list>
 		</property>
 	</bean>
+	<bean id="MessageConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="locations">
+			<list>
+				<value>classpath*:MessageConfig.properties</value>
+			</list>
+		</property>
+	</bean>
 	
 	<!-- 数据源配置, 使用应用中的DBCP数据库连接池 -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">

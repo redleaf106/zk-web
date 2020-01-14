@@ -8,13 +8,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.org.bjca.zk.db.entity.CabinetDoor;
-import cn.org.bjca.zk.db.entity.User;
-import cn.org.bjca.zk.platform.PDFSealConstants;
+import cn.org.bjca.zk.db.entity.HTFCheck;
 import cn.org.bjca.zk.platform.bean.Message;
 import cn.org.bjca.zk.platform.exception.DialogException;
 import cn.org.bjca.zk.platform.service.CabinetDoorService;
+import cn.org.bjca.zk.platform.service.CheckListService;
 import cn.org.bjca.zk.platform.service.EmailService;
 import cn.org.bjca.zk.platform.tools.CabinetDoorServer;
+import cn.org.bjca.zk.platform.tools.CreateDayCheckUtils;
+import cn.org.bjca.zk.db.entity.CheckInfo;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -35,9 +37,12 @@ import cn.org.bjca.zk.platform.web.controller.BaseController;
 import cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -64,6 +69,9 @@ public class CabinetDoorEventController extends BaseController {
 
 	@Autowired
 	private CabinetDoorService cabinetDoorService;
+
+	@Autowired
+	private CheckListService checkListService;
 
 
 	/**
@@ -115,9 +123,9 @@ public class CabinetDoorEventController extends BaseController {
 	public ModelAndView saveOrUpdate(@RequestBody CabinetDoorEvent CabinetDoorEvent, HttpServletRequest request) throws DialogException {
 		try {
 			System.out.println("状态码是："+CabinetDoorEvent.getStatus());
-			if(Integer.parseInt(CabinetDoorEvent.getStatus())>0){
+			if(Integer.parseInt(CabinetDoorEvent.getStatus())>1){
 				System.out.println("存取出现异常行为");
-				emailService.sendOneMail(CabinetDoorEvent);
+				//emailService.sendOneMail(CabinetDoorEvent);
 			}
 			Message message = new Message();
 			if(StringUtils.isNotBlank(CabinetDoorEvent.getId()))
@@ -128,7 +136,6 @@ public class CabinetDoorEventController extends BaseController {
 			//User user = (User) request.getSession().getAttribute(PDFSealConstants.SESSION_USER);
 			cabinetDoorEventService.saveOrUpdate(CabinetDoorEvent);
 			List<CabinetDoor> list = cabinetDoorService.findByCabinetNumberAndDoorNumber(CabinetDoorEvent.getCabinetNumber(), CabinetDoorEvent.getCabinetDoorNumber());
-			System.out.println("sssssssssssssssssssssss"+list.size());
 			CabinetDoor cabinetDoor = list.get(0);
 			//存取次数+1
 			cabinetDoor.setAccessCount(cabinetDoor.getAccessCount()+1);
@@ -215,6 +222,96 @@ public class CabinetDoorEventController extends BaseController {
 		output.close();
 
 		return jsonObject.toJSONString(list);
+	}
+
+	@RequestMapping(value = "findOneDay")
+	@ResponseBody
+	public String findOneDay(HttpServletRequest request) throws ParseException {
+		String employeeIcCardNumber = request.getParameter("employeeIcCardNumber");
+		JSONObject jsonObject = new JSONObject();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date();
+		String str = sdf.format(date);
+		Date dangtian = sdf.parse(str);
+		List list = cabinetDoorEventService.findOneEMPByOneDay(employeeIcCardNumber,dangtian);
+		return jsonObject.toJSONString(list);
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "checkDayInfoTest" ,produces ="text/html;charset=UTF-8")
+	public String checkDayInfoTest(){
+		JSONObject jsonObject = new JSONObject();
+		return jsonObject.toJSONString(cabinetDoorEventService.findDayInfo());
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "checkDayInfo" ,produces ="text/html;charset=UTF-8")
+	public String checkDayInfo(){
+		JSONObject jsonObject = new JSONObject();
+		List<CheckInfo> listMata = cabinetDoorEventService.findDayInfo();//获取当天存取记录
+		List<CheckInfo> responseList = new LinkedList<>();
+		for(CheckInfo ci:listMata){
+			if(responseList.contains(ci)){//判断开关门事件是否是同属于一个人
+				//如果是一个人，则修改数据
+				int index = responseList.indexOf(ci);//获取这个元素的下标
+				CheckInfo checkInfo = responseList.get(index);
+				String reason = "";
+				if("0".equals(ci.getDoorOptStatus())){//修改存件时间
+					checkInfo.setPushTime(checkInfo.getPushTime()+" "+ci.getDoorOptTime());
+					checkInfo.setPushStatus(checkInfo.getPushStatus()+" 正常存");
+				}else if("2".equals(ci.getDoorOptStatus())){//修改存件时间
+					checkInfo.setPushTime(checkInfo.getPushTime()+" "+ci.getDoorOptTime());
+					checkInfo.setPushStatus(checkInfo.getPushStatus()+" 晚存");
+					reason = " 晚存：";
+				}else if("1".equals(ci.getDoorOptStatus())){//修改取件时间
+					checkInfo.setPullTime(checkInfo.getPullTime()+" "+ci.getDoorOptTime());
+					checkInfo.setPullStatus(checkInfo.getPullStatus()+" 正常取");
+				}else if("3".equals(ci.getDoorOptStatus())){//修改取件时间
+					checkInfo.setPullTime(checkInfo.getPullTime()+" "+ci.getDoorOptTime());
+					checkInfo.setPullStatus(checkInfo.getPullStatus()+" 早取");
+					reason = " 早取：";
+				}
+				if(ci.getRemark()!=null||ci.getRemark().length()>0){
+					checkInfo.setRemark(checkInfo.getRemark()+reason+ci.getRemark());
+				}
+				responseList.set(index,checkInfo);
+			}else{
+				//如果不是一个人，则加上这个人
+				CheckInfo checkInfo = new CheckInfo();
+				checkInfo.setCabinetDoorNumber(ci.getCabinetDoorNumber());
+				checkInfo.setDepartmentName(ci.getDepartmentName());
+				checkInfo.setEmployeeName(ci.getEmployeeName());
+				checkInfo.setIcCardNumber(ci.getIcCardNumber());
+				checkInfo.setRemark(ci.getRemark());
+				if("0".equals(ci.getDoorOptStatus())){//修改存件时间
+					checkInfo.setPushTime(ci.getDoorOptTime());
+					checkInfo.setPushStatus("正常存");
+					checkInfo.setPullTime("");
+					checkInfo.setPullStatus("");
+				}else if("2".equals(ci.getDoorOptStatus())){//修改存件时间
+					checkInfo.setPushTime(ci.getDoorOptTime());
+					checkInfo.setPushStatus("晚存");
+					checkInfo.setPullTime("");
+					checkInfo.setPullStatus("");
+					checkInfo.setRemark("晚存："+ci.getRemark());
+				}else if("1".equals(ci.getDoorOptStatus())){//修改取件时间
+					checkInfo.setPullTime(ci.getDoorOptTime());
+					checkInfo.setPullStatus("正常取");
+					checkInfo.setPushTime("");
+					checkInfo.setPushStatus("");
+				}else if("3".equals(ci.getDoorOptStatus())){//修改取件时间
+					checkInfo.setPullTime(ci.getDoorOptTime());
+					checkInfo.setPullStatus("早取");
+					checkInfo.setPushTime("");
+					checkInfo.setPushStatus("");
+					checkInfo.setRemark("早取："+ci.getRemark());
+				}
+				responseList.add(checkInfo);
+			}
+		}
+		HTFCheck htfCheck = CreateDayCheckUtils.checkDayCheck(responseList);
+		checkListService.add(htfCheck);
+		return jsonObject.toJSONString(responseList);
 	}
 
 

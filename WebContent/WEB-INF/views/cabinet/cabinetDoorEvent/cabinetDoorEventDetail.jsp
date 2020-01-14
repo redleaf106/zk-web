@@ -7,6 +7,12 @@
 		<input type="hidden" name="id" value="${cabinetDoor.id}" />
 		<div class="pageFormContent" layoutH="58">
 			<div class="unit">
+				<label>事件id：</label>
+				<input type="text" size="40" minlength="1" maxlength="20" class="required" value="${cabinetDoorEvent.id}" readonly/>
+			</div>
+			<div class="divider"></div>
+
+			<div class="unit">
 				<label>机柜编号：</label>
 				<input type="text" name="cabinetNumber" size="40" minlength="1" maxlength="20" class="required" value="${cabinetDoorEvent.cabinetNumber}" readonly/>
 			

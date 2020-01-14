@@ -12,17 +12,20 @@ import java.util.ArrayList;
 public class JxlTest {
 
     public static void main(String[] args) {
-        String outputUrl = "c://jxl.xls";
+        String outputUrl = "d://jxl.xls";
         String sheetName = "";
         //String[] titlesArray = new String[]{"部门","姓名","柜门号","存入时间","存入状态","取出时间","取出状态","紧急授权人","异常存取原因","备注"};
         String[] titlesArray = new String[]{"部门","姓名","柜门号"};
         ArrayList<String>[] arrayList = new ArrayList[3];
-        for(ArrayList<String> a:arrayList){
-            a = new ArrayList<>();
+        for(int i=0;i<arrayList.length;i++){
+            arrayList[i] = new ArrayList<>();
         }
         arrayList[0].add("zs");
+        arrayList[0].add("ls");
         arrayList[1].add("18888888888888888888888888888888");
+        arrayList[1].add("22222222222222222222222222222222");
         arrayList[2].add("man");
+        arrayList[2].add("woman");
         System.out.println(outputUrl);
 
         try {

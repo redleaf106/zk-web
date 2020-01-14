@@ -3,8 +3,11 @@
  */
 package cn.org.bjca.zk.platform.dao;
 
+import java.util.Date;
 import java.util.List;
 
+import cn.org.bjca.zk.db.entity.CheckInfo;
+import cn.org.bjca.zk.db.entity.HTFCheck;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Select;
 
@@ -66,6 +69,24 @@ public interface CabinetDoorEventDao {
 	 */
 	@Select("SELECT * FROM BO_CABINETDOOREVENT")
 	List<CabinetDoorEvent> getAll();
-	
+
+	/**
+	 *
+	 * @param date
+	 * @return
+	 */
+	List<CabinetDoorEvent> findOneDay(Date date);
+
+	/**
+	 *
+	 * @param employeeIcCardNumber
+	 * @param date
+	 * @return
+	 */
+	List<CabinetDoorEvent> findOneEMPByOneDay(String employeeIcCardNumber, Date date);
+
+	List<CheckInfo> findDayInfo();
+
+
 
 }

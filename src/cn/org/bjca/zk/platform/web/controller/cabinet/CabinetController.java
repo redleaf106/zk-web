@@ -52,7 +52,7 @@ public class CabinetController extends BaseController{
 	/**
 	  * <p>角色管理列表</p>
 	  * @Description:
-	  * @param model
+	  * @param modelMap
 	  * @param request
 	  * @return
 	 */
@@ -101,15 +101,17 @@ public class CabinetController extends BaseController{
 	/**
 	  * <p>保存或更新表单信息</p>
 	  * @Description:
-	  * @param signKey
+	  * @param cabinet
 	  * @return
 	 */
 	@RequestMapping(value = "saveOrUpdate")
 	public ModelAndView saveOrUpdate(Cabinet cabinet,HttpServletRequest request) throws DialogException {
 		try{
 			Message message = new Message();
-			if(StringUtils.isNotBlank(cabinet.getId()))
+			if(StringUtils.isNotBlank(cabinet.getId())) {
 				message.setContent(this.UPDATE);//内容提示
+				cabinet.setFullDoorCount(cabinetService.findUniqueById(cabinet.getId()).getFullDoorCount());
+			}
 			else{
 				message.setContent(this.SAVE);//内容提示
 			}
@@ -131,7 +133,7 @@ public class CabinetController extends BaseController{
 	  * <p>根据id删除记录</p>
 	  * @Description:
 	  * @param id ,id主键
-	  * @param model
+	  * @param id
 	  * @return
 	 * @throws DialogException 
 	 */

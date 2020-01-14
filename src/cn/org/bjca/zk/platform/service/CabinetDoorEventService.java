@@ -3,8 +3,11 @@
  */
 package cn.org.bjca.zk.platform.service;
 
+import java.util.Date;
 import java.util.List;
 
+import cn.org.bjca.zk.db.entity.CheckInfo;
+import cn.org.bjca.zk.db.entity.HTFCheck;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,7 +39,7 @@ public class CabinetDoorEventService {
 	/**
 	  * <p>分页查询</p>
 	  * @Description:
-	  * @param CabinetDoorEvnetPage
+	  * @param cabinetDoorEventPage
 	  * @return
 	 */
 	public CabinetDoorEventPage<CabinetDoorEvent> findPage(CabinetDoorEventPage<CabinetDoorEvent> cabinetDoorEventPage){
@@ -58,7 +61,7 @@ public class CabinetDoorEventService {
 	/**
 	  * <p>保存或更新记录</p>
 	  * @Description:
-	  * @param role
+	  * @param cabinetDoorEvent
 	 */
 	@Transactional(readOnly = false)
 	public void saveOrUpdate(CabinetDoorEvent cabinetDoorEvent){
@@ -87,5 +90,30 @@ public class CabinetDoorEventService {
 	public List<CabinetDoorEvent> getAll() {
 		return cabinetDoorEventDao.getAll();
 	}
-	
+
+	/**
+	 * <p>查询当天的记录</p>
+	 * @param date
+	 * @return
+	 */
+	public List<CabinetDoorEvent> findOneDay(Date date){
+		return cabinetDoorEventDao.findOneDay(date);
+	}
+
+	/**
+	 * 查询某位员工当某天的事件
+	 * @param employeeIcCardNumber
+	 * @param date
+	 * @return
+	 */
+	public List<CabinetDoorEvent> findOneEMPByOneDay(String employeeIcCardNumber, Date date){
+		return cabinetDoorEventDao.findOneEMPByOneDay(employeeIcCardNumber,date);
+	}
+
+	//查看当天报表
+	public List<CheckInfo> findDayInfo(){
+		return cabinetDoorEventDao.findDayInfo();
+	}
+
+
 }
