@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="cn.org.bjca.zk.platform.dao.OrganizationDao">
+	<resultMap id="orgMap" type="Organization">
+        <result property="id" column="ID"/>
+        <result property="orgName" column="ORGNAME"/>
+        <result property="orgCode" column="ORGCODE"/>
+        <result property="address" column="ADDRESS"/>
+        <result property="description" column="DESCRIPTION"/>
+        <result property="email" column="EMAIL"/>
+        <result property="orgFlag" column="ORGFLAG"/>
+        <result property="orgType" column="ORGTYPE"/>
+        <result property="parentId" column="PARENTID"/>
+        <result property="postalCode" column="POSTALCODE"/>
+        <result property="showOrder" column="SHOWORDER"/>
+        <result property="status" column="STATUS"/>
+        <result property="tax" column="TAX"/>
+        <result property="tel" column="TEL"/>
+        <result property="userId" column="USERID"/>
+        <result property="optTime" column="OPTTIME"/>
+        <result property="ext1" column="EXT1"/>
+        <result property="ext2" column="EXT2"/>
+        <result property="ext3" column="EXT3"/>
+        <association property="parentOrganization" javaType="Organization" column="PARENTID" select="findOrganizationById"/>
+        <collection property="subOrgList" javaType="ArrayList" column="ID" ofType="Post" select="findSubOrgListById"/>
+	</resultMap>
+	
+	<!-- 分页查询 -->
+	<select id="findPage" parameterType="cn.org.bjca.zk.platform.web.page.OrganizationPage" resultMap="orgMap">
+		SELECT * 
+		FROM BO_ORGANIZATION
+		WHERE 1=1 
+		<if test="orgName != null">
+			AND ORGNAME like #{orgName}
+		</if>
+		<if test="orgId != null">
+			AND orgFlag like CONCAT('%','${orgId}','%')  
+			AND ID != #{orgId}
+		</if>
+		ORDER BY OPTTIME DESC 
+	</select>
+	
+	<!-- 根据当前机构id查询下级机构列表 -->
+	<select id="findSubOrgListById" parameterType="String" resultType="Organization">
+		SELECT * FROM BO_ORGANIZATION 
+		WHERE PARENTID = #{id}
+		ORDER BY OPTTIME ASC
+	</select>
+	
+	<!-- 保存数据 -->
+	<insert id="save" parameterType="Organization">
+		INSERT INTO BO_ORGANIZATION (
+			ID,ORGNAME,ORGCODE,ADDRESS,DESCRIPTION,EMAIL,ORGFLAG,ORGTYPE,PARENTID,POSTALCODE,SHOWORDER,STATUS,TAX,TEL,USERID,OPTTIME,NODEDEPTH,EXT1,EXT2,EXT3)
+		VALUES (
+			#{id}, #{orgName}, #{orgCode}, #{address}, #{description}, #{email}, #{orgFlag}, #{orgType}, #{parentId}, #{postalCode}, #{showOrder},
+			#{status}, #{tax}, #{tel}, #{userId}, #{optTime}, #{nodeDepth}, #{ext1}, #{ext2}, #{ext3})
+	</insert>
+	
+	<!-- 更新数据 -->
+	<insert id="update" parameterType="Organization">
+		UPDATE BO_ORGANIZATION SET
+        	ORGNAME = #{orgName}, 
+        	ORGCODE = #{orgCode}, 
+        	ADDRESS = #{address}, 
+        	DESCRIPTION = #{description}, 
+        	EMAIL = #{email}, 
+        	ORGFLAG = #{orgFlag}, 
+        	ORGTYPE = #{orgType}, 
+        	PARENTID = #{parentId}, 
+        	POSTALCODE = #{postalCode},
+        	SHOWORDER = #{showOrder},
+        	STATUS = #{status},
+        	TAX = #{tax},
+        	TEL = #{tel},
+        	USERID = #{userId},
+        	OPTTIME = #{optTime},
+        	NODEDEPTH = #{nodeDepth},
+        	EXT1 = #{ext1},
+        	EXT2 = #{ext2},
+        	EXT3 = #{ext3}
+        WHERE 
+	        ID = #{id} 
+	</insert>
+	
+	<!-- 根据ID查询对象 -->
+	<select id="findOrganizationById" parameterType="String" resultType="Organization">
+		SELECT * FROM BO_ORGANIZATION WHERE ID = #{id}
+	</select>
+	
+	<!-- 根据ID查询对象MAP -->
+	<select id="findUniqueOrgMapById" parameterType="String" resultMap="orgMap">
+		SELECT * FROM BO_ORGANIZATION WHERE ID = #{id}
+	</select>
+</mapper> 

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="cn.org.bjca.zk.platform.dao.DepartmentDao">
+	<resultMap id="departmentMap" type="Department">
+        <result property="id" column="ID"/>
+        <result property="departmentName" column="DEPARTMENTNAME"/>
+        <result property="departmentNumber" column="DEPARTMENTNUMBER"/>
+        <result property="userId" column="USERID"/>
+        <result property="optTime" column="OPTTIME"/>
+        <result property="ext1" column="EXT1"/>
+        <result property="ext2" column="EXT2"/>
+        <result property="ext3" column="EXT3"/>
+        <collection property="timeAreas" javaType="ArrayList" column="DEPARTMENTID"  select="findByDepartmentId"/>
+	</resultMap>
+
+	<!-- 分页查询 -->
+	<select id="findPage" parameterType="cn.org.bjca.zk.platform.web.page.DepartmentPage" resultMap="departmentMap">
+		SELECT * 
+		FROM BO_DEPARTMENT
+		WHERE 1=1 
+		<if test="departmentName != null">
+			AND DEPARTMENT like #{departmentName}
+		</if>
+		ORDER BY OPTTIME DESC 
+	</select>
+	
+	<select id="findUniqueById" parameterType="String" resultMap="departmentMap">
+		SELECT * FROM BO_DEPARTMENT WHERE id = #{id}
+	</select>
+	
+	<select id="findByDepartmentName" parameterType="String" resultMap="departmentMap">
+		SELECT * FROM BO_DEPARTMENT WHERE DEPARTMENTNAME = #{departmentName}
+	</select>
+	
+	
+	<!-- 保存数据 -->
+	<insert id="save" parameterType="Department">
+		INSERT INTO BO_DEPARTMENT (
+			ID, 
+			DEPARTMENTNAME, 
+			DEPARTMENTNUMBER, 
+			USERID,
+			OPTTIME)
+		VALUES (
+			#{id}, 
+			#{departmentName}, 
+			#{departmentNumber}, 
+			#{userId}, 
+			#{optTime})
+	</insert>
+	
+	
+	<!-- 更新数据 -->
+	<update id="update" parameterType="Department">
+		UPDATE BO_DEPARTMENT SET
+        	DEPARTMENTNAME = #{departmentName}, 
+			USERID = #{userId},
+			OPTTIME = #{optTime}
+        WHERE 
+	        ID = #{id} 
+	</update>
+	
+</mapper> 
