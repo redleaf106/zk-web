@@ -82,4 +82,6 @@ public interface CabinetDao {
 	 */
 	List<Cabinet> findByCondition(CabinetPO cabinetPO);
 
+	Cabinet findByIP(String ip);
+
 }

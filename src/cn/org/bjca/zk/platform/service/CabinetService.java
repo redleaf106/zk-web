@@ -99,4 +99,8 @@ public class CabinetService {
 	public List<Cabinet> findByConditon(CabinetPO cabinetPO) {
 		return cabinetDao.findByCondition(cabinetPO);
 	}
+
+	public Cabinet findByIp(String ip){
+		return cabinetDao.findByIP(ip);
+	}
 }
