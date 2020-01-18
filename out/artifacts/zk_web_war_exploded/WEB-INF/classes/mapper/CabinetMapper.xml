@@ -77,4 +77,8 @@
 		</if>
 		ORDER BY OPTTIME DESC  
 	</select>
+
+	<select id="findByIP" parameterType="string" resultType="Cabinet">
+		SELECT * FROM BO_CABINET WHERE cabinetip = #{0}
+	</select>
 </mapper> 

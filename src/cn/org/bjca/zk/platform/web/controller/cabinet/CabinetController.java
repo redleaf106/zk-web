@@ -186,8 +186,10 @@ public class CabinetController extends BaseController{
 				MultipartFile file=multiRequest.getFile(iter.next().toString());
 				if(file!=null)
 				{
-//					String path="/root/dayCheck/"+city+"/"+file.getOriginalFilename();
-					String path = "D:\\/"+city+"/"+file.getOriginalFilename();
+
+					//文件存放路径
+					String path="/root/dayCheck/"+city+"/"+file.getOriginalFilename();
+//					String path = "D:\\/"+city+"/"+file.getOriginalFilename();
 					//上传
 					file.transferTo(new File(path));
 
