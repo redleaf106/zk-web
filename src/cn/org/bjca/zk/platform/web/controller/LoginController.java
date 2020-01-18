@@ -41,7 +41,7 @@ public class LoginController extends BaseController {
 	
 	protected static final String SESSION_SCOPERANDOM_PARAM_NAME = "scope_session"; // 会话随机数参数名
 	
-	protected static final String LOGIN_RANDOM_PARAM_NAME = "verifyCode"; // 登录随机数参数名
+//	protected static final String LOGIN_RANDOM_PARAM_NAME = "verifyCode"; // 登录随机数参数名
 	
 	protected static final String LOGIN_PWD_PARAM_NAME = "pwd"; // 登录密码参数名
 	
@@ -201,7 +201,7 @@ public class LoginController extends BaseController {
 	@RequestMapping(value = "ajaxAuth", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
 	@ResponseBody
 	public String ajaxAuth(HttpServletRequest request, HttpSession session) throws Exception {
-		return pwdAuth(getXssParameter(request, LOGIN_RANDOM_PARAM_NAME), getXssParameter(request, LOGIN_NAME_PARAM_NAME), getXssParameter(request, LOGIN_PWD_PARAM_NAME), session);
+		return pwdAuth(getXssParameter(request, LOGIN_NAME_PARAM_NAME), getXssParameter(request, LOGIN_PWD_PARAM_NAME), session);
 	}
 	
 	/**
@@ -211,11 +211,11 @@ public class LoginController extends BaseController {
 	  * @return
 	  * @throws Exception
 	 */
-	private String pwdAuth(String verifyCode, String loginName, String pwd, HttpSession session) throws Exception {
+	private String pwdAuth(String loginName, String pwd, HttpSession session) throws Exception {
 		String randomCode = (String) session.getAttribute(SESSION_SCOPERANDOM_PARAM_NAME); // 验证码session
-		if (!verifyCode.equals(randomCode)) {
-			return "验证码输入错误，请重新输入！";
-		}
+//		if (!verifyCode.equals(randomCode)) {
+//			return "验证码输入错误，请重新输入！";
+//		}
 		List<User> userList = userService.findByFields(loginName, null);
 		if (userList.size() > 0) {
 			for(User userObj : userList) {
