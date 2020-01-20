@@ -33,7 +33,7 @@ public class TestNET {
                     conn.setRequestMethod("POST");
                     conn.setDoOutput(true);
                     //          conn.setRequestProperty("Content-Type", "multipart/form-data");
-                    conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    conn.setRequestProperty("Content-Type", "multipart/form-data");
                     conn.setRequestProperty("Content-Length", data.length()+"");
                     conn.setConnectTimeout(5000);
                     conn.setRequestProperty("cabinetIP","192.168.3.140");
