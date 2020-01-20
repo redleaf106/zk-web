@@ -77,7 +77,7 @@
 	<select id="findDayInfo" resultMap="CheckInfo">
 		select
 		<include refid="column_base"/>
-		from checkInfo where to_days(dooropttime) = to_days(now())
+		from checkinfo where to_days(dooropttime) = to_days(now())
 	</select>
 
 

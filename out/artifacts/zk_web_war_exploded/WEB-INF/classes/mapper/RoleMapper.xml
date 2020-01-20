@@ -7,7 +7,7 @@
 	<!-- 分页查询 -->
 	<select id="findPage" parameterType="cn.org.bjca.zk.platform.web.page.RolePage" resultType="Role">
 		SELECT * 
-		FROM BO_Role
+		FROM BO_ROLE
 		WHERE 1=1 
 		<if test="roleName != null">
 			AND ROLENAME like #{roleName}
@@ -17,7 +17,7 @@
 	
 	<!-- 保存数据 -->
 	<insert id="save" parameterType="Role">
-		INSERT INTO BO_Role (
+		INSERT INTO BO_ROLE (
 			ID, 
 			ROLENAME, 
 			ORGID, 
@@ -41,7 +41,7 @@
 	
 	<!-- 更新数据 -->
 	<insert id="update" parameterType="Role">
-		UPDATE BO_Role SET
+		UPDATE BO_ROLE SET
         	ROLENAME = #{roleName}, 
 			ORGID = #{orgId}, 
 			ORGFLAG = #{orgFlag},
@@ -56,6 +56,6 @@
 	
 	<!-- 根据ID查询对象 -->
 	<select id="findRoleById" parameterType="String" resultType="Role">
-		SELECT * FROM BO_Role WHERE ID = #{id}
+		SELECT * FROM BO_ROLE WHERE ID = #{id}
 	</select>
 </mapper> 

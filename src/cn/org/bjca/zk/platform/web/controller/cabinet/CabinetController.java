@@ -6,6 +6,8 @@ package cn.org.bjca.zk.platform.web.controller.cabinet;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cn.org.bjca.zk.db.entity.HTFCheck;
+import cn.org.bjca.zk.platform.service.CheckListService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -57,7 +59,10 @@ public class CabinetController extends BaseController{
 	 */
 	@Autowired
 	private CabinetService cabinetService;
-	
+
+	@Autowired
+	private CheckListService checkListService;
+
 	/**
 	  * <p>角色管理列表</p>
 	  * @Description:
@@ -192,7 +197,10 @@ public class CabinetController extends BaseController{
 //					String path = "D:\\/"+city+"/"+file.getOriginalFilename();
 					//上传
 					file.transferTo(new File(path));
-
+					HTFCheck htfCheck = new HTFCheck();
+					htfCheck.setFilePath(path);
+					htfCheck.setFileName(file.getOriginalFilename());
+					checkListService.add(htfCheck);
 				}
 			}
 		}

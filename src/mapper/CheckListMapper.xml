@@ -20,7 +20,7 @@
 
     <!--添加数据 -->
     <insert id="save" parameterType="HTFCheck">
-        INSERT INTO htf_check(
+        INSERT INTO HTF_CHECK(
         file_name,file_path,create_time
         )VALUES(
         #{fileName},

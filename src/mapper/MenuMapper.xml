@@ -50,7 +50,7 @@
 	
 		<!-- 更新数据 -->
 	<update id="update" parameterType="cn.org.bjca.zk.db.entity.Menu">
-		UPDATE BO_Menu SET
+		UPDATE BO_MENU SET
 			STATUS = #{status,jdbcType=VARCHAR}, 
 			OPTTIME = #{optTime,jdbcType=DATE}
         WHERE 
