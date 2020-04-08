@@ -43,8 +43,6 @@
 					<th width="10%">机柜IP</th>
 					<th width="15%">操作时间</th>
 					<th width="5%">已使用/空闲/总数</th>
-					<th width="5%">状态</th>
-					<th width="5%">摄像头状态</th>
 					<th width="10%">软件版本号</th>
 					<th width="10%" align="center">操作</th>
 				</tr>
@@ -60,9 +58,6 @@
 						<td>${item.cabinetIP}</td>
 						<td><fmt:formatDate value="${item.optTime}" type="both" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 						<td>${item.fullDoorCount}/${item.doorCount-item.fullDoorCount}/${item.doorCount}</td>
-						<td>不可用
-						</td>
-						<td>0/0</td>
 						<td>${item.software}</td>
 						<td>&nbsp;
 							<a title="确定要删除吗?" target="ajaxTodo" href="${ctx}/cabinet/cabinet/delete/${item.id}" class="btnDel">删除</a>&nbsp;&nbsp;   

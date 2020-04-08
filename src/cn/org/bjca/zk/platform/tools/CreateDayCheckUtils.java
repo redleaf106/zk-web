@@ -2,11 +2,9 @@ package cn.org.bjca.zk.platform.tools;
 
 import cn.org.bjca.zk.db.entity.CheckInfo;
 import cn.org.bjca.zk.db.entity.HTFCheck;
-import cn.org.bjca.zk.platform.service.CheckListService;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.FileNotFoundException;
@@ -24,9 +22,12 @@ import java.util.List;
 @Component
 public class CreateDayCheckUtils {
 
-
+    //个人PC路径
     //private final static String PATH = "d:\\WorkSpace/zk-web/out/artifacts/zk_web_war_exploded/checkList/";
-    private final static String PATH = "/root/apache-tomcat-8.5.50/webapps/htf/checkList/";
+    //金鹰服务器路径
+    //private final static String PATH = "/root/apache-tomcat-8.5.50/webapps/htf/checkList/";
+    //万道pc服务器
+    private final static String PATH = "usr/share/apache-tomcat-9.0.29/webapps/jyjj/checkList";
 
     public static HTFCheck checkDayCheck(List<CheckInfo> list){
 

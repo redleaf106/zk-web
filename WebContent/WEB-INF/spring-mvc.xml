@@ -14,7 +14,7 @@
 	</context:component-scan>
 	
 	<mvc:annotation-driven/>
-		
+
 	<!-- 将无法mapping到Controller的path交给default servlet handler处理 -->		
 	<mvc:default-servlet-handler/>
 	

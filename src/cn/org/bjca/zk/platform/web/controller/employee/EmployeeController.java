@@ -3,26 +3,21 @@
  */
 package cn.org.bjca.zk.platform.web.controller.employee;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.net.URL;
-import java.util.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import cn.org.bjca.zk.db.entity.Department;
+import cn.org.bjca.zk.db.entity.Employee;
+import cn.org.bjca.zk.db.entity.User;
+import cn.org.bjca.zk.platform.PDFSealConstants;
+import cn.org.bjca.zk.platform.bean.AttachmentMessage;
+import cn.org.bjca.zk.platform.bean.Message;
+import cn.org.bjca.zk.platform.service.DepartmentService;
+import cn.org.bjca.zk.platform.service.EmployeeService;
 import cn.org.bjca.zk.platform.service.MessageService;
-import com.alibaba.fastjson.JSONArray;
+import cn.org.bjca.zk.platform.utils.EssPdfUtil;
+import cn.org.bjca.zk.platform.web.controller.BaseController;
+import cn.org.bjca.zk.platform.web.page.EmployeePage;
 import com.alibaba.fastjson.JSONObject;
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMNamespace;
-import org.apache.axis2.addressing.EndpointReference;
-import org.apache.axis2.client.Options;
-import org.apache.axis2.client.ServiceClient;
+import com.cn.bjca.seal.esspdf.core.pagination.page.Page;
+import com.cn.bjca.seal.esspdf.core.pagination.page.Pagination;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -32,25 +27,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ModelAndView;
-import com.cn.bjca.seal.esspdf.core.pagination.page.Page;
-import com.cn.bjca.seal.esspdf.core.pagination.page.Pagination;
 
-import cn.org.bjca.zk.db.entity.Department;
-import cn.org.bjca.zk.db.entity.Employee;
-import cn.org.bjca.zk.db.entity.User;
-import cn.org.bjca.zk.platform.PDFSealConstants;
-import cn.org.bjca.zk.platform.bean.AttachmentMessage;
-import cn.org.bjca.zk.platform.bean.Message;
-import cn.org.bjca.zk.platform.service.DepartmentService;
-import cn.org.bjca.zk.platform.service.EmployeeService;
-import cn.org.bjca.zk.platform.utils.EssPdfUtil;
-import cn.org.bjca.zk.platform.web.controller.BaseController;
-import cn.org.bjca.zk.platform.web.page.EmployeePage;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /***************************************************************************
 
@@ -348,6 +336,7 @@ public class EmployeeController extends BaseController{
 	@RequestMapping(value = "showAllEmployee")
 	@ResponseBody
 	public String showAllEmployee(){
+        System.out.println("coming ...");
 		EmployeePage<Employee> employeePage = new EmployeePage<Employee>();
 		Page page = new Pagination();
 		employeePage.setPageVO(page);
@@ -357,6 +346,59 @@ public class EmployeeController extends BaseController{
 	}
 
 	@RequestMapping(value = "insertOrUpdate")
+	public String insertOrUpdate(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		//获取参数
+		String employeeName = request.getParameter("employeeName");
+		String departmentName = request.getParameter("departmentName");
+		String employeeNumber = request.getParameter("employeeNumber");
+		String mobilePhone = request.getParameter("mobilePhone");
+		String email = request.getParameter("email");
+
+		JSONObject json = new JSONObject();
+		int code = 0;
+		//校验
+		boolean hasErrors = false; // 成功失败标识 ： true表示有错误
+		boolean repeat = false; //员工是否存在：false表示存在
+		Employee employeeExist = employeeService.findByicCardNumber(employeeNumber);
+		if (employeeExist==null){
+			employeeExist = new Employee();
+			repeat = true;
+		}
+
+		List<Department> list = departmentService.findByDepartmentName(departmentName);
+		if(list==null||list.isEmpty()){
+			hasErrors = true;//部门不存在
+			json.put("msg","部门不存在!");
+			code = 401;
+		}else{
+			Department d = list.get(0);
+			employeeExist.setDepartmentId(d.getId());
+			if(!"稽核部".equals(departmentName)){
+				employeeExist.setCheckPower(1);
+			}else{
+				employeeExist.setCheckPower(0);
+			}
+		}
+		employeeExist.setEmployeeName(employeeName);
+		employeeExist.setIcCardNumber(employeeNumber);
+		employeeExist.setEmail(email);
+		employeeExist.setMobilePhone(mobilePhone);
+		if (!hasErrors) {
+			if(!repeat){
+				code = 201;
+			}else{
+				code = 200;
+				employeeExist.setEmployeeNumber(EssPdfUtil.genrRandomUUID());
+			}
+			employeeService.saveOrUpdate(employeeExist);
+			json.put("msg","success");
+		}
+		json.put("code", code);
+		response.getWriter().write(json.toJSONString());
+		return null;
+	}
+
+	//@RequestMapping(value = "insertOrUpdate")
 	public String insertOrUpdate(Employee employee,HttpServletRequest request,HttpServletResponse response) throws Exception{
 		Message message = new Message();
 		JSONObject json = new JSONObject();
@@ -370,6 +412,7 @@ public class EmployeeController extends BaseController{
 		}
 		try {
 			String departmentName = employee.getDepartmentId();
+            System.out.println("部门名称是"+departmentName);
 			List<Department> list = departmentService.findByDepartmentName(departmentName);
 			if(list==null||list.isEmpty()){
 				hasErrors = true;//部门不存在
@@ -379,7 +422,9 @@ public class EmployeeController extends BaseController{
 				employeeExist.setDepartmentId(d.getId());
 				if(!"稽核部".equals(d.getDepartmentName())){
 					employeeExist.setCheckPower(1);
-				}
+				}else{
+                    employeeExist.setCheckPower(0);
+                }
 			}
 			employeeExist.setEmployeeName(employee.getEmployeeName());
 			employeeExist.setEmail(employee.getEmail());
@@ -387,6 +432,7 @@ public class EmployeeController extends BaseController{
 			employeeExist.setIcCardNumber(employee.getIcCardNumber());
 			if (!repeat) {
 				message.setContent(UPDATE); // 内容提示
+				json.put("code","201");
 			} else {
 				System.out.println("新增员工");
 				message.setContent(SAVE); // 内容提示
@@ -419,9 +465,10 @@ public class EmployeeController extends BaseController{
 		} else {
 			message.setStatusCode(FAIL);
 		}
-
 		message.setCallbackType("closeCurrent");
 		message.setNavTabId("employee");
+		json.put("message",message);
+		json.put("code",200);
 		response.getWriter().write(json.toJSONString());
 		return null;
 	}

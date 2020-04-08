@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import cn.org.bjca.zk.db.entity.HTFCheck;
 import cn.org.bjca.zk.platform.service.CheckListService;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -205,6 +206,20 @@ public class CabinetController extends BaseController{
 			}
 		}
 	}
+	//获取机柜信息
+    @ResponseBody
+    @RequestMapping("getCabinetInfo")
+    public String getCabinetInfo(String cabinetIP){
+	    Cabinet cabinet = cabinetService.findByIp(cabinetIP);
+	    JSONObject json = new JSONObject();
+	    if(cabinet!=null){
+	        return JSONObject.toJSONString(cabinet);
+        }else {
+	        json.put("error", "No cabinet found according to cabinetIP");
+	        return json.toJSONString();
+        }
+
+    }
 	
 	
 }
