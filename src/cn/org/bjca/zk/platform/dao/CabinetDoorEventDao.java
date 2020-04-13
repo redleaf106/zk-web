@@ -3,16 +3,15 @@
  */
 package cn.org.bjca.zk.platform.dao;
 
-import java.util.Date;
-import java.util.List;
-
+import cn.org.bjca.zk.db.entity.CabinetDoorEvent;
 import cn.org.bjca.zk.db.entity.CheckInfo;
-import cn.org.bjca.zk.db.entity.HTFCheck;
+import cn.org.bjca.zk.db.entity.UrgentEvent;
+import cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Select;
 
-import cn.org.bjca.zk.db.entity.CabinetDoorEvent;
-import cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage;
+import java.util.Date;
+import java.util.List;
 
 
 /***************************************************************************
@@ -86,6 +85,12 @@ public interface CabinetDoorEventDao {
 	List<CabinetDoorEvent> findOneEMPByOneDay(String employeeIcCardNumber, Date date);
 
 	List<CheckInfo> findDayInfo();
+
+	void insertUrgentEvent(UrgentEvent urgentEvent);
+
+	List<UrgentEvent> getAllUnactivatedUrgentEvent();
+
+	int updateUrgentEventEmailStatus(int id);
 
 
 

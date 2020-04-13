@@ -1,5 +1,6 @@
 package cn.org.bjca.zk.platform.web.controller;
 
+import cn.org.bjca.zk.db.entity.CheckInfo;
 import cn.org.bjca.zk.db.entity.Employee;
 import cn.org.bjca.zk.db.entity.HTFCheck;
 import cn.org.bjca.zk.platform.service.CabinetDoorEventService;
@@ -8,13 +9,18 @@ import cn.org.bjca.zk.platform.service.EmployeeService;
 import cn.org.bjca.zk.platform.service.MessageService;
 import cn.org.bjca.zk.platform.tools.CreateDayCheckUtils;
 import cn.org.bjca.zk.platform.tools.HtfOainterface;
-import cn.org.bjca.zk.db.entity.CheckInfo;
+import cn.org.bjca.zk.platform.utils.MD5Util;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -54,6 +60,7 @@ public class AutoRunTask {
 
     private final static String MESSAGEURL = "http://10.50.115.157:10090/messagesend";//短信接口地址
     private final static String OAURL = "http://10.50.115.190:8288/services/checkLeaveByEMP?wsdl";//OA接口地址
+    private final  static String JYJJOAURL = "https://crm.gefund.com.cn/gefundCRM/holiday/query";//金鹰OA接口地址
 
 
 //    @Scheduled(cron = "0/5 * * * * ? ") // 间隔5秒执行
@@ -203,6 +210,11 @@ public class AutoRunTask {
                 responseList.add(checkInfo);
             }
         }
+        for (CheckInfo c:responseList){
+            String objNo = c.getIcCardNumber();
+            String OAInfo = getOA(objNo);
+            c.setOAInfo(OAInfo);
+        }
 
         HTFCheck htfCheck = CreateDayCheckUtils.checkDayCheck(responseList);
         checkListService.add(htfCheck);
@@ -242,6 +254,65 @@ public class AutoRunTask {
         }
         //遍历手机号发送短信
         messageService.sendMessage(empPhoneList);
+    }
+
+    public String getOA(String objNo){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        JSONObject jsonParam = new JSONObject();
+        String today = simpleDateFormat.format(new Date());
+        System.out.println(today);
+        jsonParam .put("startdate",today);
+        jsonParam .put("enddate",today);
+        jsonParam .put("objno",objNo);
+        String buffer = objNo+today+today+"gef";
+        buffer = MD5Util.MD5Encode(buffer,"utf-8");
+        jsonParam .put("secret",buffer);
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        System.out.println(JYJJOAURL);
+        HttpPost httpPost = new HttpPost(JYJJOAURL);// 创建httpPost
+        httpPost.setHeader("Accept", "application/json");
+        httpPost.setHeader("Content-Type", "application/json");
+        String charSet = "UTF-8";
+        StringEntity entity = new StringEntity(jsonParam.toJSONString(), charSet);
+        httpPost.setEntity(entity);
+        CloseableHttpResponse response = null;
+        try {
+            response = httpclient.execute(httpPost);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        StatusLine status = response.getStatusLine();
+        int state = status.getStatusCode();
+        if (state == HttpStatus.SC_OK) {
+            HttpEntity responseEntity = response.getEntity();
+            String jsonString = null;
+            try {
+                jsonString = EntityUtils.toString(responseEntity);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.println(jsonString);
+            JSONArray jsonArray = JSONObject.parseArray(jsonString);
+            JSONObject jsonObject = (JSONObject) jsonArray.get(0);
+            System.out.println("返回结果："+jsonObject.getString("result"));
+            if (!jsonObject.getString("reuslt").equals("success")) {
+                return "获取失败";
+            }
+            String check_info = jsonObject.getString("check_info");
+            String off_time = jsonObject.getString("off_time");
+            if(off_time.equals("0")){
+                off_time = "";
+            }else if(off_time.equals("1")){
+                off_time = "上午";
+            }else if(off_time.equals("2")){
+                off_time = "下午";
+            }
+            return off_time+check_info;
+        }
+        else{
+            System.err.println("请求返回:"+state+"("+JYJJOAURL+")");
+        }
+        return "";
     }
 
 }

@@ -3,20 +3,19 @@
  */
 package cn.org.bjca.zk.platform.service;
 
-import java.util.Date;
-import java.util.List;
-
+import cn.org.bjca.zk.db.entity.CabinetDoorEvent;
 import cn.org.bjca.zk.db.entity.CheckInfo;
-import cn.org.bjca.zk.db.entity.HTFCheck;
+import cn.org.bjca.zk.db.entity.UrgentEvent;
+import cn.org.bjca.zk.platform.dao.CabinetDoorEventDao;
+import cn.org.bjca.zk.platform.utils.EssPdfUtil;
+import cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.org.bjca.zk.db.entity.CabinetDoorEvent;
-import cn.org.bjca.zk.platform.dao.CabinetDoorEventDao;
-import cn.org.bjca.zk.platform.utils.EssPdfUtil;
-import cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage;
+import java.util.Date;
+import java.util.List;
 
 /***************************************************************************
 
@@ -114,6 +113,23 @@ public class CabinetDoorEventService {
 	public List<CheckInfo> findDayInfo(){
 		return cabinetDoorEventDao.findDayInfo();
 	}
+
+	//紧急事件记录
+	@Transactional(readOnly = false)
+	public void insertUrgentEvent(UrgentEvent urgentEvent){
+		cabinetDoorEventDao.insertUrgentEvent(urgentEvent);
+	}
+
+	@Transactional(readOnly = false)
+	public List<UrgentEvent> getAllUnactivatedUrgentEvent(){
+		return cabinetDoorEventDao.getAllUnactivatedUrgentEvent();
+	}
+
+	@Transactional(readOnly = false)
+	public int updateUrgentEventEmailStatus(int id){
+		return cabinetDoorEventDao.updateUrgentEventEmailStatus(id);
+	}
+
 
 
 }

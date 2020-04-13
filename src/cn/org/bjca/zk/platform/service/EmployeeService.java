@@ -1,15 +1,5 @@
 package cn.org.bjca.zk.platform.service;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.bouncycastle.util.encoders.Base64;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
 import cn.org.bjca.zk.db.entity.Cabinet;
 import cn.org.bjca.zk.db.entity.CabinetDoor;
 import cn.org.bjca.zk.db.entity.Department;
@@ -25,6 +15,15 @@ import cn.org.bjca.zk.platform.po.CabinetPO;
 import cn.org.bjca.zk.platform.utils.EssPdfUtil;
 import cn.org.bjca.zk.platform.web.controller.api.vo.EmployeeRegisterRequest;
 import cn.org.bjca.zk.platform.web.page.EmployeePage;
+import org.apache.commons.lang3.StringUtils;
+import org.bouncycastle.util.encoders.Base64;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 /***************************************************************************
  * <pre></pre>
@@ -242,5 +241,11 @@ public class EmployeeService {
 		}
 		return listResult;
 	}
+
+	@Transactional(readOnly = false)
+	public Employee findByEmployeeNumber(String employeeNumber){
+		return employeeDao.findByEmployeeNumber(employeeNumber);
+	}
+
 
 }

@@ -59,7 +59,7 @@ function scaleImg(obj){
 				
 			<div class="unit">
 				<label>员工工号：</label>
-				<input type="text" name="icCardNumber" size="40" minlength="2" maxlength="32" class="required" value="${employee.icCardNumber}"/>
+				<input type="text" name="employeeNumber" size="40" minlength="2" maxlength="32" class="required" value="${employee.employeeNumber}"/>
 			</div>
 			<div class="divider"></div>		
 				
@@ -68,6 +68,10 @@ function scaleImg(obj){
 				<%--<input type="text" name="employeeNumber" style="display: none" size="40" minlength="2" maxlength="32" class="required" value="${employee.employeeNumber}"/>--%>
 				<%--<input type="text" name="email" size="40" minlength="2" maxlength="32" class="required" value="${employee.email}"/>--%>
 			<%--</div>--%>
+            <div class="unit">
+                <label>门卡卡号：</label>
+                <input type="text" name="icCardNumber" size="40" minlength="2" maxlength="32" class="required" value="${employee.icCardNumber}"/>
+            </div>
 			<div class="divider"></div>
 
 		
@@ -97,7 +101,13 @@ function scaleImg(obj){
 						 <option value="${departmentObj.id}" <c:if test="${departmentObj.id==employee.departmentId}"> selected="selected"</c:if >> ${departmentObj.departmentName}</option>    
 					</c:forEach>
 				</select>
-			</div> 
+				<label>&nbsp;&nbsp;&nbsp;&nbsp;应急开门权限：</label>
+				<select name="checkPower" id="checkPower" class="required">
+					<option value="1">否</option>
+					<option value="0">是</option>
+				</select>
+			</div>
+
 			<div class="divider"></div>
 			 <!-- 
 			 <div class="unit">

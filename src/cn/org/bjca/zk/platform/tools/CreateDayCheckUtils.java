@@ -24,10 +24,12 @@ public class CreateDayCheckUtils {
 
     //个人PC路径
     //private final static String PATH = "d:\\WorkSpace/zk-web/out/artifacts/zk_web_war_exploded/checkList/";
-    //金鹰服务器路径
+    //汇添富服务器路径
     //private final static String PATH = "/root/apache-tomcat-8.5.50/webapps/htf/checkList/";
     //万道pc服务器
-    private final static String PATH = "usr/share/apache-tomcat-9.0.29/webapps/jyjj/checkList";
+    //private final static String PATH = "usr/share/apache-tomcat-9.0.29/webapps/jyjj/checkList";
+    //金鹰服务器路径
+    private final static String PATH = "/usr/local/tomcat/apache-tomcat-8.5.50/webapps/jyjj/checkList/";
 
     public static HTFCheck checkDayCheck(List<CheckInfo> list){
 

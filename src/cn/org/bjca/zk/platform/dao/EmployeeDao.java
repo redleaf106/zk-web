@@ -1,11 +1,11 @@
 package cn.org.bjca.zk.platform.dao;
 
-import java.util.List;
+import cn.org.bjca.zk.db.entity.Employee;
+import cn.org.bjca.zk.platform.web.page.EmployeePage;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Select;
 
-import cn.org.bjca.zk.db.entity.Employee;
-import cn.org.bjca.zk.platform.web.page.EmployeePage;
+import java.util.List;
 
 
 @MyBatisRepository
@@ -100,5 +100,8 @@ public interface EmployeeDao {
 	 */
 	@Select("SELECT * FROM BO_EMPLOYEE WHERE ICCARDNUMBER = #{icCardNumber}")
 	Employee findByIcCardNumber(String icCardNumber);
+
+	@Select("SELECT * FROM BO_EMPLOYEE WHERE EMPLOYEENUMBER = #{employeeNumber}")
+	Employee findByEmployeeNumber(String employeeNumber);
 
 }

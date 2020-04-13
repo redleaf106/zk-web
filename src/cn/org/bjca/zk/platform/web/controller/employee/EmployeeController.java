@@ -126,7 +126,7 @@ public class EmployeeController extends BaseController{
 			employee = employeeService.findUniqueById(employeeId);
 		}else{
 			employee = new Employee();
-			employee.setEmployeeNumber(EssPdfUtil.genrRandomUUID());
+			//employee.setEmployeeNumber(EssPdfUtil.genrRandomUUID());
 		}
 		modelMap.put("employee", employee);
 
@@ -146,12 +146,13 @@ public class EmployeeController extends BaseController{
 	@RequestMapping(value = "saveOrUpdate")
 	public ModelAndView saveOrUpdate(Employee employee, HttpServletRequest request) throws Exception {
 		System.out.println("sssssssssssssssss"+employee.getIcCardNumber());
+		System.out.println("紧急开门权限"+employee.getCheckPower());
 		Message message = new Message();
-		if ("稽核部".equals(employee.getDepartmentId())){
-			employee.setCheckPower(0);
-		}else{
-			employee.setCheckPower(1);
-		}
+//		if ("稽核部".equals(employee.getDepartmentId())){
+//			employee.setCheckPower(0);
+//		}else{
+//			employee.setCheckPower(1);
+//		}
 		boolean hasErrors = false; // 成功失败标识 ： true表示有错误
 		Employee employeeExist = null;
 		try {
@@ -167,7 +168,12 @@ public class EmployeeController extends BaseController{
 				List<Employee> checkEmployeeExist = employeeService
 						.findEmployeesByCardNumber(employee.getIcCardNumber());
 				if (checkEmployeeExist != null && !checkEmployeeExist.isEmpty()) {
-					message.setContent("员工编号已存在，请重新输入!"); // 内容提示
+					message.setContent("此门卡号已经被使用，请您重新输入!"); // 内容提示
+					hasErrors = true;
+				}
+				Employee employeeResult = employeeService.findByEmployeeNumber(employee.getEmployeeNumber());
+				if(employeeResult!=null){
+					message.setContent("员工工号已存在，请重新输入！");
 					hasErrors = true;
 				}
 //				if (!hasErrors) {

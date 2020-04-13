@@ -4,20 +4,20 @@
 package cn.org.bjca.zk.platform.web.controller.cabinet;
 
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import cn.org.bjca.zk.db.entity.CabinetDoor;
-import cn.org.bjca.zk.db.entity.HTFCheck;
+import cn.org.bjca.zk.db.entity.*;
 import cn.org.bjca.zk.platform.bean.Message;
 import cn.org.bjca.zk.platform.exception.DialogException;
-import cn.org.bjca.zk.platform.service.CabinetDoorService;
-import cn.org.bjca.zk.platform.service.CheckListService;
-import cn.org.bjca.zk.platform.service.EmailService;
+import cn.org.bjca.zk.platform.service.*;
 import cn.org.bjca.zk.platform.tools.CabinetDoorServer;
 import cn.org.bjca.zk.platform.tools.CreateDayCheckUtils;
-import cn.org.bjca.zk.db.entity.CheckInfo;
+import cn.org.bjca.zk.platform.web.controller.AutoRunTask;
+import cn.org.bjca.zk.platform.web.controller.BaseController;
+import cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.cn.bjca.seal.esspdf.core.pagination.page.Page;
+import com.cn.bjca.seal.esspdf.core.pagination.page.Pagination;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -27,16 +27,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-
-import com.cn.bjca.seal.esspdf.core.pagination.page.Page;
-import com.cn.bjca.seal.esspdf.core.pagination.page.Pagination;
-
-import cn.org.bjca.zk.db.entity.CabinetDoorEvent;
-import cn.org.bjca.zk.platform.service.CabinetDoorEventService;
-import cn.org.bjca.zk.platform.web.controller.BaseController;
-import cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
@@ -72,6 +66,9 @@ public class CabinetDoorEventController extends BaseController {
 
 	@Autowired
 	private CheckListService checkListService;
+
+	@Autowired
+	private EmployeeService employeeService;
 
 
 	/**
@@ -123,25 +120,37 @@ public class CabinetDoorEventController extends BaseController {
 	public ModelAndView saveOrUpdate(@RequestBody CabinetDoorEvent CabinetDoorEvent, HttpServletRequest request) throws DialogException {
 		try {
 			System.out.println("状态码是："+CabinetDoorEvent.getStatus());
-			if(Integer.parseInt(CabinetDoorEvent.getStatus())>1){
+			Message message = new Message();
+			if(Integer.parseInt(CabinetDoorEvent.getStatus())==4){
+				System.out.println("紧急开门");
+				UrgentEvent urgentEvent = new UrgentEvent();
+				String icCardNumber = CabinetDoorEvent.getEmployeeCardNumber();
+				urgentEvent.setEmployeeCardNumber(icCardNumber);
+				String employeeName = employeeService.findByicCardNumber(icCardNumber).getEmployeeName();
+				System.out.println("员工姓名为"+employeeName);
+				urgentEvent.setEmployeeName(employeeName);
+				urgentEvent.setRemark(CabinetDoorEvent.getRemark());
+				cabinetDoorEventService.insertUrgentEvent(urgentEvent);
+			}else if(Integer.parseInt(CabinetDoorEvent.getStatus())>1){
 				System.out.println("存取出现异常行为");
 				//emailService.sendOneMail(CabinetDoorEvent);
+			}else {
+
+				if(StringUtils.isNotBlank(CabinetDoorEvent.getId()))
+					message.setContent(this.UPDATE);//内容提示
+				else{
+					message.setContent(this.SAVE);//内容提示
+				}
+				//User user = (User) request.getSession().getAttribute(PDFSealConstants.SESSION_USER);
+				cabinetDoorEventService.saveOrUpdate(CabinetDoorEvent);
+				List<CabinetDoor> list = cabinetDoorService.findByCabinetNumberAndDoorNumber(CabinetDoorEvent.getCabinetNumber(), CabinetDoorEvent.getCabinetDoorNumber());
+				CabinetDoor cabinetDoor = list.get(0);
+				//存取次数+1
+				cabinetDoor.setAccessCount(cabinetDoor.getAccessCount()+1);
+				message.setStatusCode(this.SUCCESS);
+				message.setCallbackType("closeCurrent");
+				message.setNavTabId("cabinetDoorEvent");
 			}
-			Message message = new Message();
-			if(StringUtils.isNotBlank(CabinetDoorEvent.getId()))
-				message.setContent(this.UPDATE);//内容提示
-			else{
-				message.setContent(this.SAVE);//内容提示
-			}
-			//User user = (User) request.getSession().getAttribute(PDFSealConstants.SESSION_USER);
-			cabinetDoorEventService.saveOrUpdate(CabinetDoorEvent);
-			List<CabinetDoor> list = cabinetDoorService.findByCabinetNumberAndDoorNumber(CabinetDoorEvent.getCabinetNumber(), CabinetDoorEvent.getCabinetDoorNumber());
-			CabinetDoor cabinetDoor = list.get(0);
-			//存取次数+1
-			cabinetDoor.setAccessCount(cabinetDoor.getAccessCount()+1);
-			message.setStatusCode(this.SUCCESS);
-			message.setCallbackType("closeCurrent");
-			message.setNavTabId("cabinetDoorEvent");
 			return this.ajaxDone(message);
 		}catch (Exception ex){
 			throw new DialogException(ex);
@@ -309,9 +318,35 @@ public class CabinetDoorEventController extends BaseController {
 				responseList.add(checkInfo);
 			}
 		}
+		for (CheckInfo c:responseList){
+			String objNo = c.getIcCardNumber();
+			AutoRunTask autoRunTask = new AutoRunTask();
+			String OAInfo = autoRunTask.getOA(objNo);
+			c.setOAInfo(OAInfo);
+		}
 		HTFCheck htfCheck = CreateDayCheckUtils.checkDayCheck(responseList);
 		checkListService.add(htfCheck);
 		return jsonObject.toJSONString(responseList);
+	}
+
+	//获取所有未发邮件的应急开门事件
+	@RequestMapping(value = "getAllUnactivatedUrgentEvent" ,produces="application/json;charset=UTF-8")
+	@ResponseBody
+	public String getAllUnactivatedUrgentEvent(){
+		List<UrgentEvent> list = cabinetDoorEventService.getAllUnactivatedUrgentEvent();
+		JSONArray jsonArray = JSONArray.parseArray(JSON.toJSONString(list));
+		return jsonArray.toJSONString();
+	}
+
+	//应急事件邮件状态更新
+	@ResponseBody
+	@RequestMapping(value = "updateUrgentEventEmailStatus")
+	public String updateUrgentEventEmailStatus(int id){
+		int result =cabinetDoorEventService.updateUrgentEventEmailStatus(id);
+		if(result>0){
+			return "success";
+		}
+		return "error";
 	}
 
 

@@ -14,6 +14,14 @@
 		<result column="remark" property="remark" jdbcType="VARCHAR"/>
 	</resultMap>
 
+	<resultMap id="UrgentEvent" type="cn.org.bjca.zk.db.entity.UrgentEvent">
+		<id column="id" property="id" jdbcType="INTEGER"/>
+		<result column="employeeCardNumber" property="employeeCardNumber" jdbcType="VARCHAR"/>
+		<result column="employeeName" property="employeeName" jdbcType="VARCHAR"/>
+		<result column="doorOptTime" property="doorOptTime" jdbcType="VARCHAR"/>
+		<result column="remark" property="remark" jdbcType="VARCHAR"/>
+	</resultMap>
+
 
 	<!-- 分页查询 -->
 	<select id="findPage" parameterType="cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage" resultType="CabinetDoorEvent">
@@ -79,6 +87,30 @@
 		<include refid="column_base"/>
 		from checkinfo where to_days(dooropttime) = to_days(now())
 	</select>
+
+	<insert id="insertUrgentEvent" parameterType="UrgentEvent">
+		insert into BO_URGENTEVENT(
+		employeeCardNumber,
+		employeeName,
+		doorOptTime,
+		remark
+		) values (
+		#{employeeCardNumber,jdbcType=VARCHAR},
+		#{employeeName,jdbcType=VARCHAR},
+		#{doorOptTime,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<select id="getAllUnactivatedUrgentEvent" resultType="UrgentEvent">
+		select * from BO_URGENTEVENT WHERE emailStatus = 0;
+	</select>
+
+	<update id="updateUrgentEventEmailStatus" parameterType="int">
+		update BO_URGENTEVENT
+		SET emailStatus=1
+		where id = #{id}
+	</update>
 
 
 </mapper> 
