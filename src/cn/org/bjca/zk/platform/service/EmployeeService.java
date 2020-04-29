@@ -207,9 +207,43 @@ public class EmployeeService {
 		return employeePage;
 	}
 
-	public EmployeePage<Employee> getAllNotActive(EmployeePage<Employee> employeePage) {
-		List<Employee> list = employeeDao.getAllNotActive(employeePage);
-		employeePage.setData(list);
+	public EmployeePage<Employee> getAllNotActive(EmployeePage<Employee> employeePage, String ip) {
+//		根据ip地址查看城市
+		Cabinet cityCabinet = cabinetDao.findByIP(ip);
+		if (cityCabinet==null){
+			return null;
+		}
+
+
+		CabinetPO cabinetPO = new CabinetPO();
+		cabinetPO.setCabinetIp(ip);
+		List<Cabinet> cabinetList = cabinetDao.findByCondition(cabinetPO);
+		if(cabinetList==null||cabinetList.isEmpty()){
+			return null;
+		}
+		List<CabinetDoor> cabinetDoorList = new ArrayList<>();
+//		循环机柜获取所有柜门
+		for(Cabinet cabinet:cabinetList){
+			CabinetDoorPO cabinetDoorPO = new CabinetDoorPO();
+			cabinetDoorPO.setCabinetNumber(cabinet.getCabinetNumber());
+			List<CabinetDoor> doorList = cabinetDoorDao.findByCondition(cabinetDoorPO);
+			cabinetDoorList.addAll(doorList);
+		}
+		List<String> list = new ArrayList<>();
+//		循环柜门获取员工id
+		for(CabinetDoor cabinetDoor:cabinetDoorList){
+			list.add(cabinetDoor.getEmployeeId());
+		}
+		List<Employee> employeeList = new ArrayList<>();
+//		循环员工id获取所有未激活员工
+		for(String s:list){
+			Employee employee = employeeDao.findUniqueById(s);
+			if (employee.getPicFile()==null){
+				employeeList.add(employee);
+			}
+		}
+//        List<Employee> list = employeeDao.getAllNotActive(employeePage);
+		employeePage.setData(employeeList);
 		return employeePage;
 	}
 	

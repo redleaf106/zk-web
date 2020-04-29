@@ -3,22 +3,22 @@
  */
 package cn.org.bjca.zk.platform.service;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
 import cn.org.bjca.zk.db.entity.Department;
 import cn.org.bjca.zk.db.entity.TimeArea;
 import cn.org.bjca.zk.platform.dao.DepartmentDao;
 import cn.org.bjca.zk.platform.dao.TimeAreaDao;
 import cn.org.bjca.zk.platform.utils.EssPdfUtil;
 import cn.org.bjca.zk.platform.web.page.DepartmentPage;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 /***************************************************************************
 
@@ -126,6 +126,15 @@ public class DepartmentService {
 					timeArea.setUserId(department.getUserId());
 					timeArea.setOptTime(new Timestamp(new Date().getTime()));
 					timeAreaList.add(timeArea);
+				}
+				System.out.println("排序前");
+				for(TimeArea t:timeAreaList){
+					System.out.println(t.getStartTime());
+				}
+				Collections.sort(timeAreaList);
+				System.out.println("排序后");
+				for(TimeArea t:timeAreaList){
+					System.out.println(t.getStartTime());
 				}
 			}
 			

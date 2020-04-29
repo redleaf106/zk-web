@@ -57,19 +57,19 @@ function scaleImg(obj){
 				
 			<div class="unit">
 				<label>IC卡号：</label>
-				<input type="text" name="icCardNumber" size="40" minlength="2" maxlength="32" class="required" value="${employee.icCardNumber}"/>
+				<input type="text" name="icCardNumber" size="40" minlength="1" maxlength="32" class="required" value="${employee.icCardNumber}"/>
 			</div>
 			<div class="divider"></div>		
 				
 			<div class="unit">
 				<label>员工编号：</label>
-				<input type="text" name="employeeNumber" size="40" minlength="2" maxlength="32" class="required" value="${employee.employeeNumber}"/>
+				<input type="text" name="employeeNumber" size="40" minlength="1" maxlength="32" class="required" value="${employee.employeeNumber}"/>
 			</div>
 			<div class="divider"></div>		
 		
 			<div class="unit">
 				<label>手机号码1：</label>
-				<input type="text" name="mobilePhone" size="40"  class="required" value="${employee.mobilePhone}"/>
+				<input type="text" name="mobilePhone" size="40" value="${employee.mobilePhone}"/>
 			</div>
 			<div class="divider"></div>			
 		

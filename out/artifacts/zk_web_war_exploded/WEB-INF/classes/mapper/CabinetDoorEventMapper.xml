@@ -29,19 +29,19 @@
 		FROM BO_CABINETDOOREVENT
 		WHERE 1=1
 		<if test="cabinetNumber != null">
-			AND CABINETNUMBER LIKE #{cabinetNumber})
+			AND CABINETNUMBER LIKE #{cabinetNumber}
 		</if>
 		<if test="cabinetIp != null">
-			AND CABINETIp LIKE #{cabinetIp})
+			AND CABINETIp LIKE #{cabinetIp}
 		</if>
 		<if test="cabinetDoorNumber != null">
 			AND CABINETDOORNUMBER LIKE #{cabinetDoorNumber}
 		</if>
 		<if test="employeeCardNumber != null">
-			AND EMPLOYEECARDNUMBER LIKE #{employeeCardNumber})
+			AND EMPLOYEECARDNUMBER LIKE #{employeeCardNumber}
 		</if>
 		<if test="actionCardNumber != null">
-			AND ACTIONCARDNUMBER LIKE #{actionCardNumber})
+			AND ACTIONCARDNUMBER LIKE #{actionCardNumber}
 		</if>
 		ORDER BY DOOROPTTIME DESC
 	</select>

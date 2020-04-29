@@ -21,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -94,7 +95,8 @@ public class OAController {
     }
 
     //文件上传方法
-    @RequestMapping("/uploadfile")
+    //上传员工信息
+    @RequestMapping(value = "uploadfile", method = RequestMethod.POST)
     public void upload(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request, ModelMap model, Model mod) throws Exception {
         String path = request.getSession().getServletContext().getRealPath("upload");
         System.out.println("文件路径："+path);
@@ -148,20 +150,38 @@ public class OAController {
 //				Teaching_data td = new Teaching_data(gh, name, xb, sfzh, bm_code, bm_name);
 //				int result = userService.insertTeachingData(td);
 
+            //todo 金鹰信息录入
+//            String gh = fields[0];
+//            System.out.println("工号----"+gh);
+//            String kh = fields[3];
+//            String sfzh = fields[1];
+//            System.out.println("姓名----"+sfzh);
+//            String bumen = fields[2];
+//            System.out.println("部门----"+bumen);
+//            String pic = fields[4];
+//            String departmentId = departmentService.findByDepartmentName(bumen).get(0).getId();
+
+            //汇添富信息录入
             String gh = fields[0];
-            System.out.println("工号----"+gh);
-            String kh = fields[3];
-            String sfzh = fields[1];
-            System.out.println("姓名----"+sfzh);
-            String bumen = fields[2];
-            System.out.println("部门----"+bumen);
-            String departmentId = departmentService.findByDepartmentName(bumen).get(0).getId();
+            String name = fields[1];
+            String depar = fields[2];
+            String phone = fields[3];
+            String email = fields[4];
+            String departmentId = departmentService.findByDepartmentName(depar).get(0).getId();
             Employee employee = new Employee();
             employee.setCheckPower(1);
-            employee.setIcCardNumber(kh);
-            employee.setDepartmentId(departmentId);
-            employee.setEmployeeName(sfzh);
+//            employee.setIcCardNumber(kh);
+//            employee.setDepartmentId(departmentId);
+//            employee.setEmployeeName(sfzh);
+//            employee.setEmployeeNumber(gh);
+//            employee.setPicFile(pic.getBytes());
             employee.setEmployeeNumber(gh);
+            employee.setIcCardNumber(gh);
+            employee.setEmployeeName(name);
+            employee.setDepartmentId(departmentId);
+            employee.setMobilePhone(phone);
+            employee.setEmail(email);
+            employee.setPicFile("".getBytes());
             employeeService.saveOrUpdate(employee);
             //导入研究生
 //				int result = userService.insertStudentDataYjs(new Student_data_yjs(xh, sfzh));

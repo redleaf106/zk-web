@@ -125,8 +125,14 @@ public class CabinetDoorEventController extends BaseController {
 				System.out.println("紧急开门");
 				UrgentEvent urgentEvent = new UrgentEvent();
 				String icCardNumber = CabinetDoorEvent.getEmployeeCardNumber();
-				urgentEvent.setEmployeeCardNumber(icCardNumber);
-				String employeeName = employeeService.findByicCardNumber(icCardNumber).getEmployeeName();
+				//根据卡号查找工号
+				Employee employeeResult = employeeService.findByicCardNumber(icCardNumber);
+				if(employeeResult==null){
+					message.setContent("员工卡号不存在");
+					return this.ajaxDone(message);
+				}
+				urgentEvent.setEmployeeCardNumber(employeeResult.getEmployeeNumber());
+				String employeeName = employeeResult.getEmployeeName();
 				System.out.println("员工姓名为"+employeeName);
 				urgentEvent.setEmployeeName(employeeName);
 				urgentEvent.setRemark(CabinetDoorEvent.getRemark());
@@ -136,21 +142,24 @@ public class CabinetDoorEventController extends BaseController {
 				//emailService.sendOneMail(CabinetDoorEvent);
 			}else {
 
-				if(StringUtils.isNotBlank(CabinetDoorEvent.getId()))
+				if (StringUtils.isNotBlank(CabinetDoorEvent.getId()))
 					message.setContent(this.UPDATE);//内容提示
-				else{
+				else {
 					message.setContent(this.SAVE);//内容提示
 				}
-				//User user = (User) request.getSession().getAttribute(PDFSealConstants.SESSION_USER);
-				cabinetDoorEventService.saveOrUpdate(CabinetDoorEvent);
-				List<CabinetDoor> list = cabinetDoorService.findByCabinetNumberAndDoorNumber(CabinetDoorEvent.getCabinetNumber(), CabinetDoorEvent.getCabinetDoorNumber());
-				CabinetDoor cabinetDoor = list.get(0);
-				//存取次数+1
-				cabinetDoor.setAccessCount(cabinetDoor.getAccessCount()+1);
-				message.setStatusCode(this.SUCCESS);
-				message.setCallbackType("closeCurrent");
-				message.setNavTabId("cabinetDoorEvent");
 			}
+			//User user = (User) request.getSession().getAttribute(PDFSealConstants.SESSION_USER);
+			cabinetDoorEventService.saveOrUpdate(CabinetDoorEvent);
+//			List<CabinetDoor> list = cabinetDoorService.findByCabinetNumberAndDoorNumber(CabinetDoorEvent.getCabinetNumber(), CabinetDoorEvent.getCabinetDoorNumber());
+//			if(list.size()>0){
+//				CabinetDoor cabinetDoor = list.get(0);
+//				//存取次数+1
+//				cabinetDoor.setAccessCount(cabinetDoor.getAccessCount()+1);
+//				cabinetDoorService.saveOrUpdate(cabinetDoor);
+//			}
+			message.setStatusCode(this.SUCCESS);
+			message.setCallbackType("closeCurrent");
+			message.setNavTabId("cabinetDoorEvent");
 			return this.ajaxDone(message);
 		}catch (Exception ex){
 			throw new DialogException(ex);
@@ -253,6 +262,7 @@ public class CabinetDoorEventController extends BaseController {
 		return jsonObject.toJSONString(cabinetDoorEventService.findDayInfo());
 	}
 
+	//手动生成当天日报表
 	@ResponseBody
 	@RequestMapping(value = "checkDayInfo" ,produces ="text/html;charset=UTF-8")
 	public String checkDayInfo(){
@@ -318,6 +328,9 @@ public class CabinetDoorEventController extends BaseController {
 				responseList.add(checkInfo);
 			}
 		}
+		//未交手机生成事件
+		List<CheckInfo> checkInfoList = cabinetDoorEventService.absentEmp(new Date());
+		responseList.addAll(checkInfoList);
 		for (CheckInfo c:responseList){
 			String objNo = c.getIcCardNumber();
 			AutoRunTask autoRunTask = new AutoRunTask();

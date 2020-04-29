@@ -11,7 +11,7 @@ import java.sql.Timestamp;
  * Date:     2019/11/25 13:50
  * Version: 1.0
  */
-public class TimeArea extends IdEntity {
+public class TimeArea extends IdEntity implements Comparable<TimeArea>{
 	
 	private static final long serialVersionUID = -6558349880569366560L;
 
@@ -49,5 +49,15 @@ public class TimeArea extends IdEntity {
 	public void setEndTime(Timestamp endTime) {
 		this.endTime = endTime;
 	}
+
+	@Override
+	public int compareTo(TimeArea o) {
+		if(this.startTime.compareTo(o.getStartTime())>0){
+			return 0;
+		}
+		return 1;
+	}
+
+
     
 }

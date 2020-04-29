@@ -71,6 +71,7 @@ public class EmployeeController extends BaseController{
 		EmployeePage<Employee> employeePage = new EmployeePage<Employee>();
 		Page page = new Pagination();
 		String purpose = request.getParameter("activation");
+		String ip = request.getParameter("IPAdress");
 		String pageNum = request.getParameter("pageNum");//当前页码
 		if(StringUtils.isNotBlank(pageNum)) {
 			page.setCurrentPage(Integer.parseInt(pageNum));
@@ -92,7 +93,7 @@ public class EmployeeController extends BaseController{
 			modelMap.put("employeePage", employeePage);
 			return "/employee/employee/employeeList";
 		}else{
-			employeePage = employeeService.getAllNotActive(employeePage);
+			employeePage = employeeService.getAllNotActive(employeePage,ip);
 			employeePage.setEmployeeName(employeeName);
 			JSONObject jsonObject = new JSONObject();
 			response.getWriter().write(jsonObject.toJSONString(employeePage.getData()));

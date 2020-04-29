@@ -43,6 +43,10 @@
 		AND picfile IS NULL
 		ORDER BY OPTTIME DESC
 	</select>
+
+	<select id="findUniqueById" parameterType="String" resultMap="employeeMap">
+		SELECT * FROM BO_EMPLOYEE WHERE id = #{id}
+	</select>
 	
 	
 	<!-- 保存数据 -->

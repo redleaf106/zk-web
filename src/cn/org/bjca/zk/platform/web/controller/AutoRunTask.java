@@ -24,6 +24,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.codehaus.xfire.client.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Controller;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -63,10 +65,11 @@ public class AutoRunTask {
     private final  static String JYJJOAURL = "https://crm.gefund.com.cn/gefundCRM/holiday/query";//金鹰OA接口地址
 
 
-//    @Scheduled(cron = "0/5 * * * * ? ") // 间隔5秒执行
-//    public void taskCycle() {
-//        System.out.println("使用SpringMVC框架配置定时任务");
-//    }
+    //@Scheduled(cron = "0/5 * * * * ? ") // 间隔5秒执行
+    @Scheduled(cron = "0 1 16 * * ?")
+    public void taskCycle() {
+        System.out.println("使用SpringMVC框架配置定时任务");
+    }
 
     //@Scheduled(cron = "0 25 9 * * ?")//上午九点25进行手机检查
     public void checkPhone(){
@@ -147,6 +150,9 @@ public class AutoRunTask {
         sendMessage();;
     }
 
+    //金鹰定时任务
+    //@Scheduled(cron = "0 0 19 * * ?")//下午19点生成日报表
+    //汇添富定时任务
     @Scheduled(cron = "0 0 16 * * ?")//下午16点生成日报表
     public void createDayClock(){
         List<CheckInfo> listMata = cabinetDoorEventService.findDayInfo();//获取当天存取记录
@@ -210,9 +216,16 @@ public class AutoRunTask {
                 responseList.add(checkInfo);
             }
         }
+        //未交手机生成事件
+        List<CheckInfo> checkInfoList = cabinetDoorEventService.absentEmp(new Date());
+        responseList.addAll(checkInfoList);
         for (CheckInfo c:responseList){
             String objNo = c.getIcCardNumber();
-            String OAInfo = getOA(objNo);
+            //金鹰考勤
+            //String OAInfo = getOA(objNo);
+            //汇添富考勤
+            //String OAInfo = getHtfOA(objNo);
+            String OAInfo = "";
             c.setOAInfo(OAInfo);
         }
 
@@ -256,6 +269,7 @@ public class AutoRunTask {
         messageService.sendMessage(empPhoneList);
     }
 
+    //金鹰考勤
     public String getOA(String objNo){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         JSONObject jsonParam = new JSONObject();
@@ -278,41 +292,70 @@ public class AutoRunTask {
         CloseableHttpResponse response = null;
         try {
             response = httpclient.execute(httpPost);
+            StatusLine status = response.getStatusLine();
+            int state = status.getStatusCode();
+            if (state == HttpStatus.SC_OK) {
+                HttpEntity responseEntity = response.getEntity();
+                String jsonString = null;
+                try {
+                    jsonString = EntityUtils.toString(responseEntity);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(jsonString);
+                JSONArray jsonArray = JSONObject.parseArray(jsonString);
+                JSONObject jsonObject = (JSONObject) jsonArray.get(0);
+                System.out.println("返回结果："+jsonObject.getString("result"));
+                if (!jsonObject.getString("result").equals("success")) {
+                    return "获取失败";
+                }
+                String check_info = jsonObject.getString("check_info");
+                String off_time = jsonObject.getString("off_time");
+                if(off_time.equals("0")){
+                    off_time = "";
+                }else if(off_time.equals("1")){
+                    off_time = "上午";
+                }else if(off_time.equals("2")){
+                    off_time = "下午";
+                }
+                return off_time+check_info;
+            }
+            else{
+                System.err.println("请求返回:"+state+"("+JYJJOAURL+")");
+            }
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        StatusLine status = response.getStatusLine();
-        int state = status.getStatusCode();
-        if (state == HttpStatus.SC_OK) {
-            HttpEntity responseEntity = response.getEntity();
-            String jsonString = null;
-            try {
-                jsonString = EntityUtils.toString(responseEntity);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            System.out.println(jsonString);
-            JSONArray jsonArray = JSONObject.parseArray(jsonString);
-            JSONObject jsonObject = (JSONObject) jsonArray.get(0);
-            System.out.println("返回结果："+jsonObject.getString("result"));
-            if (!jsonObject.getString("reuslt").equals("success")) {
-                return "获取失败";
-            }
-            String check_info = jsonObject.getString("check_info");
-            String off_time = jsonObject.getString("off_time");
-            if(off_time.equals("0")){
-                off_time = "";
-            }else if(off_time.equals("1")){
-                off_time = "上午";
-            }else if(off_time.equals("2")){
-                off_time = "下午";
-            }
-            return off_time+check_info;
-        }
-        else{
-            System.err.println("请求返回:"+state+"("+JYJJOAURL+")");
+        } catch (NullPointerException e){
+            e.printStackTrace();
+            return "获取失败";
         }
         return "";
+    }
+
+    //汇添富OA
+    public String getHtfOA(String objno){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String today = simpleDateFormat.format(new Date());
+        JSONObject jsonObj = new JSONObject();
+        jsonObj.put("startdate",today);
+        jsonObj.put("enddate",today);
+        jsonObj.put("objno",objno);
+        jsonObj.put("secret","4028818230db6dbd0130fe847d6742ba");
+        String finalR = "";
+        try {
+            Client client = new Client(new URL("http://10.50.115.190:8288/services/checkLeaveByEMP?wsdl"));
+            Object[] results = client.invoke("GetInfoByEmp", new Object[] { jsonObj.toJSONString() });
+            for (Object o:results){
+                System.out.println(o);
+                finalR += o;
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            System.out.println("返回为"+finalR);
+            return finalR;
+        }
+
     }
 
 }

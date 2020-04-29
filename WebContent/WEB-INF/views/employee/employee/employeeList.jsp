@@ -45,7 +45,7 @@
 			<c:forEach var="item" items="${employeePage.data}" varStatus="serial">
 				<tr target="sid_employee" rel="${item.id}">
 						<td >
-							${(employeePage.pageVO.pageSize * (employeePage.pageVO.currentPage - 1))+ serial.index + 1 }</td>
+								${employeePage.pageVO.pageSize}</td>
 						
 						<td >${item.icCardNumber}</td>
 						<td >${item.employeeName}</td>

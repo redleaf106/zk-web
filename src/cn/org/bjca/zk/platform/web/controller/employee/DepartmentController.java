@@ -4,8 +4,18 @@
 package cn.org.bjca.zk.platform.web.controller.employee;
 
 
-import javax.servlet.http.HttpServletRequest;
-
+import cn.org.bjca.zk.db.entity.Department;
+import cn.org.bjca.zk.db.entity.TimeArea;
+import cn.org.bjca.zk.db.entity.User;
+import cn.org.bjca.zk.platform.PDFSealConstants;
+import cn.org.bjca.zk.platform.bean.Message;
+import cn.org.bjca.zk.platform.exception.DialogException;
+import cn.org.bjca.zk.platform.service.DepartmentService;
+import cn.org.bjca.zk.platform.utils.EssPdfUtil;
+import cn.org.bjca.zk.platform.web.controller.BaseController;
+import cn.org.bjca.zk.platform.web.page.DepartmentPage;
+import com.cn.bjca.seal.esspdf.core.pagination.page.Page;
+import com.cn.bjca.seal.esspdf.core.pagination.page.Pagination;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,18 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.cn.bjca.seal.esspdf.core.pagination.page.Page;
-import com.cn.bjca.seal.esspdf.core.pagination.page.Pagination;
-
-import cn.org.bjca.zk.db.entity.User;
-import cn.org.bjca.zk.platform.PDFSealConstants;
-import cn.org.bjca.zk.platform.bean.Message;
-import cn.org.bjca.zk.platform.exception.DialogException;
-import cn.org.bjca.zk.platform.service.DepartmentService;
-import cn.org.bjca.zk.platform.utils.EssPdfUtil;
-import cn.org.bjca.zk.platform.web.controller.BaseController;
-import cn.org.bjca.zk.platform.web.page.DepartmentPage;
-import cn.org.bjca.zk.db.entity.Department;
+import javax.servlet.http.HttpServletRequest;
 
 /***************************************************************************
 
@@ -118,6 +117,11 @@ public class DepartmentController extends BaseController {
 			User user = (User) request.getSession().getAttribute(PDFSealConstants.SESSION_USER);
 			if(null!=user) {
 				department.setUserId(user.getId());
+			}
+			if(department.getTimeAreas().size()>0){
+				for(TimeArea t:department.getTimeAreas()){
+					System.out.println(t.getStartTime());
+				}
 			}
 			departmentService.saveOrUpdate(department);
 			message.setStatusCode(this.SUCCESS);

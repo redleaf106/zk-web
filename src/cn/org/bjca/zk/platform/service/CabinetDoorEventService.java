@@ -3,10 +3,11 @@
  */
 package cn.org.bjca.zk.platform.service;
 
-import cn.org.bjca.zk.db.entity.CabinetDoorEvent;
-import cn.org.bjca.zk.db.entity.CheckInfo;
-import cn.org.bjca.zk.db.entity.UrgentEvent;
+import cn.org.bjca.zk.db.entity.*;
+import cn.org.bjca.zk.platform.dao.CabinetDoorDao;
 import cn.org.bjca.zk.platform.dao.CabinetDoorEventDao;
+import cn.org.bjca.zk.platform.dao.DepartmentDao;
+import cn.org.bjca.zk.platform.dao.EmployeeDao;
 import cn.org.bjca.zk.platform.utils.EssPdfUtil;
 import cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage;
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -34,6 +36,15 @@ public class CabinetDoorEventService {
 	
 	@Autowired
 	private CabinetDoorEventDao cabinetDoorEventDao;
+
+	@Autowired
+	private EmployeeDao employeeDao;
+
+	@Autowired
+	private CabinetDoorDao cabinetDoorDao;
+
+	@Autowired
+	private DepartmentDao departmentDao;
 
 	/**
 	  * <p>分页查询</p>
@@ -128,6 +139,27 @@ public class CabinetDoorEventService {
 	@Transactional(readOnly = false)
 	public int updateUrgentEventEmailStatus(int id){
 		return cabinetDoorEventDao.updateUrgentEventEmailStatus(id);
+	}
+
+	public List<CheckInfo> absentEmp(Date date){
+		List<Employee> employeeList = employeeDao.getAll();
+		List<CheckInfo> checkInfoArrayList = new ArrayList<>();
+		for(Employee e:employeeList){
+			List<CabinetDoorEvent> cabinetDoorEventList = cabinetDoorEventDao.findOneEMPByOneDay(e.getIcCardNumber(),date);
+			if(cabinetDoorEventList==null||cabinetDoorEventList.isEmpty()){
+				CheckInfo checkInfo = new CheckInfo();
+				checkInfo.setIcCardNumber(e.getIcCardNumber());
+				checkInfo.setRemark("未交手机");
+				checkInfo.setEmployeeName(e.getEmployeeName());
+				CabinetDoor cabinetDoor = cabinetDoorDao.selectDoorByEmployeeId(e.getId());
+				if(cabinetDoor!=null){
+					checkInfo.setCabinetDoorNumber(cabinetDoor.getCabinetDoorNumber());
+				}
+				checkInfo.setDepartmentName(departmentDao.findUniqueById(e.getDepartmentId()).getDepartmentName());
+				checkInfoArrayList.add(checkInfo);
+			}
+		}
+		return checkInfoArrayList;
 	}
 
 

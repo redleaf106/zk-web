@@ -1,24 +1,5 @@
 package cn.org.bjca.zk.platform.web.controller;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import cn.org.bjca.zk.db.entity.Menu;
 import cn.org.bjca.zk.db.entity.RoleMenu;
 import cn.org.bjca.zk.db.entity.User;
@@ -29,6 +10,19 @@ import cn.org.bjca.zk.platform.service.RoleMenuService;
 import cn.org.bjca.zk.platform.service.UserService;
 import cn.org.bjca.zk.platform.utils.DateUtil;
 import cn.org.bjca.zk.platform.utils.PDFSealUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.*;
 
 /***************************************************************************
  * <pre>登录管理</pre>
@@ -246,5 +240,12 @@ public class LoginController extends BaseController {
 		// 创建新的会话
 		return request.getSession(true);
 	}
+
+	@RequestMapping(value = "/checkLogin")
+	@ResponseBody
+	public String checkLogin(){
+		return "success";
+	}
+
 
 }

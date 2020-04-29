@@ -31,7 +31,6 @@ public interface EmployeeDao {
 	  * @param id
 	  * @return
 	 */
-	@Select("SELECT * FROM BO_EMPLOYEE WHERE id = #{id}")
 	Employee findUniqueById(String id);
 	
 	/**
@@ -103,5 +102,6 @@ public interface EmployeeDao {
 
 	@Select("SELECT * FROM BO_EMPLOYEE WHERE EMPLOYEENUMBER = #{employeeNumber}")
 	Employee findByEmployeeNumber(String employeeNumber);
+
 
 }
