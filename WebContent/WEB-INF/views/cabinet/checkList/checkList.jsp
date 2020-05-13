@@ -7,19 +7,19 @@
 </form>
 
 <div class="pageHeader">
-    <%--<form onsubmit="return navTabSearch(this);" action="${ctx}/cabinet/checkList" method="post">--%>
-        <%--<div class="searchBar">--%>
-            <%--<table class="searchContent">--%>
-                <%--<tr>--%>
-                    <%--<td>--%>
-                        <%--日期：<input type="text" name="cabinetNumber" value="默认"/>--%>
-                    <%--</td>--%>
-                    <%--<td><div class="buttonActive"><div class="buttonContent"><button id="checkList_submit" type="submit">检索</button></div></div></td>--%>
-                <%--</tr>--%>
-            <%--</table>--%>
+    <form action="${ctx}/cabinet/cabinetDoorEvent/checkDayInfo" method="post">
+        <div class="searchBar">
+            <table class="searchContent">
+                <tr>
+                    <td>
+                        日期：<input type="date" name="date" />
+                    </td>
+                    <td><div class="buttonActive"><div class="buttonContent"><button id="checkList_submit" type="submit">手动生成</button></div></div></td>
+                </tr>
+            </table>
 
-        <%--</div>--%>
-    <%--</form>--%>
+        </div>
+    </form>
 </div>
 
 <div class="pageContent">

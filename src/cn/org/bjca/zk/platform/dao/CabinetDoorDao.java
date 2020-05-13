@@ -3,17 +3,13 @@
  */
 package cn.org.bjca.zk.platform.dao;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-
-import cn.org.bjca.zk.db.entity.Cabinet;
 import cn.org.bjca.zk.db.entity.CabinetDoor;
 import cn.org.bjca.zk.platform.po.CabinetDoorPO;
-import cn.org.bjca.zk.platform.po.CabinetPO;
 import cn.org.bjca.zk.platform.web.page.CabinetDoorPage;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 
 /***************************************************************************
@@ -99,4 +95,7 @@ public interface CabinetDoorDao {
 	 */
 	@Select("SELECT * FROM BO_CABINETDOOR WHERE CABINETID = #{0} AND CABINETDOORNUMBER = #{1}")
 	CabinetDoor selectDoorByCabinetIdAndCabinetDoorNumber(String cabinetId, String cabinetDoorNumber);
+
+	@Select("SELECT * FROM BO_CABINETDOOR WHERE CABINETID = #{0}")
+	List<CabinetDoor> findByCabinetID(String cabinetID);
 }

@@ -3,15 +3,11 @@
  */
 package cn.org.bjca.zk.platform.web.controller.employee;
 
-import cn.org.bjca.zk.db.entity.Department;
-import cn.org.bjca.zk.db.entity.Employee;
-import cn.org.bjca.zk.db.entity.User;
+import cn.org.bjca.zk.db.entity.*;
 import cn.org.bjca.zk.platform.PDFSealConstants;
 import cn.org.bjca.zk.platform.bean.AttachmentMessage;
 import cn.org.bjca.zk.platform.bean.Message;
-import cn.org.bjca.zk.platform.service.DepartmentService;
-import cn.org.bjca.zk.platform.service.EmployeeService;
-import cn.org.bjca.zk.platform.service.MessageService;
+import cn.org.bjca.zk.platform.service.*;
 import cn.org.bjca.zk.platform.utils.EssPdfUtil;
 import cn.org.bjca.zk.platform.web.controller.BaseController;
 import cn.org.bjca.zk.platform.web.page.EmployeePage;
@@ -37,7 +33,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /***************************************************************************
@@ -61,6 +60,13 @@ public class EmployeeController extends BaseController{
 	private DepartmentService departmentService;
 	@Autowired
 	private MessageService messageService;
+	@Autowired
+    private CabinetService cabinetService;
+	@Autowired
+    private CabinetDoorService cabinetDoorService;
+	@Autowired
+	private CabinetDoorEventService cabinetDoorEventService;
+
 
 	@Value("#{sysConfig['picMaxSize']}")
 	private String picMaxSizeStr ;
@@ -511,8 +517,89 @@ public class EmployeeController extends BaseController{
 		list.add(tel);
 		String result = messageService.sendMessage(list);
 		return result;
-
 	}
+
+	@RequestMapping(value = "getOtherEmp",produces = "text/html;charset=UTF-8")
+    @ResponseBody
+    public String getOtherEmp(String ip) throws ParseException {
+		String ip2 = "";
+	    if(ip.equals("10.1.81.209")){
+            ip2 = "172.16.1.71";
+        }else if(ip.equals("172.16.63.155")){
+	    	ip2 = "172.16.63.156";
+		}else if(ip.equals("172.16.63.156")){
+	    	ip2 = "172.16.63.155";
+		}else if(ip.equals("172.16.63.158")){
+	    	ip2 = "172.16.63.159";
+		}else if(ip.equals("172.16.63.159")){
+	    	ip2 = "172.16.63.158";
+		}else{
+	    	return "ip no found";
+		}
+	    //当天时间
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	    String today = simpleDateFormat.format(new Date());
+	    Date date = simpleDateFormat.parse(today);
+	    //根据ip查机柜
+	    Cabinet cabinet = cabinetService.findByIp(ip);
+	    Cabinet cabinet1 = cabinetService.findByIp(ip2);
+	    //根据机柜查柜门
+        List<CabinetDoor> cabinetDoorList = cabinetDoorService.findByCabinetID(cabinet.getId());
+        List<CabinetDoor> cabinetDoorList1 = cabinetDoorService.findByCabinetID(cabinet1.getId());
+        List<Employee> employeeList = new ArrayList<>();
+        for(CabinetDoor cabinetDoor:cabinetDoorList){
+            String empid = cabinetDoor.getEmployeeId();
+            Employee employee = employeeService.findUniqueById(empid);
+            if(employee.getPicFile()!=null){
+				CabinetDoor cabinetDoor1 = cabinetDoorService.selectDoorByEmployeeId(employee.getId());
+				String boxID = cabinetDoor1.getCabinetDoorNumber();
+				String cabinetNumber = cabinetService.findUniqueById(cabinetDoor1.getCabinetId()).getCabinetNumber();
+				List<CabinetDoorEvent> cabinetDoorEventList = cabinetDoorEventService.findOneEMPByOneDay(employee.getIcCardNumber(),date);
+				String ext3 = "";
+				if(cabinetDoorEventList.size()==0){
+					ext3 = "0";
+				}else {
+					String status = cabinetDoorEventList.get(0).getStatus();
+					if(status.equals("0")||status.equals("2")){
+						ext3 = "1";
+					}else if(status.equals("1")||status.equals("3")){
+						ext3 = "0";
+					}
+				}
+				employee.setExt1(boxID);
+				employee.setExt2(cabinetNumber);
+				employee.setExt3(ext3);
+                employeeList.add(employee);
+            }
+        }
+        for(CabinetDoor cabinetDoor:cabinetDoorList1){
+			String empid = cabinetDoor.getEmployeeId();
+			Employee employee = employeeService.findUniqueById(empid);
+			if(employee.getPicFile()!=null){
+				CabinetDoor cabinetDoor1 = cabinetDoorService.selectDoorByEmployeeId(employee.getId());
+				String boxID = cabinetDoor1.getCabinetDoorNumber();
+				String cabinetNumber = cabinetService.findUniqueById(cabinetDoor1.getCabinetId()).getCabinetNumber();
+				List<CabinetDoorEvent> cabinetDoorEventList = cabinetDoorEventService.findOneEMPByOneDay(employee.getIcCardNumber(),date);
+				String ext3 = "";
+				if(cabinetDoorEventList.size()==0){
+					ext3 = "0";
+				}else {
+					String status = cabinetDoorEventList.get(0).getStatus();
+					if(status.equals("0")||status.equals("2")){
+						ext3 = "1";
+					}else if(status.equals("1")||status.equals("3")){
+						ext3 = "0";
+					}
+				}
+				employee.setExt1(boxID);
+				employee.setExt2(cabinetNumber);
+				employee.setExt3(ext3);
+				employeeList.add(employee);
+			}
+		}
+        JSONObject jsonObject = new JSONObject();
+	    return jsonObject.toJSONString(employeeList);
+    }
 
 
 }

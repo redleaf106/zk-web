@@ -75,17 +75,17 @@
 	</select>
 
 	<select id="findOneEMPByOneDay" resultType="CabinetDoorEvent" parameterType="string">
-		SELECT * FROM BO_CABINETDOOREVENT WHERE EMPLOYEECARDNUMBER = #{0} AND DOOROPTTIME >= #{1}
+		SELECT * FROM BO_CABINETDOOREVENT WHERE EMPLOYEECARDNUMBER = #{0} AND to_days(dooropttime) = to_days(#{1}) ORDER BY dooropttime DESC
 	</select>
 
 	<sql id="column_base">
-		cabinetdoornumber,departmentname,employeename,iccardnumber,DATE_FORMAT(dooropttime,'%Y-%m-%d %H:%i:%s')as dooropttime,status,remark
+		cabinetdoornumber,departmentname,employeename,iccardnumber,DATE_FORMAT(dooropttime,'%H:%i:%s')as dooropttime,status,remark
 	</sql>
 
 	<select id="findDayInfo" resultMap="CheckInfo">
 		select
 		<include refid="column_base"/>
-		from checkinfo where to_days(dooropttime) = to_days(now())
+		from checkinfo where to_days(dooropttime) = to_days(#{0}) order by dooropttime ASC
 	</select>
 
 	<insert id="insertUrgentEvent" parameterType="UrgentEvent">

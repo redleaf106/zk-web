@@ -155,7 +155,7 @@ public class AutoRunTask {
     //汇添富定时任务
     @Scheduled(cron = "0 0 16 * * ?")//下午16点生成日报表
     public void createDayClock(){
-        List<CheckInfo> listMata = cabinetDoorEventService.findDayInfo();//获取当天存取记录
+        List<CheckInfo> listMata = cabinetDoorEventService.findDayInfo(new Date());//获取当天存取记录
         List<CheckInfo> responseList = new LinkedList<>();
         for(CheckInfo ci:listMata){
             if(responseList.contains(ci)){//判断开关门事件是否是同属于一个人
@@ -229,7 +229,7 @@ public class AutoRunTask {
             c.setOAInfo(OAInfo);
         }
 
-        HTFCheck htfCheck = CreateDayCheckUtils.checkDayCheck(responseList);
+        HTFCheck htfCheck = CreateDayCheckUtils.checkDayCheck(responseList, new Date());
         checkListService.add(htfCheck);
 
     }

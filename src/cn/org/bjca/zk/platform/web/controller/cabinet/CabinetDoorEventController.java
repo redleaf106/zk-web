@@ -10,7 +10,6 @@ import cn.org.bjca.zk.platform.exception.DialogException;
 import cn.org.bjca.zk.platform.service.*;
 import cn.org.bjca.zk.platform.tools.CabinetDoorServer;
 import cn.org.bjca.zk.platform.tools.CreateDayCheckUtils;
-import cn.org.bjca.zk.platform.web.controller.AutoRunTask;
 import cn.org.bjca.zk.platform.web.controller.BaseController;
 import cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage;
 import com.alibaba.fastjson.JSON;
@@ -259,15 +258,15 @@ public class CabinetDoorEventController extends BaseController {
 	@RequestMapping(value = "checkDayInfoTest" ,produces ="text/html;charset=UTF-8")
 	public String checkDayInfoTest(){
 		JSONObject jsonObject = new JSONObject();
-		return jsonObject.toJSONString(cabinetDoorEventService.findDayInfo());
+		return jsonObject.toJSONString(cabinetDoorEventService.findDayInfo(new Date()));
 	}
 
 	//手动生成当天日报表
-	@ResponseBody
 	@RequestMapping(value = "checkDayInfo" ,produces ="text/html;charset=UTF-8")
-	public String checkDayInfo(){
+	public String checkDayInfo(String date) throws ParseException {
 		JSONObject jsonObject = new JSONObject();
-		List<CheckInfo> listMata = cabinetDoorEventService.findDayInfo();//获取当天存取记录
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		List<CheckInfo> listMata = cabinetDoorEventService.findDayInfo(simpleDateFormat.parse(date));//获取当天存取记录
 		List<CheckInfo> responseList = new LinkedList<>();
 		for(CheckInfo ci:listMata){
 			if(responseList.contains(ci)){//判断开关门事件是否是同属于一个人
@@ -329,17 +328,21 @@ public class CabinetDoorEventController extends BaseController {
 			}
 		}
 		//未交手机生成事件
-		List<CheckInfo> checkInfoList = cabinetDoorEventService.absentEmp(new Date());
+		List<CheckInfo> checkInfoList = cabinetDoorEventService.absentEmp(simpleDateFormat.parse(date));
 		responseList.addAll(checkInfoList);
 		for (CheckInfo c:responseList){
 			String objNo = c.getIcCardNumber();
-			AutoRunTask autoRunTask = new AutoRunTask();
-			String OAInfo = autoRunTask.getOA(objNo);
+			//金鹰考勤
+			//String OAInfo = getOA(objNo);
+			//汇添富考勤
+			//String OAInfo = getHtfOA(objNo);
+			String OAInfo = "";
 			c.setOAInfo(OAInfo);
 		}
-		HTFCheck htfCheck = CreateDayCheckUtils.checkDayCheck(responseList);
+
+		HTFCheck htfCheck = CreateDayCheckUtils.checkDayCheck(responseList, simpleDateFormat.parse(date));
 		checkListService.add(htfCheck);
-		return jsonObject.toJSONString(responseList);
+		return "forward:/cabinet/checkList";
 	}
 
 	//获取所有未发邮件的应急开门事件

@@ -213,8 +213,6 @@ public class EmployeeService {
 		if (cityCabinet==null){
 			return null;
 		}
-
-
 		CabinetPO cabinetPO = new CabinetPO();
 		cabinetPO.setCabinetIp(ip);
 		List<Cabinet> cabinetList = cabinetDao.findByCondition(cabinetPO);
@@ -238,8 +236,10 @@ public class EmployeeService {
 //		循环员工id获取所有未激活员工
 		for(String s:list){
 			Employee employee = employeeDao.findUniqueById(s);
-			if (employee.getPicFile()==null){
-				employeeList.add(employee);
+			if(employee!=null){
+				if (employee.getPicFile()==null){
+					employeeList.add(employee);
+				}
 			}
 		}
 //        List<Employee> list = employeeDao.getAllNotActive(employeePage);
@@ -280,6 +280,5 @@ public class EmployeeService {
 	public Employee findByEmployeeNumber(String employeeNumber){
 		return employeeDao.findByEmployeeNumber(employeeNumber);
 	}
-
 
 }

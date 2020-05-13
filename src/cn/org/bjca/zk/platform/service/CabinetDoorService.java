@@ -3,18 +3,17 @@
  */
 package cn.org.bjca.zk.platform.service;
 
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
 import cn.org.bjca.zk.db.entity.CabinetDoor;
 import cn.org.bjca.zk.platform.dao.CabinetDoorDao;
 import cn.org.bjca.zk.platform.po.CabinetDoorPO;
 import cn.org.bjca.zk.platform.utils.EssPdfUtil;
 import cn.org.bjca.zk.platform.web.page.CabinetDoorPage;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /***************************************************************************
 
@@ -118,6 +117,10 @@ public class CabinetDoorService {
 	 */
 	public CabinetDoor selectDoorByCabinetIdAndCabinetDoorNumber(String cabinetId, String cabinetDoorNumber){
 		return cabinetDoorDao.selectDoorByCabinetIdAndCabinetDoorNumber(cabinetId,cabinetDoorNumber);
+	}
+
+	public List<CabinetDoor> findByCabinetID(String cabinetID){
+		return cabinetDoorDao.findByCabinetID(cabinetID);
 	}
 
 

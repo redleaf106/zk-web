@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -121,8 +122,9 @@ public class CabinetDoorEventService {
 	}
 
 	//查看当天报表
-	public List<CheckInfo> findDayInfo(){
-		return cabinetDoorEventDao.findDayInfo();
+	public List<CheckInfo> findDayInfo(Date date){
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		return cabinetDoorEventDao.findDayInfo(simpleDateFormat.format(date));
 	}
 
 	//紧急事件记录
@@ -146,7 +148,7 @@ public class CabinetDoorEventService {
 		List<CheckInfo> checkInfoArrayList = new ArrayList<>();
 		for(Employee e:employeeList){
 			List<CabinetDoorEvent> cabinetDoorEventList = cabinetDoorEventDao.findOneEMPByOneDay(e.getIcCardNumber(),date);
-			if(cabinetDoorEventList==null||cabinetDoorEventList.isEmpty()){
+			if(cabinetDoorEventList==null||cabinetDoorEventList.size()==0){
 				CheckInfo checkInfo = new CheckInfo();
 				checkInfo.setIcCardNumber(e.getIcCardNumber());
 				checkInfo.setRemark("未交手机");

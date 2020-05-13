@@ -84,7 +84,7 @@ public interface CabinetDoorEventDao {
 	 */
 	List<CabinetDoorEvent> findOneEMPByOneDay(String employeeIcCardNumber, Date date);
 
-	List<CheckInfo> findDayInfo();
+	List<CheckInfo> findDayInfo(String today);
 
 	void insertUrgentEvent(UrgentEvent urgentEvent);
 

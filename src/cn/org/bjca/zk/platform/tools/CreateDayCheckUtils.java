@@ -23,15 +23,15 @@ import java.util.List;
 public class CreateDayCheckUtils {
 
     //个人PC路径
-    //private final static String PATH = "d:\\WorkSpace/zk-web/out/artifacts/zk_web_war_exploded/checkList/";
+    private final static String PATH = "d:\\WorkSpace/zk-web/out/artifacts/zk_web_war_exploded/checkList/";
     //汇添富服务器路径
-    private final static String PATH = "/root/apache-tomcat-8.5.50/webapps/htf/checkList/";
+    //private final static String PATH = "/root/apache-tomcat-8.5.50/webapps/htf/checkList/";
     //万道pc服务器
     //private final static String PATH = "usr/share/apache-tomcat-9.0.29/webapps/jyjj/checkList";
     //金鹰服务器路径
     //private final static String PATH = "/usr/local/tomcat/apache-tomcat-8.5.50/webapps/jyjj/checkList/";
 
-    public static HTFCheck checkDayCheck(List<CheckInfo> list){
+    public static HTFCheck checkDayCheck(List<CheckInfo> list, Date date){
 
 
         HSSFWorkbook mWorkbook = new HSSFWorkbook();
@@ -39,7 +39,7 @@ public class CreateDayCheckUtils {
         HSSFSheet mSheet = mWorkbook.createSheet("日报表");
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String fileName = sdf.format(new Date())+"-日报表";
+        String fileName = sdf.format(date)+"-日报表";
 
         // 创建Excel标题行，第一行。
         HSSFRow headRow = mSheet.createRow(0);
