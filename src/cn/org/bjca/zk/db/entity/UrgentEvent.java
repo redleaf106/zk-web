@@ -22,6 +22,16 @@ public class UrgentEvent{
 
     private int emailStatus;
 
+    private int status;
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     public int getEmailStatus() {
         return emailStatus;
     }

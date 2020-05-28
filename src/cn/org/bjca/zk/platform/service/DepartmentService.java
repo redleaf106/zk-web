@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
@@ -144,6 +145,50 @@ public class DepartmentService {
 			}
 			departmentDao.save(department);
 		}
+	}
+
+	public Department findByDepartmentNumber(String departmentNumber){
+		return departmentDao.findByDepartmentNumber(departmentNumber);
+	}
+
+	@Transactional(readOnly = false)
+	public int insertOrUpdate(Department department) throws ParseException {
+		int status = 0;
+		if(StringUtils.isNotBlank(department.getId())){
+			status = departmentDao.update(department);
+			if (status>0){
+				return 201;
+			}
+		}else {
+			department.setId(EssPdfUtil.genrRandomUUID());
+			List<TimeArea> timeAreaList = department.getTimeAreas();
+			TimeArea timeArea = new TimeArea();
+			timeArea.setId(EssPdfUtil.genrRandomUUID());
+			timeArea.setDepartmentId(department.getId());
+			TimeArea timeArea1 = new TimeArea();
+			timeArea1.setId(EssPdfUtil.genrRandomUUID());
+			timeArea1.setDepartmentId(department.getId());
+			SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+			Date date1 = sdf.parse("09:30:00");
+			Date date2 = sdf.parse("11:30:00");
+			Date date3 = sdf.parse("13:00:00");
+			Date date4 = sdf.parse("15:00:00");
+			timeArea.setStartTime(new Timestamp(date1.getTime()));
+			timeArea.setEndTime(new Timestamp(date2.getTime()));
+			timeAreaList.add(timeArea);
+			timeArea1.setStartTime(new Timestamp(date3.getTime()));
+			timeArea1.setEndTime(new Timestamp(date4.getTime()));
+			timeAreaList.add(timeArea1);
+			status = departmentDao.save(department);
+			//添加新的时间区域
+			if(null!=timeAreaList && !timeAreaList.isEmpty()) {
+				timeAreaDao.batchInsert(timeAreaList);
+			}
+			if(status>0){
+				return 200;
+			}
+		}
+		return 400;
 	}
 	
 	/**

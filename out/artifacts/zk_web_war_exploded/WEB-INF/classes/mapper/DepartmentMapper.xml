@@ -33,6 +33,10 @@
 	<select id="findByDepartmentName" parameterType="String" resultMap="departmentMap">
 		SELECT * FROM BO_DEPARTMENT WHERE DEPARTMENTNAME = #{departmentName}
 	</select>
+
+	<select id="findByDepartmentNumber" parameterType="String" resultMap="departmentMap">
+		SELECT * FROM BO_DEPARTMENT WHERE DEPARTMENTNUMBER = #{departmentNumber}
+	</select>
 	
 	
 	<!-- 保存数据 -->

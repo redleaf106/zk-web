@@ -61,12 +61,12 @@ public class AutoRunTask {
 
 
     private final static String MESSAGEURL = "http://10.50.115.157:10090/messagesend";//短信接口地址
-    private final static String OAURL = "http://10.50.115.190:8288/services/checkLeaveByEMP?wsdl";//OA接口地址
+    private final static String HTFOAURL = "http://172.26.100.36/services/checkLeaveByEMP?wsdl";//OA接口地址
     private final  static String JYJJOAURL = "https://crm.gefund.com.cn/gefundCRM/holiday/query";//金鹰OA接口地址
 
 
     //@Scheduled(cron = "0/5 * * * * ? ") // 间隔5秒执行
-    @Scheduled(cron = "0 1 16 * * ?")
+    //@Scheduled(cron = "0 1 16 * * ?")
     public void taskCycle() {
         System.out.println("使用SpringMVC框架配置定时任务");
     }
@@ -140,20 +140,20 @@ public class AutoRunTask {
 
     }
 
-    @Scheduled(cron = "0 25 9 * * ?")//上午九点25进行手机提醒
+    //@Scheduled(cron = "0 25 9 * * ?")//上午九点25进行手机提醒
     public void morningCheck(){
         sendMessage();
     }
 
-    @Scheduled(cron = "0 55 12 * * ?")//下午12点55进行手机提醒
+    //@Scheduled(cron = "0 55 12 * * ?")//下午12点55进行手机提醒
     public void afternoonCheck(){
         sendMessage();;
     }
 
     //金鹰定时任务
-    //@Scheduled(cron = "0 0 19 * * ?")//下午19点生成日报表
+    @Scheduled(cron = "0 0 19 * * ?")//下午19点生成日报表
     //汇添富定时任务
-    @Scheduled(cron = "0 0 16 * * ?")//下午16点生成日报表
+    //@Scheduled(cron = "0 0 16 * * ?")//下午16点生成日报表
     public void createDayClock(){
         List<CheckInfo> listMata = cabinetDoorEventService.findDayInfo(new Date());//获取当天存取记录
         List<CheckInfo> responseList = new LinkedList<>();
@@ -225,6 +225,7 @@ public class AutoRunTask {
             //String OAInfo = getOA(objNo);
             //汇添富考勤
             //String OAInfo = getHtfOA(objNo);
+            //考勤接口如果没通
             String OAInfo = "";
             c.setOAInfo(OAInfo);
         }
@@ -343,7 +344,7 @@ public class AutoRunTask {
         jsonObj.put("secret","4028818230db6dbd0130fe847d6742ba");
         String finalR = "";
         try {
-            Client client = new Client(new URL("http://10.50.115.190:8288/services/checkLeaveByEMP?wsdl"));
+            Client client = new Client(new URL(HTFOAURL));
             Object[] results = client.invoke("GetInfoByEmp", new Object[] { jsonObj.toJSONString() });
             for (Object o:results){
                 System.out.println(o);

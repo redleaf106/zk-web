@@ -30,6 +30,10 @@ public class CreateDayCheckUtils {
     //private final static String PATH = "usr/share/apache-tomcat-9.0.29/webapps/jyjj/checkList";
     //金鹰服务器路径
     //private final static String PATH = "/usr/local/tomcat/apache-tomcat-8.5.50/webapps/jyjj/checkList/";
+    //嘉实服务器路径
+    //private final static String PATH = "/home/admin/apache-tomcat-9.0.29/webapps/jsfund/checkList";
+
+
 
     public static HTFCheck checkDayCheck(List<CheckInfo> list, Date date){
 

@@ -63,7 +63,7 @@
 		UPDATE BO_CABINETDOOR SET
 			DOOROPTTIME=null,
         	ACCESSCOUNT = 0,
-        	`STATUS` = '',
+        	`STATUS` = #{status},
 			USERID = #{userId},
 			OPTTIME = #{optTime}
         WHERE 

@@ -78,6 +78,9 @@
     <SOURCES>
       <root url="file://$PROJECT_DIR$/WebContent/WEB-INF/lib" />
     </SOURCES>
+    <excluded>
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/jna.jar!/" />
+    </excluded>
     <jarDirectory url="file://$PROJECT_DIR$/WebContent/WEB-INF/lib" recursive="false" />
     <jarDirectory url="file://$PROJECT_DIR$/WebContent/WEB-INF/lib" recursive="false" type="SOURCES" />
   </library>

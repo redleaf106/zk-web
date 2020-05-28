@@ -3,28 +3,6 @@
  */
 package cn.org.bjca.zk.platform.web.controller.cabinet;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import cn.org.bjca.zk.platform.tools.CabinetDoorServer;
-import com.alibaba.fastjson.JSONObject;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-
-import com.cn.bjca.seal.esspdf.core.pagination.page.Page;
-import com.cn.bjca.seal.esspdf.core.pagination.page.Pagination;
-
 import cn.org.bjca.zk.db.entity.Cabinet;
 import cn.org.bjca.zk.db.entity.CabinetDoor;
 import cn.org.bjca.zk.db.entity.Employee;
@@ -35,8 +13,26 @@ import cn.org.bjca.zk.platform.exception.DialogException;
 import cn.org.bjca.zk.platform.service.CabinetDoorService;
 import cn.org.bjca.zk.platform.service.CabinetService;
 import cn.org.bjca.zk.platform.service.EmployeeService;
+import cn.org.bjca.zk.platform.tools.CabinetDoorServer;
 import cn.org.bjca.zk.platform.web.controller.BaseController;
 import cn.org.bjca.zk.platform.web.page.CabinetDoorPage;
+import com.alibaba.fastjson.JSONObject;
+import com.cn.bjca.seal.esspdf.core.pagination.page.Page;
+import com.cn.bjca.seal.esspdf.core.pagination.page.Pagination;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
 
 /***************************************************************************
 
@@ -180,7 +176,6 @@ public class CabinetDoorController extends BaseController {
 				}
 
 				message.setStatusCode(this.SUCCESS);
-				message.setCallbackType("closeCurrent");
 				message.setNavTabId("cabinetDoor");
 				return this.ajaxDone(message);
 			}catch(Exception ex){

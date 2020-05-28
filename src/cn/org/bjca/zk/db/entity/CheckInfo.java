@@ -131,7 +131,7 @@ public class CheckInfo {
             return true;
         }
         CheckInfo checkInfo = (CheckInfo)obj;
-        if(cabinetDoorNumber.equals(checkInfo.cabinetDoorNumber)){
+        if(icCardNumber.equals(checkInfo.icCardNumber)){
             return true;
         }
         return false;

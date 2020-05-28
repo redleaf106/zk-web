@@ -3,18 +3,17 @@
  */
 package cn.org.bjca.zk.platform.service;
 
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
 import cn.org.bjca.zk.db.entity.Cabinet;
 import cn.org.bjca.zk.platform.dao.CabinetDao;
 import cn.org.bjca.zk.platform.po.CabinetPO;
 import cn.org.bjca.zk.platform.utils.EssPdfUtil;
 import cn.org.bjca.zk.platform.web.page.CabinetPage;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /***************************************************************************
 
@@ -93,7 +92,7 @@ public class CabinetService {
 	/**
 	  * <p>根据条件查询机柜列表</p>
 	  * @Description:
-	  * @param cabinetNumber 机柜编号
+	  * @param cabinetPO 机柜编号
 	  * @return
 	 */
 	public List<Cabinet> findByConditon(CabinetPO cabinetPO) {
@@ -102,5 +101,9 @@ public class CabinetService {
 
 	public Cabinet findByIp(String ip){
 		return cabinetDao.findByIP(ip);
+	}
+
+	public Cabinet findByCabinetNumber(String cabinetNumber){
+		return cabinetDao.findByCabinetNumber(cabinetNumber);
 	}
 }

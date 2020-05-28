@@ -14,6 +14,7 @@ import cn.org.bjca.zk.platform.service.DepartmentService;
 import cn.org.bjca.zk.platform.utils.EssPdfUtil;
 import cn.org.bjca.zk.platform.web.controller.BaseController;
 import cn.org.bjca.zk.platform.web.page.DepartmentPage;
+import com.alibaba.fastjson.JSONObject;
 import com.cn.bjca.seal.esspdf.core.pagination.page.Page;
 import com.cn.bjca.seal.esspdf.core.pagination.page.Pagination;
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /***************************************************************************
 
@@ -68,19 +70,26 @@ public class DepartmentController extends BaseController {
         if(StringUtils.isNotBlank(numPerPage)) {
 			page.setPageSize(Integer.parseInt(numPerPage));
 		}
-		
+
 		String departmentName = request.getParameter("departmentName");//角色名称
 		if(StringUtils.isNotBlank(departmentName)) {
 			departmentPage.setDepartmentName("%"+departmentName.trim()+"%");
 		}
-		
+
 		departmentPage.setPageVO(page);
 		departmentPage = departmentService.findPage(departmentPage);
 		departmentPage.setDepartmentName(departmentName);
 		modelMap.put("departmentPage", departmentPage);
 		return "/employee/department/departmentList";
 	}
-	
+
+	@RequestMapping(value = "findAll", produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	public String findAllDep(){
+		List<Department> list = departmentService.getAll();
+		return JSONObject.toJSONString(list);
+	}
+
 	/**
 	  * <p>指向编辑表单页面</p>
 	  * @Description:
@@ -131,6 +140,32 @@ public class DepartmentController extends BaseController {
 		}catch(Exception ex){
 			throw new DialogException(ex);
 		}
+	}
+
+	@RequestMapping(value = "insertOrUpdate", produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	public String insertOrUpdate(HttpServletRequest request) throws Exception {
+		String departmentNumber = request.getParameter("departmentNumber");
+		String departmentName = request.getParameter("departmentName");
+		Department department = new Department();
+		department.setDepartmentNumber(departmentNumber);
+		department.setDepartmentName(departmentName);
+
+		Department departmentResult = departmentService.findByDepartmentNumber(departmentNumber);
+		if(departmentResult!=null){
+			department.setId(departmentResult.getId());
+		}
+		JSONObject jsonObject = new JSONObject();
+		int status = departmentService.insertOrUpdate(department);
+		if(status==200){
+			jsonObject.put("message", "信息添加成功");
+		}else if(status==201){
+			jsonObject.put("message", "信息修改成功");
+		}else if(status==400){
+			jsonObject.put("message", "添加失败");
+		}
+		jsonObject.put("code", status);
+		return jsonObject.toString();
 	}
 	
 	/**

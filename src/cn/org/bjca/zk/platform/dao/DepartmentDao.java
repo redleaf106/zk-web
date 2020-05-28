@@ -3,13 +3,12 @@
  */
 package cn.org.bjca.zk.platform.dao;
 
-import java.util.List;
-
+import cn.org.bjca.zk.db.entity.Department;
+import cn.org.bjca.zk.platform.web.page.DepartmentPage;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Select;
 
-import cn.org.bjca.zk.db.entity.Department;
-import cn.org.bjca.zk.platform.web.page.DepartmentPage;
+import java.util.List;
 
 
 /***************************************************************************
@@ -56,14 +55,14 @@ public interface DepartmentDao {
 	  * @Description:
 	  * @param department
 	 */
-	void save(Department department);
+	int save(Department department);
 	
 	/**
 	  * <p>更新记录</p>
 	  * @Description:
 	  * @param department
 	 */
-	void update(Department department);
+	int update(Department department);
 	
 	/**
 	  * <p>根据ID查询对象</p>
@@ -81,6 +80,8 @@ public interface DepartmentDao {
 	  * @return
 	 */
 	List<Department> findByDepartmentName(String departmentName);
+
+	Department findByDepartmentNumber(String departmentNumber);
 	
 	
 }

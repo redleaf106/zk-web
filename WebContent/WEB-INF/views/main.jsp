@@ -8,6 +8,7 @@
 <link href="${ctx}/styles/default/style.css" rel="stylesheet" type="text/css" media="screen"/>
 <link href="${ctx}/styles/css/core.css" rel="stylesheet" type="text/css" media="screen"/>
 <link href="${ctx}/styles/css/print.css" rel="stylesheet" type="text/css" media="print"/>
+<link href="${ctx}/styles/css/iconfont.css" rel="stylesheet" type="text/css" media="screen"/>
 <!-- <link href="uploadify/css/uploadify.css" rel="stylesheet" type="text/css" media="screen"/> -->
 <!--[if IE]>
 <link href="${ctx}/styles/css/ieHack.css" rel="stylesheet" type="text/css" media="screen"/>

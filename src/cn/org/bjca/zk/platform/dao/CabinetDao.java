@@ -3,14 +3,13 @@
  */
 package cn.org.bjca.zk.platform.dao;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Select;
-
 import cn.org.bjca.zk.db.entity.Cabinet;
 import cn.org.bjca.zk.platform.po.CabinetPO;
 import cn.org.bjca.zk.platform.web.page.CabinetPage;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 
 /***************************************************************************
@@ -83,5 +82,8 @@ public interface CabinetDao {
 	List<Cabinet> findByCondition(CabinetPO cabinetPO);
 
 	Cabinet findByIP(String ip);
+
+	@Select("SELECT * FROM BO_CABINET WHERE cabinetnumber = #{cabinetNumber}")
+	Cabinet findByCabinetNumber(String cabinetNumber);
 
 }

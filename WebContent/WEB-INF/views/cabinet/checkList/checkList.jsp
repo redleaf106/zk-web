@@ -6,8 +6,14 @@
     <input type="hidden" name="numPerPage" value="${checkListPage.pageVO.pageSize}" />
 </form>
 
+<script type="text/javascript">
+    function saveReport() {
+        alert("ssss")
+    }
+</script>
+
 <div class="pageHeader">
-    <form action="${ctx}/cabinet/cabinetDoorEvent/checkDayInfo" method="post">
+    <form action="${ctx}/cabinet/cabinetDoorEvent/checkDayInfo" method="post" id="checkListForm" onsubmit="return validateCallback(this, navTabAjaxDone)">
         <div class="searchBar">
             <table class="searchContent">
                 <tr>

@@ -401,7 +401,7 @@ public class EmployeeController extends BaseController{
 				code = 201;
 			}else{
 				code = 200;
-				employeeExist.setEmployeeNumber(EssPdfUtil.genrRandomUUID());
+				employeeExist.setEmployeeNumber(employeeNumber);
 			}
 			employeeService.saveOrUpdate(employeeExist);
 			json.put("msg","success");
@@ -496,7 +496,7 @@ public class EmployeeController extends BaseController{
 		jsonObj.put("secret","4028818230db6dbd0130fe847d6742ba");
 		String finalR = "";
 		try {
-			Client client = new Client(new URL("http://10.50.115.190:8288/services/checkLeaveByEMP?wsdl"));
+			Client client = new Client(new URL("http://172.26.100.36/services/checkLeaveByEMP?wsdl"));
 			Object[] results = client.invoke("GetInfoByEmp", new Object[] { jsonObj.toJSONString() });
 			for (Object o:results){
 				System.out.println(o);

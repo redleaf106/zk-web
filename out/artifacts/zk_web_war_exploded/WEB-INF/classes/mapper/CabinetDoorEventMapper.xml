@@ -71,7 +71,7 @@
 	</insert>
 
 	<select id="findOneDay" resultType="CabinetDoorEvent" parameterType="string">
-		SELECT * FROM BO_CABINETDOOREVENT WHERE DOOROPTTIME >= #{date,jdbcType=DATE}
+		SELECT * FROM BO_CABINETDOOREVENT WHERE to_days(DOOROPTTIME) = to_days(#{date,jdbcType=DATE})
 	</select>
 
 	<select id="findOneEMPByOneDay" resultType="CabinetDoorEvent" parameterType="string">
@@ -85,7 +85,7 @@
 	<select id="findDayInfo" resultMap="CheckInfo">
 		select
 		<include refid="column_base"/>
-		from checkinfo where to_days(dooropttime) = to_days(#{0}) order by dooropttime ASC 
+		from checkinfo where to_days(dooropttime) = to_days(#{0}) order by dooropttime ASC
 	</select>
 
 	<insert id="insertUrgentEvent" parameterType="UrgentEvent">
@@ -93,12 +93,14 @@
 		employeeCardNumber,
 		employeeName,
 		doorOptTime,
-		remark
+		remark,
+		status
 		) values (
 		#{employeeCardNumber,jdbcType=VARCHAR},
 		#{employeeName,jdbcType=VARCHAR},
 		#{doorOptTime,jdbcType=VARCHAR},
-		#{remark,jdbcType=VARCHAR}
+		#{remark,jdbcType=VARCHAR},
+		#{status,jdbcType=INTEGER}
 		)
 	</insert>
 

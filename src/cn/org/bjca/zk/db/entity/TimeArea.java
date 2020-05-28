@@ -29,8 +29,15 @@ public class TimeArea extends IdEntity implements Comparable<TimeArea>{
      */
     private Timestamp endTime;
 
-    
-    
+	public TimeArea(long time) {
+		super();
+	}
+
+	public TimeArea() {
+
+	}
+
+
 	public String getDepartmentId() {
 		return departmentId;
 	}
