@@ -68,11 +68,11 @@ function scaleImg(obj){
 				<%--<input type="text" name="employeeNumber" style="display: none" size="40" minlength="2" maxlength="32" class="required" value="${employee.employeeNumber}"/>--%>
 				<%--<input type="text" name="email" size="40" minlength="2" maxlength="32" class="required" value="${employee.email}"/>--%>
 			<%--</div>--%>
-            <div class="unit">
-                <label>门卡卡号：</label>
-                <input type="text" name="icCardNumber" size="40" minlength="2" maxlength="32" class="required" value="${employee.icCardNumber}"/>
-            </div>
-			<div class="divider"></div>
+            <%--<div class="unit">--%>
+                <%--<label>门卡卡号：</label>--%>
+                <%--<input type="text" name="icCardNumber" size="40" minlength="2" maxlength="32" class="required" value="${employee.icCardNumber}"/>--%>
+            <%--</div>--%>
+			<%--<div class="divider"></div>--%>
 
 		
 			<div class="unit">

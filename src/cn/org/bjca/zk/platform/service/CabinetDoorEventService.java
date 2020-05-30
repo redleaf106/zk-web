@@ -144,13 +144,14 @@ public class CabinetDoorEventService {
 	}
 
 	public List<CheckInfo> absentEmp(Date date){
-		List<Employee> employeeList = employeeDao.getAll();
+		List<Employee> employeeList = employeeDao.findEmployeeByOpttime(date);
 		List<CheckInfo> checkInfoArrayList = new ArrayList<>();
 		for(Employee e:employeeList){
 			List<CabinetDoorEvent> cabinetDoorEventList = cabinetDoorEventDao.findOneEMPByOneDay(e.getIcCardNumber(),date);
 			if(cabinetDoorEventList==null||cabinetDoorEventList.size()==0){
 				CheckInfo checkInfo = new CheckInfo();
 				checkInfo.setIcCardNumber(e.getIcCardNumber());
+				checkInfo.setEmployeeNumber(e.getEmployeeNumber());
 				checkInfo.setRemark("未交手机");
 				checkInfo.setEmployeeName(e.getEmployeeName());
 				CabinetDoor cabinetDoor = cabinetDoorDao.selectDoorByEmployeeId(e.getId());

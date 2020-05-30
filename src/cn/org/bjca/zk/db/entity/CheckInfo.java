@@ -10,6 +10,7 @@ public class CheckInfo {
     private String cabinetDoorNumber;
     private String departmentName;
     private String employeeName;
+    private String employeeNumber;
     private String icCardNumber;
     private String pushTime;
     private String pushStatus;
@@ -83,6 +84,14 @@ public class CheckInfo {
 
     public void setPullTime(String pullTime) {
         this.pullTime = pullTime;
+    }
+
+    public String getEmployeeNumber() {
+        return employeeNumber;
+    }
+
+    public void setEmployeeNumber(String employeeNumber) {
+        this.employeeNumber = employeeNumber;
     }
 
     public String getPullStatus() {

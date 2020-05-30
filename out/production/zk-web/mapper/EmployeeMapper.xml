@@ -107,6 +107,10 @@
         WHERE 
 	        ID = #{id} 
 	</update>
+
+	<select id="findEmployeeByOpttime" resultMap="employeeMap">
+		SELECT * FROM BO_EMPLOYEE WHERE to_days(#{0}) >= to_days(opttime)
+	</select>
 	
 	
 </mapper> 

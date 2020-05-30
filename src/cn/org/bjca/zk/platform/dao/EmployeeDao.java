@@ -5,6 +5,7 @@ import cn.org.bjca.zk.platform.web.page.EmployeePage;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -102,6 +103,9 @@ public interface EmployeeDao {
 
 	@Select("SELECT * FROM BO_EMPLOYEE WHERE EMPLOYEENUMBER = #{employeeNumber}")
 	Employee findByEmployeeNumber(String employeeNumber);
+
+	//根据人员信息录入时间生成报表
+	List<Employee> findEmployeeByOpttime(Date date);
 
 
 }

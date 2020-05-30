@@ -10,6 +10,7 @@ import cn.org.bjca.zk.platform.service.MessageService;
 import cn.org.bjca.zk.platform.tools.CreateDayCheckUtils;
 import cn.org.bjca.zk.platform.tools.HtfOainterface;
 import cn.org.bjca.zk.platform.utils.MD5Util;
+import cn.org.bjca.zk.platform.vo.HTFOAResult;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.http.HttpEntity;
@@ -150,10 +151,8 @@ public class AutoRunTask {
         sendMessage();;
     }
 
-    //金鹰定时任务
+    //定时任务
     @Scheduled(cron = "0 0 19 * * ?")//下午19点生成日报表
-    //汇添富定时任务
-    //@Scheduled(cron = "0 0 16 * * ?")//下午16点生成日报表
     public void createDayClock(){
         List<CheckInfo> listMata = cabinetDoorEventService.findDayInfo(new Date());//获取当天存取记录
         List<CheckInfo> responseList = new LinkedList<>();
@@ -167,14 +166,14 @@ public class AutoRunTask {
                     checkInfo.setPushTime(checkInfo.getPushTime()+" "+ci.getDoorOptTime());
                     checkInfo.setPushStatus(checkInfo.getPushStatus()+" 正常存");
                 }else if("2".equals(ci.getDoorOptStatus())){//修改存件时间
-                    checkInfo.setPushTime(checkInfo.getPushTime()+" "+ci.getDoorOptTime());
+                    checkInfo.setPushTime(checkInfo.getPushTime()+" "+ci.getDoorOptTime()+" 晚存："+ci.getRemark().replaceAll(" ",""));
                     checkInfo.setPushStatus(checkInfo.getPushStatus()+" 晚存");
                     reason = " 晚存：";
                 }else if("1".equals(ci.getDoorOptStatus())){//修改取件时间
                     checkInfo.setPullTime(checkInfo.getPullTime()+" "+ci.getDoorOptTime());
                     checkInfo.setPullStatus(checkInfo.getPullStatus()+" 正常取");
                 }else if("3".equals(ci.getDoorOptStatus())){//修改取件时间
-                    checkInfo.setPullTime(checkInfo.getPullTime()+" "+ci.getDoorOptTime());
+                    checkInfo.setPullTime(checkInfo.getPullTime()+" "+ci.getDoorOptTime()+"早取："+ci.getRemark().replaceAll(" ",""));
                     checkInfo.setPullStatus(checkInfo.getPullStatus()+" 早取");
                     reason = " 早取：";
                 }
@@ -185,6 +184,7 @@ public class AutoRunTask {
             }else{
                 //如果不是一个人，则加上这个人
                 CheckInfo checkInfo = new CheckInfo();
+                checkInfo.setEmployeeNumber(ci.getEmployeeNumber());
                 checkInfo.setCabinetDoorNumber(ci.getCabinetDoorNumber());
                 checkInfo.setDepartmentName(ci.getDepartmentName());
                 checkInfo.setEmployeeName(ci.getEmployeeName());
@@ -196,7 +196,7 @@ public class AutoRunTask {
                     checkInfo.setPullTime("");
                     checkInfo.setPullStatus("");
                 }else if("2".equals(ci.getDoorOptStatus())){//修改存件时间
-                    checkInfo.setPushTime(ci.getDoorOptTime());
+                    checkInfo.setPushTime(ci.getDoorOptTime()+" 晚存："+ci.getRemark().replaceAll(" ",""));
                     checkInfo.setPushStatus("晚存");
                     checkInfo.setPullTime("");
                     checkInfo.setPullStatus("");
@@ -207,7 +207,7 @@ public class AutoRunTask {
                     checkInfo.setPushTime("");
                     checkInfo.setPushStatus("");
                 }else if("3".equals(ci.getDoorOptStatus())){//修改取件时间
-                    checkInfo.setPullTime(ci.getDoorOptTime());
+                    checkInfo.setPullTime(ci.getDoorOptTime()+" 早取："+ci.getRemark().replaceAll(" ",""));
                     checkInfo.setPullStatus("早取");
                     checkInfo.setPushTime("");
                     checkInfo.setPushStatus("");
@@ -219,20 +219,48 @@ public class AutoRunTask {
         //未交手机生成事件
         List<CheckInfo> checkInfoList = cabinetDoorEventService.absentEmp(new Date());
         responseList.addAll(checkInfoList);
+        String objNo = "";
+        String OAInfo = "";
         for (CheckInfo c:responseList){
-            String objNo = c.getIcCardNumber();
+            String employeeNumber = employeeService.findByicCardNumber(c.getIcCardNumber()).getEmployeeNumber();
+            objNo += employeeNumber+",";
             //金鹰考勤
             //String OAInfo = getOA(objNo);
-            //汇添富考勤
-            //String OAInfo = getHtfOA(objNo);
-            //考勤接口如果没通
-            String OAInfo = "";
-            c.setOAInfo(OAInfo);
+            //String OAInfo = "";
+            //c.setOAInfo(OAInfo);
         }
-
+        //汇添富考勤
+        OAInfo = getHtfOA(objNo);
+        JSONArray jsonArray = JSONArray.parseArray(OAInfo);
+        JSONObject jsonObjectArray = (JSONObject) jsonArray.get(0);
+        String resultMessage = (String)jsonObjectArray.get("message");
+        if("ok".equals(resultMessage)){
+            JSONArray dataArray = (JSONArray) jsonObjectArray.get("data");
+            List<HTFOAResult> list = dataArray.toJavaList(HTFOAResult.class);
+            for(CheckInfo checkInfo:responseList){
+                String employeeNumber = employeeService.findByicCardNumber(checkInfo.getIcCardNumber()).getEmployeeNumber();
+                if(list.size()>0){
+                    for(HTFOAResult htfoaResult:list){
+//							System.out.println(checkInfo.getEmployeeNumber());
+                        if(htfoaResult.getObjno().equals(employeeNumber)){
+                            checkInfo.setOAInfo(htfoaResult.getOfftime()+returnOAInfo(htfoaResult.getAtttype()));
+                            list.remove(htfoaResult);
+                            break;
+                        }else {
+                            checkInfo.setOAInfo("正常出勤");
+                        }
+                    }
+                }else{
+                    checkInfo.setOAInfo("正常出勤");
+                }
+            }
+        }else {
+            for(CheckInfo checkInfo:responseList){
+                checkInfo.setOAInfo("正常出勤");
+            }
+        }
         HTFCheck htfCheck = CreateDayCheckUtils.checkDayCheck(responseList, new Date());
         checkListService.add(htfCheck);
-
     }
 
     public void sendMessage(){
@@ -350,6 +378,30 @@ public class AutoRunTask {
                 System.out.println(o);
                 finalR += o;
             }
+            return finalR;
+//            //解析json
+//            JSONArray array = JSONArray.parseArray(finalR);
+//            JSONObject jsonObject = JSONObject.parseObject(array.get(0).toString());
+//            String message = (String)jsonObject.get("message");
+//            if("ok".equals(message)){
+//                JSONArray data =(JSONArray) jsonObject.get("data");
+//                String dataInfo = data.get(0).toString();
+//                JSONObject dataJson = JSONArray.parseObject(dataInfo);
+//                String oaInfo = dataJson.get("atttype").toString();
+//                String timeInfo = dataJson.get("offtime").toString();
+//                if("leave".equals(oaInfo)){
+//                    oaInfo = "请假";
+//                }else if("trip".equals(oaInfo)){
+//                    oaInfo = "出差";
+//                }else if("both".equals(oaInfo)){
+//                    oaInfo = "出差请假";
+//                }else{
+//
+//                }
+//                return timeInfo+oaInfo;
+//            }else{
+//                return "正常出勤";
+//            }
         }catch(Exception e){
             e.printStackTrace();
         }finally {
@@ -358,6 +410,69 @@ public class AutoRunTask {
         }
 
     }
+
+    //汇添富OA
+    public String getHtfOA(String objno, String date){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        //String today = simpleDateFormat.format(new Date());
+        JSONObject jsonObj = new JSONObject();
+        jsonObj.put("startdate",date);
+        jsonObj.put("enddate",date);
+        jsonObj.put("objno",objno);
+        jsonObj.put("secret","4028818230db6dbd0130fe847d6742ba");
+        String finalR = "";
+        try {
+            Client client = new Client(new URL(HTFOAURL));
+            Object[] results = client.invoke("GetInfoByEmp", new Object[] { jsonObj.toJSONString() });
+            for (Object o:results){
+                System.out.println(o);
+                finalR += o;
+            }
+            return finalR;
+//            //解析json
+//            JSONArray array = JSONArray.parseArray(finalR);
+//            JSONObject jsonObject = JSONObject.parseObject(array.get(0).toString());
+//            String message = (String)jsonObject.get("message");
+//            if("ok".equals(message)){
+//                JSONArray data =(JSONArray) jsonObject.get("data");
+//                String dataInfo = data.get(0).toString();
+//                JSONObject dataJson = JSONArray.parseObject(dataInfo);
+//                String oaInfo = dataJson.get("atttype").toString();
+//                String timeInfo = dataJson.get("offtime").toString();
+//                if("leave".equals(oaInfo)){
+//                    oaInfo = "请假";
+//                }else if("trip".equals(oaInfo)){
+//                    oaInfo = "出差";
+//                }else if("both".equals(oaInfo)){
+//                    oaInfo = "出差请假";
+//                }else{
+//
+//                }
+//                return timeInfo+oaInfo;
+//            }else{
+//                return "正常出勤";
+//            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            System.out.println("返回为"+finalR);
+            return finalR;
+        }
+
+    }
+
+    //转换考勤信息
+    public String returnOAInfo(String s){
+        if(s.equals("leave")){
+            return "请假";
+        }else if(s.equals("trip")){
+            return "出差";
+        }else{
+            return "获取失败";
+        }
+    }
+
+
 
 }
 

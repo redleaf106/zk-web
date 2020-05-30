@@ -9,6 +9,7 @@
 		<result column="departmentname" property="departmentName" jdbcType="VARCHAR"/>
 		<result column="employeename" property="employeeName" jdbcType="VARCHAR"/>
 		<result column="iccardnumber" property="icCardNumber" jdbcType="VARCHAR"/>
+		<result column="employeenumber" property="employeeNumber" jdbcType="VARCHAR"/>
 		<result column="dooropttime" property="doorOptTime" jdbcType="VARCHAR"/>
 		<result column="status" property="doorOptStatus" jdbcType="VARCHAR"/>
 		<result column="remark" property="remark" jdbcType="VARCHAR"/>
@@ -79,7 +80,7 @@
 	</select>
 
 	<sql id="column_base">
-		cabinetdoornumber,departmentname,employeename,iccardnumber,DATE_FORMAT(dooropttime,'%H:%i:%s')as dooropttime,status,remark
+		cabinetdoornumber,departmentname,employeename,employeeNumber,iccardnumber,DATE_FORMAT(dooropttime,'%H:%i:%s')as dooropttime,status,remark
 	</sql>
 
 	<select id="findDayInfo" resultMap="CheckInfo">

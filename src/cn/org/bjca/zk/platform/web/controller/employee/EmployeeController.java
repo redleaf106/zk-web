@@ -152,14 +152,15 @@ public class EmployeeController extends BaseController{
 
 	@RequestMapping(value = "saveOrUpdate")
 	public ModelAndView saveOrUpdate(Employee employee, HttpServletRequest request) throws Exception {
-		System.out.println("sssssssssssssssss"+employee.getIcCardNumber());
-		System.out.println("紧急开门权限"+employee.getCheckPower());
+//		System.out.println("sssssssssssssssss"+employee.getIcCardNumber());
+//		System.out.println("紧急开门权限"+employee.getCheckPower());
 		Message message = new Message();
 //		if ("稽核部".equals(employee.getDepartmentId())){
 //			employee.setCheckPower(0);
 //		}else{
 //			employee.setCheckPower(1);
 //		}
+		employee.setIcCardNumber(Integer.parseInt(employee.getEmployeeNumber())+"");
 		boolean hasErrors = false; // 成功失败标识 ： true表示有错误
 		Employee employeeExist = null;
 		try {
@@ -505,6 +506,29 @@ public class EmployeeController extends BaseController{
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		//解析json
+//		JSONArray array = JSONArray.parseArray(finalR);
+//		JSONObject jsonObject = JSONObject.parseObject(array.get(0).toString());
+//		String message = (String)jsonObject.get("message");
+//		if("ok".equals(message)){
+//			JSONArray data =(JSONArray) jsonObject.get("data");
+//			String dataInfo = data.get(0).toString();
+//			JSONObject dataJson = JSONArray.parseObject(dataInfo);
+//			String oaInfo = dataJson.get("atttype").toString();
+//			String timeInfo = dataJson.get("offtime").toString();
+//			if("leave".equals(oaInfo)){
+//				oaInfo = "请假";
+//			}else if("trip".equals(oaInfo)){
+//				oaInfo = "出差";
+//			}else if("both".equals(oaInfo)){
+//				oaInfo = "出差请假";
+//			}else{
+//
+//			}
+//			return timeInfo+oaInfo;
+//		}else{
+//			return "正常出勤";
+//		}
 
 		return finalR;
 
