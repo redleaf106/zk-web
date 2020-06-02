@@ -242,7 +242,20 @@ public class EmployeeController extends BaseController{
 	 */
 	@RequestMapping(value = "delete/{id}")
 	public @ResponseBody String delete(@PathVariable("id") String id) throws Exception{
+		Employee employee = employeeService.findUniqueById(id);
+		String employeeIcCardNumber = employee.getIcCardNumber();
+		CabinetDoor door = cabinetDoorService.selectDoorByEmployeeId(id);
+		String ip = "";
 		employeeService.delEmployeeById(id);
+		if(door!=null){
+			Cabinet cabinet = cabinetService.findUniqueById(door.getCabinetId());
+			ip = cabinet.getCabinetIP();
+			//解除柜门绑定关系
+			cabinetDoorService.delCabinetDoorById(door.getId());
+		}
+		//给安卓发送指令删除相关人员
+//		SocketServer socketServer = SocketServer.getInstance();
+//		socketServer.clearEmpToCabinet("1",ip, employeeIcCardNumber);
 		Message message = new Message();
 		message.setStatusCode(this.SUCCESS);
 		message.setContent(this.DELETE);//内容提示
