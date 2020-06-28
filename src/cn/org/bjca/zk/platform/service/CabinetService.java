@@ -36,7 +36,7 @@ public class CabinetService {
 	/**
 	  * <p>分页查询</p>
 	  * @Description:
-	  * @param CabinetPage
+	  * @param cabinetPage
 	  * @return
 	 */
 	public CabinetPage<Cabinet> findPage(CabinetPage<Cabinet> cabinetPage){
@@ -58,7 +58,7 @@ public class CabinetService {
 	/**
 	  * <p>保存或更新记录</p>
 	  * @Description:
-	  * @param role
+	  * @param cabinet
 	 */
 	@Transactional(readOnly = false)
 	public void saveOrUpdate(Cabinet cabinet){
@@ -105,5 +105,14 @@ public class CabinetService {
 
 	public Cabinet findByCabinetNumber(String cabinetNumber){
 		return cabinetDao.findByCabinetNumber(cabinetNumber);
+	}
+
+	//柜门使用情况图
+	public List<Integer> cabinetDoorUseInfo(String cabinetId){
+		int doorAccount = cabinetDao.findUniqueById(cabinetId).getDoorCount();
+		if(doorAccount==119){
+
+		}
+		return null;
 	}
 }

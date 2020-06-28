@@ -33,7 +33,10 @@ public interface CabinetDoorDao {
 	  * @return
 	 */
 	List<CabinetDoor> findPage(CabinetDoorPage<CabinetDoor> webPage);
-	
+
+
+	List<CabinetDoor> findPageyrdg(CabinetDoorPage<CabinetDoor> webPage);
+
 	/**
 	  * <p>根据id删除记录</p>
 	  * @Description:
@@ -62,7 +65,6 @@ public interface CabinetDoorDao {
 	  * @param id
 	  * @return
 	 */
-	@Select("SELECT * FROM BO_CABINETDOOR WHERE id = #{id}")
 	CabinetDoor findUniqueById(String id);
 	
 	/**
@@ -85,7 +87,7 @@ public interface CabinetDoorDao {
 	 * 根据员工id查看柜门
 	 */
 	@Select("SELECT * FROM BO_CABINETDOOR WHERE employeeid = #{employeeId}")
-	CabinetDoor selectDoorByEmployeeId(String employeeId);
+	List<CabinetDoor> selectDoorByEmployeeId(String employeeId);
 
 	/**
 	 * 根据机柜id和柜门号查找柜门
@@ -93,9 +95,15 @@ public interface CabinetDoorDao {
 	 * @param cabinetDoorNumber
 	 * @return
 	 */
-	@Select("SELECT * FROM BO_CABINETDOOR WHERE CABINETID = #{0} AND CABINETDOORNUMBER = #{1}")
-	CabinetDoor selectDoorByCabinetIdAndCabinetDoorNumber(String cabinetId, String cabinetDoorNumber);
+	CabinetDoor selectDoorByCabinetIdAndCabinetDoorNumber(String cabinetId,String cabinetDoorNumber);
 
+	//根据机柜id查看所有柜门
 	@Select("SELECT * FROM BO_CABINETDOOR WHERE CABINETID = #{0}")
 	List<CabinetDoor> findByCabinetID(String cabinetID);
+
+	//根据机柜id和员工id查看单一柜门
+	@Select("SELECT * FROM BO_CABINETDOOR WHERE CABINETID = #{0} AND EMPLOYEEID = #{1}")
+	CabinetDoor findByCabinetIDAndEmployeeID( String cabinetID, String employeeID);
+
+
 }

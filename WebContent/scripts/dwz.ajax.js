@@ -259,6 +259,7 @@ function dwzPageBreak(options){
  * @param rel： 可选 用于局部刷新div id号
  */
 function navTabPageBreak(args, rel){
+	// alert("rel="+rel);
 	dwzPageBreak({targetType:"navTab", rel:rel, data:args});
 }
 /**
@@ -268,7 +269,6 @@ function navTabPageBreak(args, rel){
 function dialogPageBreak(args, rel){
 	dwzPageBreak({targetType:"dialog", rel:rel, data:args});
 }
-
 
 function ajaxTodo(url, callback){
 	var $callback = callback || navTabAjaxDone;

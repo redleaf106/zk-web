@@ -14,19 +14,33 @@
         <result property="cabinetId" column="CABINETID"/>
         <result property="userId" column="USERID"/>
         <result property="optTime" column="OPTTIME"/>
-        <result property="ext1" column="EXT1"/>
+        <result property="cabinetDoorName" column="CABINETDOORNAME"/>
         <result property="ext2" column="EXT2"/>
         <result property="ext3" column="EXT3"/>
         <association property="employee" javaType="cn.org.bjca.zk.db.entity.Employee" column="EMPLOYEEID"  select="cn.org.bjca.zk.platform.dao.EmployeeDao.findUniqueById"/>
         <association property="cabinet" javaType="cn.org.bjca.zk.db.entity.Cabinet" column="CABINETID"  select="cn.org.bjca.zk.platform.dao.CabinetDao.findUniqueById"/>
 	</resultMap>
-	
 
 	<!-- 分页查询 -->
 	<select id="findPage" parameterType="cn.org.bjca.zk.platform.web.page.CabinetDoorPage" resultMap="cabinetDoorMap">
-		SELECT * 
-		FROM BO_CABINETDOOR
-		WHERE 1=1 
+		SELECT
+		bo_cabinetdoor.id,
+		bo_cabinetdoor.ext2,
+		bo_cabinetdoor.ext3,
+		bo_cabinetdoor.opttime,
+		bo_cabinetdoor.cabinetdoornumber,
+		bo_cabinetdoor.cabinetdoorname,
+		bo_cabinetdoor.employeeid,
+		bo_cabinetdoor.dooropttime,
+		bo_cabinetdoor.accesscount,
+		bo_cabinetdoor.`status`,
+		bo_cabinetdoor.cabinetid,
+		bo_cabinetdoor.userid
+		FROM
+		bo_cabinetdoor ,
+		bo_employee
+		WHERE 1=1
+		AND bo_cabinetdoor.employeeid = bo_employee.id
 		<if test="cabinetNumber != null">
 			AND CABINETID IN (SELECT ID FROM BO_CABINET WHERE CABINETNUMBER LIKE #{cabinetNumber})
 		</if>
@@ -36,21 +50,45 @@
 		<if test="employeeName != null">
 			AND EMPLOYEEID IN (SELECT ID FROM BO_EMPLOYEE WHERE EMPLOYEENAME LIKE #{employeeName})
 		</if>
-		ORDER BY OPTTIME DESC
+		ORDER BY bo_employee.employeenumber ASC
+	</select>
+
+	<select id="findPageyrdg" parameterType="cn.org.bjca.zk.platform.web.page.CabinetDoorPage" resultMap="cabinetDoorMap">
+		SELECT
+		bo_cabinetdoor.id,
+		bo_cabinetdoor.ext2,
+		bo_cabinetdoor.ext3,
+		bo_cabinetdoor.opttime,
+		bo_cabinetdoor.cabinetdoornumber,
+		bo_cabinetdoor.cabinetdoorname,
+		bo_cabinetdoor.employeeid,
+		bo_cabinetdoor.dooropttime,
+		bo_cabinetdoor.accesscount,
+		bo_cabinetdoor.`status`,
+		bo_cabinetdoor.cabinetid,
+		bo_cabinetdoor.userid
+		from bo_cabinetdoor ,
+		bo_employee
+		where employeeid IN
+		(select employeeid from BO_CABINETDOOR GROUP BY employeeid HAVING count(1)>1)
+		AND bo_cabinetdoor.employeeid = bo_employee.id
+		ORDER BY bo_employee.employeenumber ASC
 	</select>
 	
 	<!-- 保存数据 -->
 	<insert id="save" parameterType="CabinetDoor">
 		INSERT INTO BO_CABINETDOOR (
 			ID, 
-			CABINETDOORNUMBER, 
+			CABINETDOORNUMBER,
+			CABINETDOORNAME,
 			CABINETID, 
 			EMPLOYEEID, 
 			USERID,
 			OPTTIME)
 		VALUES (
 			#{id}, 
-			#{cabinetDoorNumber}, 
+			#{cabinetDoorNumber},
+			#{cabinetDoorName},
 			#{cabinetId}, 
 			#{employeeId}, 
 			#{userId}, 
@@ -61,10 +99,14 @@
 	<!-- 更新数据 -->
 	<update id="update" parameterType="CabinetDoor">
 		UPDATE BO_CABINETDOOR SET
+		<if test="cabinetDoorName!=null">
+			CABINETDOORNAME = #{cabinetDoorName},
+		</if>
 			DOOROPTTIME=null,
         	ACCESSCOUNT = 0,
         	`STATUS` = #{status},
 			USERID = #{userId},
+			DOOROPTTIME = #{doorOptTime},
 			OPTTIME = #{optTime}
         WHERE 
 	        ID = #{id} 
@@ -74,6 +116,9 @@
 		select * from BO_CABINETDOOR where 1=1
 		<if test="null!=cabinetDoorNumber">
 			  AND CABINETDOORNUMBER = #{cabinetDoorNumber}
+		</if>
+		<if test="null!=cabinetDoorName">
+			AND CABINETDOORNAME = #{cabinetDoorName}
 		</if>
 		<if test="null!=cabinetIp or null != cabinetNumber">
 	       AND CABINETID in  (SELECT ID FROM BO_CABINET WHERE 1=1
@@ -86,5 +131,13 @@
 	       )
 		</if>
 		
+	</select>
+
+	<select id="selectDoorByCabinetIdAndCabinetDoorNumber" resultMap="cabinetDoorMap" parameterType="string">
+		SELECT * FROM BO_CABINETDOOR WHERE cabinetid = #{0} AND cabinetdoornumber = #{1}
+	</select>
+
+	<select id="findUniqueById" resultMap="cabinetDoorMap">
+		SELECT * FROM BO_CABINETDOOR WHERE id = #{id}
 	</select>
 </mapper> 

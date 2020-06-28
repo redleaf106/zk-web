@@ -1,9 +1,12 @@
 package cn.org.bjca.zk.platform.dao;
 
+import cn.org.bjca.zk.db.entity.Assistant;
 import cn.org.bjca.zk.db.entity.Employee;
+import cn.org.bjca.zk.platform.web.page.AssistantPage;
 import cn.org.bjca.zk.platform.web.page.EmployeePage;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.Date;
 import java.util.List;
@@ -71,6 +74,9 @@ public interface EmployeeDao {
 	@Delete("DELETE FROM BO_EMPLOYEE WHERE id = #{id}")
 	void delEmployeeById(String id);
 
+	@Delete("DELETE FROM BO_ASSISTANT WHERE id = #{id}")
+	void delAssistantId(String id);
+
 	/**
 	  * <p>获取所有列表/p>
 	  * @Description:
@@ -78,6 +84,14 @@ public interface EmployeeDao {
 	 */
 
 	List<Employee> findPage(EmployeePage<Employee> webPage);
+
+
+
+	List<Employee> findPageShixisheng(EmployeePage<Employee> webPage);
+
+
+
+	List<Assistant> findAssistantPage(AssistantPage<Assistant> webPage);
 	
 	/**
 	  * <p>查询所有列表</p>
@@ -107,5 +121,27 @@ public interface EmployeeDao {
 	//根据人员信息录入时间生成报表
 	List<Employee> findEmployeeByOpttime(Date date);
 
+	//根据领导id找助理
+	@Select("SELECT * FROM BO_ASSISTANT WHERE LEADERID = #{leaderId}")
+	Assistant findAssistantByLeaderId(String leaderId);
+
+	@Select("SELECT * FROM BO_ASSISTANT WHERE id = #{id}")
+	Assistant findAssistantById(String id);
+
+	int insertAssistant(Assistant assistant);
+
+	int updateAssistant(Assistant assistant);
+
+	@Select("SELECT * FROM BO_ASSISTANT WHERE ICCARDNUMBER = #{icCardNumber}")
+	Assistant findAssistantByIcCardNumber(String icCardNumber);
+
+	@Update("UPDATE BO_EMPLOYEE SET PICFILE = NULL WHERE ID = #{id}")
+	int clearFaceData(String id);
+
+	@Update("UPDATE BO_ASSISTANT SET PICFILE = NULL WHERE ID = #{id}")
+	int clearAssistantFaceData(String id);
+
+	@Select("SELECT * FROM BO_ASSISTANT WHERE LEADERID != NULL AND PICFILE = NULL")
+	List<Assistant> getAllNoActiveAssistant();
 
 }

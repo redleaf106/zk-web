@@ -199,6 +199,45 @@ public class OAController {
 
     }
 
+    @RequestMapping(value = "uploadDoorfile", method = RequestMethod.POST)
+    public void uploadDoor(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request, ModelMap model, Model mod) throws Exception {
+        String path = request.getSession().getServletContext().getRealPath("upload");
+        System.out.println("文件路径："+path);
+        String originalFilename = file.getOriginalFilename();
+        String type = file.getContentType();
+        //originalFilename = UUID.randomUUID().toString()+originalFilename;
+        System.out.println("目标文件名称："+originalFilename+",目标文件类型："+type);
+        File targetFile = new File(path,originalFilename );
+        if (!targetFile.getParentFile().exists()) {
+            targetFile.getParentFile().mkdirs();
+        }else if (!targetFile.exists()) {
+            targetFile.mkdirs();
+        }
+        // 获得上传文件的文件扩展名
+        String subname = originalFilename.substring(originalFilename.lastIndexOf(".")+1);
+        System.out.println("文件的扩展名："+subname);
+
+        try {
+            file.transferTo(targetFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String rootpath = path + File.separator + originalFilename;
+        List<String[]> excellist = readExcel(rootpath);
+        int len = excellist.size();
+        System.out.println("集合的长度为："+len);
+        int success = 0;
+        int filed = 0;
+        int sum = 0;
+        for (int i = 1; i < len; i++) {
+            String[] fields = excellist.get(i);
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        }
+        sum++;
+    }
+
+
+
     public List<String[]> readExcel(String path) {
         SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
         List<String[]> list = null;

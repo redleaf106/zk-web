@@ -3,12 +3,11 @@
  */
 package cn.org.bjca.zk.platform.dao;
 
-import java.util.List;
-
+import cn.org.bjca.zk.db.entity.TimeArea;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Select;
 
-import cn.org.bjca.zk.db.entity.TimeArea;
+import java.util.List;
 
 
 
@@ -73,7 +72,7 @@ public interface TimeAreaDao {
 	  * @param sealName
 	  * @return
 	 */
-	@Select("SELECT * FROM BO_TIMEAREA WHERE DEPARTMENTID = #{departmentId}")
+	@Select("SELECT * FROM BO_TIMEAREA WHERE DEPARTMENTID = #{departmentId} ORDER BY STARTTIME ASC")
 	List<TimeArea> findByDepartmentId(String departmentId);
 
 	/**

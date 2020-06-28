@@ -4,11 +4,20 @@
 package cn.org.bjca.zk.platform.web.controller.cabinet;
 
 
-import javax.servlet.http.HttpServletRequest;
-
-import cn.org.bjca.zk.db.entity.HTFCheck;
+import cn.org.bjca.zk.db.entity.*;
+import cn.org.bjca.zk.platform.PDFSealConstants;
+import cn.org.bjca.zk.platform.bean.Message;
+import cn.org.bjca.zk.platform.exception.DialogException;
+import cn.org.bjca.zk.platform.service.CabinetDoorService;
+import cn.org.bjca.zk.platform.service.CabinetService;
 import cn.org.bjca.zk.platform.service.CheckListService;
+import cn.org.bjca.zk.platform.service.EmployeeService;
+import cn.org.bjca.zk.platform.tools.SocketServer;
+import cn.org.bjca.zk.platform.web.controller.BaseController;
+import cn.org.bjca.zk.platform.web.page.CabinetPage;
 import com.alibaba.fastjson.JSONObject;
+import com.cn.bjca.seal.esspdf.core.pagination.page.Page;
+import com.cn.bjca.seal.esspdf.core.pagination.page.Pagination;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,23 +31,10 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.cn.bjca.seal.esspdf.core.pagination.page.Page;
-import com.cn.bjca.seal.esspdf.core.pagination.page.Pagination;
-
-import cn.org.bjca.zk.db.entity.Cabinet;
-import cn.org.bjca.zk.db.entity.User;
-import cn.org.bjca.zk.platform.PDFSealConstants;
-import cn.org.bjca.zk.platform.bean.Message;
-import cn.org.bjca.zk.platform.exception.DialogException;
-import cn.org.bjca.zk.platform.service.CabinetService;
-import cn.org.bjca.zk.platform.web.controller.BaseController;
-import cn.org.bjca.zk.platform.web.page.CabinetPage;
-
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /***************************************************************************
  
@@ -63,6 +59,12 @@ public class CabinetController extends BaseController{
 
 	@Autowired
 	private CheckListService checkListService;
+
+	@Autowired
+	private CabinetDoorService cabinetDoorService;
+
+	@Autowired
+	private EmployeeService employeeService;
 
 	/**
 	  * <p>角色管理列表</p>
@@ -111,6 +113,74 @@ public class CabinetController extends BaseController{
 		}
 		modelMap.put("cabinet",cabinet);
 		return "/cabinet/cabinet/cabinetForm";
+	}
+	//分配柜门
+	@RequestMapping(value = "toChooseDoor/{id}",method = RequestMethod.GET)
+	public String toChooseDoor(@PathVariable String id,ModelMap modelMap) throws Exception{
+		System.out.println(id);
+		Cabinet cabinet = cabinetService.findUniqueById(id);
+		String ip = cabinet.getCabinetIP();
+		String ip2 = "";
+		if(ip.equals("10.11.28.25")){
+		    ip2 = "10.11.28.26";
+        }else if(ip.equals("10.11.28.26")){
+		    ip2 = "10.11.28.25";
+        }else if(ip.equals("10.11.28.21")){
+            ip2 = "10.11.28.22";
+        }else if(ip.equals("10.11.28.22")){
+            ip2 = "10.11.28.21";
+        }else if(ip.equals("10.11.28.23")){
+            ip2 = "10.11.28.24";
+        }else if(ip.equals("10.11.28.24")){
+            ip2 = "10.11.28.23";
+        }
+		Cabinet cabinet2 = cabinetService.findByIp(ip2);
+		String flood = "";
+		if(ip.equals("10.11.28.25")||ip.equals("10.11.28.23")||ip.equals("10.11.28.21")){
+			flood = "1";
+		}else if(ip.equals("10.11.28.26")||ip.equals("10.11.28.24")||ip.equals("10.11.28.22")){
+			flood = "2";
+		}else if(ip.equals("10.11.28.27")){
+			flood = "3";//12层
+		}else if(ip.equals("10.11.28.20")){
+			flood = "4";//20层
+		}
+		List<CabinetDoor> cabinetDoorList1 = cabinetDoorService.findByCabinetID(id);
+		List<CabinetDoor> cabinetDoorList2 = cabinetDoorService.findByCabinetID(cabinet2.getId());
+		List<String> stringList = cabinetDoorService.doorNumberToDoorName(cabinetDoorList1,cabinetDoorList2,flood);
+		modelMap.addAttribute("msg","cccc_cccccc_cccc");
+		List<String> yixuan = new ArrayList<>();
+		modelMap.addAttribute("yishou",stringList);
+		return "/cabinet/cabinetDoor/cabinetDoorFarm";
+	}
+
+	@RequestMapping(value = "toInfoFormPage/{id}", method = RequestMethod.GET)
+	public String toInfoFormPage(@PathVariable String id,ModelMap modelMap){
+		System.out.println(id);
+		Cabinet cabinet = null;
+		List<CabinetDoor> cabinetDoorList1 = new ArrayList<>();
+		List<Employee> employeeList = new ArrayList<>();
+		List<CabinetDoor> cabinetDoorList = new ArrayList<>();
+		if(StringUtils.isNotBlank(id)&& !BLANK_PARAM_VALUE.equals(id)){
+			cabinet = cabinetService.findUniqueById(id);
+			for(int i=1;i<=cabinet.getDoorCount();i++){
+				List<CabinetDoor> cabinetResult = cabinetDoorService.findByCabinetNumberAndDoorNumber(cabinet.getCabinetNumber(),i+"");
+				if(cabinetResult==null||cabinetResult.size()==0){
+					CabinetDoor cabinetDoor = new CabinetDoor();
+					cabinetDoor.setCabinetDoorNumber(""+i);
+					cabinetDoorList.add(cabinetDoor);
+				}
+			}
+			employeeList = employeeService.findAllNoDoor();
+			//cabinetDoorList = cabinetDoorService.findByCabinetID(id);
+
+		}else {
+			cabinet = new Cabinet();
+		}
+		modelMap.put("cabinet",cabinet);
+		modelMap.put("cabinetDoorList", cabinetDoorList);
+		modelMap.put("employeeList", employeeList);
+		return "/cabinet/cabinet/cabinetInfo";
 	}
 	
 	/**
@@ -207,19 +277,112 @@ public class CabinetController extends BaseController{
 		}
 	}
 	//获取机柜信息
-    @ResponseBody
-    @RequestMapping("getCabinetInfo")
-    public String getCabinetInfo(String cabinetIP){
-	    Cabinet cabinet = cabinetService.findByIp(cabinetIP);
-	    JSONObject json = new JSONObject();
-	    if(cabinet!=null){
-	        return JSONObject.toJSONString(cabinet);
-        }else {
-	        json.put("error", "No cabinet found according to cabinetIP");
-	        return json.toJSONString();
+	@ResponseBody
+	@RequestMapping("getCabinetInfo")
+	public String getCabinetInfo(String cabinetIP){
+		Cabinet cabinet = cabinetService.findByIp(cabinetIP);
+		JSONObject json = new JSONObject();
+		if(cabinet!=null){
+			return JSONObject.toJSONString(cabinet);
+		}else {
+			json.put("error", "No cabinet found according to cabinetIP");
+			return json.toJSONString();
+		}
+	}
+
+	@RequestMapping(value = "getCabinetList",produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	public String getCabinetList(String cabinetId){
+		List<CabinetDoor> list = cabinetDoorService.findByCabinetID(cabinetId);
+		Cabinet cabinet = cabinetService.findUniqueById(cabinetId);
+		String ip = cabinet.getCabinetIP();
+		int type = 0;//左右
+		if(ip.equals("10.11.28.21")||ip.equals("10.11.28.23")||ip.equals("10.11.28.25")){
+            type = 0;
+        }else if(ip.equals("10.11.28.22")||ip.equals("10.11.28.24")||ip.equals("10.11.28.26")){
+            type = 1;
+        }
+		List<Integer> resultList = new ArrayList<>();
+		List<CabinetDoor> cabinetDoorList = cabinetDoorService.findByCabinetID(cabinetId);
+		if(type==0){
+            for(int i=1;i<=cabinet.getDoorCount();i++){
+                resultList.add(i);
+            }
+			for(CabinetDoor cabinetDoor:cabinetDoorList){
+				resultList.remove((Object)Integer.parseInt(cabinetDoor.getCabinetDoorNumber()));
+			}
+        }else{
+            for(int i=1;i<=cabinet.getDoorCount();i++){
+                resultList.add(i+119);
+            }
+			for(CabinetDoor cabinetDoor:cabinetDoorList){
+				resultList.remove((Object)(Integer.parseInt(cabinetDoor.getCabinetDoorNumber())+119));
+			}
         }
 
-    }
-	
-	
+        List<Map<String,String>> stringMap = cabinetDoorService.doorNumberToDoorName(ip,resultList);
+		StringBuffer sb = new StringBuffer();
+		sb.append("<option value=\"\"  desc=\"\">-- 请选择柜门--</option>");
+		for(Map<String, String> map:stringMap){
+            for(String key : map.keySet()){
+                sb.append("<option value='");
+                sb.append(key);
+                sb.append("'>");
+                sb.append(map.get(key));
+                sb.append("</option>");
+            }
+		}
+		return sb.toString();
+	}
+
+	@RequestMapping(value = "getEmployeeList",produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	public String getEmployeeList(String cabinetId){
+		List<CabinetDoor> cabinetDoorList = cabinetDoorService.findByCabinetID(cabinetId);
+		List<Employee> employeeList = new ArrayList<>();
+		if(cabinetDoorList!=null&&cabinetDoorList.size()>0){
+			for(CabinetDoor cabinetDoor:cabinetDoorList){
+				String employeeId = cabinetDoor.getEmployeeId();
+				Employee employee = employeeService.findUniqueById(employeeId);
+				if(employee!=null){
+					employeeList.add(employee);
+				}
+			}
+		}
+		StringBuffer sb = new StringBuffer();
+		sb.append("<option value=\"\"  desc=\"\">-- 请选择人员--</option>");
+		for(Employee e:employeeList){
+			sb.append("<option value='");
+			sb.append(e.getId());
+			sb.append("'>");
+			sb.append(e.getEmployeeName());
+			sb.append("</option>");
+		}
+		return sb.toString();
+	}
+
+
+
+	@RequestMapping("openAllDoor")
+	@ResponseBody
+	public String openAllDoor(String id,String code){
+		System.out.println("获取到id为："+id);
+		Cabinet cabinet = cabinetService.findUniqueById(id);
+		String ip = cabinet.getCabinetIP();
+		System.out.println("柜门的ip地址为"+ip);
+		SocketServer socketServer = SocketServer.getInstance();
+		socketServer.openAllDoor(code,ip);
+		Message message = new Message();
+		message.setStatusCode(this.SUCCESS);
+		message.setContent(this.OPENDOOR);//内容提示
+		return this.toJsonString(message);
+	}
+
+	@RequestMapping("getCabinetTable")
+	@ResponseBody
+	public String getCabinetTable(String cabinetId){
+		return "";
+	}
+
+
 }

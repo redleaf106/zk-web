@@ -39,8 +39,8 @@
 				<tr>
 					<th width="5%">序号</th>
 					<th width="15%">部门编号</th>
-					<th width="10%">部门名称</th>
-					<th width="45%">工作时间段</th>
+					<th width="15%">部门名称</th>
+					<th width="40%">工作时间段</th>
 					<th width="15%">操作时间</th>
 					<th width="10%" align="center">操作</th>
 				</tr>
@@ -53,17 +53,12 @@
 						</td>
 						<td>${item.departmentNumber}</td>
 						<td>${item.departmentName}</td>
-						<td>
-							<c:forEach var="timeAreaItem" items="${item.timeAreas}" varStatus="serial">
-								<fmt:formatDate value="${timeAreaItem.startTime}" type="both" pattern="HH:mm:ss"/>至<fmt:formatDate value="${timeAreaItem.endTime}" type="both" pattern="HH:mm:ss"/> &nbsp;&nbsp;
-							</c:forEach>
-
-						</td>
+						<td>工作时间段</td>
 						<td><fmt:formatDate value="${item.optTime}" type="both" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 						
 						<td>&nbsp;
 							<a title="确定要删除吗?" target="ajaxTodo" href="${ctx}/employee/department/delete/${item.id}" class="btnDel">删除</a>&nbsp;&nbsp;   
-							<a title="修改部门信息" href="${ctx}/employee/department/toEditFormPage/${item.id}" class="btnEdit" target="navTab">修改</a>&nbsp;&nbsp;
+							<a title="修改机柜信息" href="${ctx}/employee/department/toEditFormPage/${item.id}" class="btnEdit" target="navTab">修改</a>&nbsp;&nbsp;
 						</td>
 					</tr>
 				</c:forEach>

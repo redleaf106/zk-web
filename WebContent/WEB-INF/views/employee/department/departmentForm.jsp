@@ -18,8 +18,6 @@
 				</c:choose>
 			</div>
 			<div class="divider"></div>
-				
-			
 			<div class="unit">
 				<label>部门名称：</label>
 				<input type="text" name=departmentName size="40" minlength="2" maxlength="20" class="required" value="${department.departmentName}"/>

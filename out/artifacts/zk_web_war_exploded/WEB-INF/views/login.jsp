@@ -22,16 +22,16 @@
 			alert("请输入密码！");
 			return false;
 	   }
-	   // var verifyCode = $("#verifyCodeId").val();
-	   // if(verifyCode == "") {
-		// 	alert("请输入验证码！");
-		// 	return false;
-	   // }
+	   var verifyCode = $("#verifyCodeId").val();
+	   if(verifyCode == "") {
+			alert("请输入验证码！");
+			return false;
+	   }
 	   $.ajax({
 		    type:"POST",
 		    async:false,
 		    url:"${ctx}/login/ajaxAuth",
-		    data:{"loginType":"1","loginName":loginName,"pwd":pwd},
+		    data:{"loginType":"1","loginName":loginName,"pwd":pwd ,"verifyCode":verifyCode },
 		    success:function(msg){
 		    if(msg == "200"){   
 		    	$("#userLoginFormId").submit();
@@ -90,12 +90,12 @@
 						<label>密&nbsp;&nbsp;&nbsp;码：</label>
 						<input id="pwdId" type="password" name="pwd"  minlength="6" maxlength="20" style="width:145px" autocomplete="off"/>
 					</p>
-					<%--<p>--%>
-						<%--<label>验证码：</label>--%>
-						<%--<input name="verifyCode" id="verifyCodeId" class="code" type="text" size="5" minlength="4" maxlength="4"/>--%>
-						<%--<span>--%>
-							<%--<img src="${ctx}/commons/validateCode.jsp" id="kaptchaImage" style="cursor: hand"  width="75" height="24"/></span>--%>
-					<%--</p>--%>
+					<p>
+						<label>验证码：</label>
+						<input name="verifyCode" id="verifyCodeId" class="code" type="text" size="5" minlength="4" maxlength="4"/>
+						<span>
+							<img src="${ctx}/commons/validateCode.jsp" id="kaptchaImage" style="cursor: hand"  width="75" height="24"/></span>
+					</p>
 					<div class="login_bar">
 					    <br>
 						<input class="sub" id="userAuth" type="button" value="" size="20"  onclick="userSubmit();"/>

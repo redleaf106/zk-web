@@ -42,7 +42,6 @@
       <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/spring-asm-3.1.2.RELEASE.jar!/" />
       <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/spring-core-3.1.2.RELEASE.jar!/" />
       <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/hibernate-jpa-2.0-api-1.0.0.Final.jar!/" />
-      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/mybatis-3.1.1.jar!/" />
       <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/sitemesh-2.4.2.jar!/" />
       <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/bcmail-jdk14-1.38.jar!/" />
       <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/mybatis-spring-1.1.1.jar!/" />
@@ -78,9 +77,6 @@
     <SOURCES>
       <root url="file://$PROJECT_DIR$/WebContent/WEB-INF/lib" />
     </SOURCES>
-    <excluded>
-      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/jna.jar!/" />
-    </excluded>
     <jarDirectory url="file://$PROJECT_DIR$/WebContent/WEB-INF/lib" recursive="false" />
     <jarDirectory url="file://$PROJECT_DIR$/WebContent/WEB-INF/lib" recursive="false" type="SOURCES" />
   </library>

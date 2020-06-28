@@ -26,65 +26,45 @@
 			</div> 
 			<div class="divider"></div>
 			
-			 <!--  
+			 
 			<div class="unit">
 				<label>工作时间：</label>
 				 <input id="startTime" type="text" class="Wdate" name="startTime" size="30"
-                               value= "<fmt:formatDate value='${startTime}' type='both' pattern='HH:mm:ss'/> "
+                               value= "<fmt:formatDate value='${startTime}' type='both' pattern='yyyy-MM-dd HH:mm:ss'/> "
                                onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',readOnly:true,
                        minDate: '%y-%M-%d',maxDate:'#F{$dp.$D(\'endTime\')}'})"/>
                        
                   <label>&nbsp;&nbsp;&nbsp;&nbsp;</label>
                   <input id="endTime" type="text" class="Wdate" name="endTime" size="30"
-                               value= "<fmt:formatDate value='${endTime}' type='both' pattern='HH:mm:ss'/> "
+                               value= "<fmt:formatDate value='${endTime}' type='both' pattern='yyyy-MM-dd HH:mm:ss'/> "
                                onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',readOnly:true})"/>
                   <div class="pageContent sortDrag" style="border: 0px dotted #B8D0D6" id="sortbox">
                                
                   </div>     
 			</div>
-			 -->
-			
+			 
+			 <!-- 
 			 <div class="unit">
 				 <fieldset>
 	               <legend>工作时间</legend>    
-	               <div  id="sortbox" class="pageContent " style="border: 0px dotted #B8D0D6">   
-	 					 <c:choose>
-			               	<c:when test="${empty department.id}">
-			               	<div style='border: 0px solid #B8D0D6; margin: 0; padding: 5px 0;' class='unit'>
-			               		<label>时间段：</label>   	
-		              			 <input id="startTime" type="text" class="Wdate" name="startTime" 
-	                               value= ""
-	                               onClick="WdatePicker({dateFmt:'HH:mm:ss',readOnly:true})"/>
-				                  <input id="endTime" type="text" class="Wdate" name="endTime" 
-		                              value= "" 
-		                               onClick="WdatePicker({dateFmt:'HH:mm:ss',readOnly:true})"/>
-		                    	  <input  type="button" value="添加时间段" onclick="addTimeAreasDiv()"/>
-						          <input class="input_param" type="button" value="删除时间段"/>
-		                    </div>
-			               	</c:when>
-			                <c:otherwise>
-			                	<c:forEach var="item" items="${department.timeAreas}" varStatus="serial">
-				                		<div style='border: 0px solid #B8D0D6; margin: 0; padding: 5px 0;' class='unit'>
-							                <label>时间段：</label>   	
-						                	<input id="startTime" type="text" class="Wdate" name="startTime"
-					                               value= "<fmt:formatDate value='${item.startTime}' type='both' pattern='HH:mm:ss'/> "
-					                               onClick="WdatePicker({dateFmt:'HH:mm:ss',readOnly:true})"/>
-					                  		<input id="endTime" type="text" class="Wdate" name="endTime"
-					                              value= "<fmt:formatDate value='${item.endTime}' type='both' pattern='HH:mm:ss'/>"
-					                               onClick="WdatePicker({dateFmt:'HH:mm:ss',readOnly:true})"/>
-						                    	<input  type="button" value="添加时间段" onclick="addTimeAreasDiv()"/>
-						                    	<input class="input_param" type="button" value="删除时间段"/>
-					                  </div>
-				                </c:forEach>
-			                </c:otherwise>
-	               		</c:choose>              
+	               <div>   
+	               		<label>开始时间</label>   	
+		               <input id="startTime" type="text" class="Wdate" name="startTime" size="30"
+	                               value= "<fmt:formatDate value='${startTime}' type='both' pattern='yyyy-MM-dd HH:mm:ss'/> "
+	                               onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',readOnly:true,
+	                       minDate: '%y-%M-%d',maxDate:'#F{$dp.$D(\'endTime\')}'})"/>
+	                       
+	                  <label>&nbsp;&nbsp;&nbsp;&nbsp;结束时间</label>
+	                  <input id="endTime" type="text" class="Wdate" name="endTime" size="30"
+	                               value= "<fmt:formatDate value='${endTime}' type='both' pattern='yyyy-MM-dd HH:mm:ss'/> "
+	                               onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',readOnly:true})"/>
+		                        <font class="info">&nbsp;&nbsp;&nbsp;<a href="#" onclick="addSignerCertDiv()"><b>增加工作时间</b></a></font>
 	               </div>         
-	                <div class="pageContent " style="border: 0px dotted #B8D0D6">   
-		            </div>
+	                      
 	             </fieldset>
              </div>
 			<div class="divider"></div>
-			 
+			 -->
 			
 		</div>
 		<div class="formBar">
@@ -98,34 +78,26 @@
 
 <script>
 
-function addTimeAreasDiv(){
+function addSignerCertDiv(){
+    var signerCertDivCount = $("#sortbox", navTab.getCurrentPanel()).children('DIV').length;
+    if (signerCertDivCount == 5) {
+        alertMsg.warn("可添加签名证书最大数量：5");
+        return ;
+    }
     //父容器 sortbox
     var parentDiv = $("#sortbox", navTab.getCurrentPanel());
-        
-        var newItem= $(
-        		"<div style='border: 0px solid #B8D0D6; margin: 0; padding: 5px 0;' class='unit'>"+
-            	"<label>时间段：</label>   	"+
-           		"<input id='startTime' type='text' class='Wdate' name='startTime'"+
-                "       value='' "+
-                 "      onClick='WdatePicker({dateFmt:\"HH:mm:ss\",readOnly:true})'/>"+
-                 "<label>&nbsp;&nbsp;&nbsp;&nbsp;</label>   	"+
-          		"<input id='endTime' type='text' class='Wdate' name='endTime'"+
-                "       value= '' "+
-                "       onClick='WdatePicker({dateFmt:\"HH:mm:ss\",readOnly:true})'/> "+
-            	"<input  type='button' value='添加时间段' onclick='addTimeAreasDiv()'/> "+
-                "	<input class='input_param' type='button' value='删除时间段' onclick='delTimeAreasDiv($(this)); '/> "+
-            	"</div>"
-            	);
+    // 新div元素
+    var newItem = $("<div style='border: 0px solid #B8D0D6; margin: 0; padding: 5px 0;' class='innerDIV'><table>" +
+        "<tr><td><label>证书文件：</label></td><td><input type='file' name='signerCert' size='40'></td></tr></table></div>");
     // 在父元素中追加div
     newItem.appendTo(parentDiv);
+    // 新div适配sortDrag
+    //$("div.sortDrag", document).loadItem(newItem);
 }
 
-function delTimeAreasDiv(data){
-	data.parent().remove(); 
+// 删除signerCertDiv
+function delSignerCertDiv(data){
+    $(data).closest('.innerDIV').remove(); // 删除div
 }
-
-$('.input_param').bind('click',function(){
-       $(this).parent().remove(); 
-})
 </script>
 

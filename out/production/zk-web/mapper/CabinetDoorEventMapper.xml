@@ -3,7 +3,6 @@
 		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace必须指向Dao接口 -->
 <mapper namespace="cn.org.bjca.zk.platform.dao.CabinetDoorEventDao">
-
 	<resultMap id="CheckInfo" type="cn.org.bjca.zk.db.entity.CheckInfo">
 		<id column="cabinetDoorNumber" property="cabinetDoorNumber" jdbcType="VARCHAR"/>
 		<result column="departmentname" property="departmentName" jdbcType="VARCHAR"/>
@@ -12,8 +11,10 @@
 		<result column="employeenumber" property="employeeNumber" jdbcType="VARCHAR"/>
 		<result column="dooropttime" property="doorOptTime" jdbcType="VARCHAR"/>
 		<result column="status" property="doorOptStatus" jdbcType="VARCHAR"/>
+		<result column="temporaryStatus" property="temporaryStatus" jdbcType="INTEGER"/>
 		<result column="remark" property="remark" jdbcType="VARCHAR"/>
 	</resultMap>
+
 
 	<resultMap id="UrgentEvent" type="cn.org.bjca.zk.db.entity.UrgentEvent">
 		<id column="id" property="id" jdbcType="INTEGER"/>
@@ -21,6 +22,18 @@
 		<result column="employeeName" property="employeeName" jdbcType="VARCHAR"/>
 		<result column="doorOptTime" property="doorOptTime" jdbcType="VARCHAR"/>
 		<result column="remark" property="remark" jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="EventInfoResultMap" type="cn.org.bjca.zk.db.entity.EventInfo">
+		<id column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="cabinetnumber" property="cabinetNumber" jdbcType="VARCHAR"/>
+		<result column="cabinetpositiondetail" property="cabinetPositionDetail" jdbcType="VARCHAR"/>
+		<result column="cabinetdoorname" property="cabinetDoorName" jdbcType="VARCHAR"/>
+		<result column="employeename" property="employeeName" jdbcType="VARCHAR"/>
+		<result column="status" property="status" jdbcType="VARCHAR"/>
+		<result column="remark" property="remark" jdbcType="VARCHAR"/>
+		<result column="dooropttime" property="doorOptTime" jdbcType="VARCHAR"/>
+		<result column="picFilePath" property="picFilePath" jdbcType="VARCHAR"/>
+		<result column="videoFilePath" property="videoFilePath" jdbcType="VARCHAR"/>
 	</resultMap>
 
 
@@ -46,6 +59,32 @@
 		</if>
 		ORDER BY DOOROPTTIME DESC
 	</select>
+	<!-- 分页查询未推送的事件 -->
+	<select id="findTemporaryPage" parameterType="cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage" resultType="CabinetDoorEvent">
+		SELECT *
+		FROM BO_CABINETDOOREVENT
+		WHERE 1=1 AND temporaryStatus = 1
+		<if test="cabinetNumber != null">
+			AND CABINETNUMBER LIKE #{cabinetNumber}
+		</if>
+		<if test="cabinetIp != null">
+			AND CABINETIp LIKE #{cabinetIp}
+		</if>
+		<if test="cabinetDoorNumber != null">
+			AND CABINETDOORNUMBER LIKE #{cabinetDoorNumber}
+		</if>
+		<if test="employeeCardNumber != null">
+			AND EMPLOYEECARDNUMBER LIKE #{employeeCardNumber}
+		</if>
+		<if test="actionCardNumber != null">
+			AND ACTIONCARDNUMBER LIKE #{actionCardNumber}
+		</if>
+		ORDER BY DOOROPTTIME DESC
+	</select>
+
+	<select id="findEventPage" resultType="java.util.Map" parameterType="cn.org.bjca.zk.platform.web.page.EventInfoPage">
+		SELECT * FROM eventinfo ORDER BY DOOROPTTIME DESC LIMIT 0,500
+	</select>
 
 	<!-- 保存数据 -->
 	<insert id="save" parameterType="CabinetDoorEvent">
@@ -56,7 +95,8 @@
 			CABINETDOORNUMBER, 
 			EMPLOYEECARDNUMBER,
 			ACTIONCARDNUMBER,
-			STATUS, 
+			STATUS,
+			TEMPORARYSTATUS,
 			DOOROPTTIME,
 			REMARK)
 		VALUES (
@@ -66,13 +106,35 @@
 			#{cabinetDoorNumber}, 
 			#{employeeCardNumber},
 			#{actionCardNumber}, 
-			#{status}, 
+			#{status},
+			#{temporaryStatus},
 			#{doorOptTime},
 			#{remark})
 	</insert>
 
+	<update id="send" parameterType="string">
+		  UPDATE BO_CABINETDOOREVENT SET
+		  TEMPORARYSTATUS = 0
+		  WHERE ID = #{0}
+	</update>
+
+	<update id="sendAll">
+		UPDATE BO_CABINETDOOREVENT SET TEMPORARYSTATUS = 0
+	</update>
+
 	<select id="findOneDay" resultType="CabinetDoorEvent" parameterType="string">
-		SELECT * FROM BO_CABINETDOOREVENT WHERE to_days(DOOROPTTIME) = to_days(#{date,jdbcType=DATE})
+		SELECT
+		bo_cabinetdoorevent.id as id,
+		bo_cabinetdoorevent.opttime as optTime,
+		bo_cabinetdoorevent.cabinetNumber as cabinetNumber,
+		bo_cabinetdoorevent.cabinetIp as cabinetIp,
+		bo_cabinetdoorevent.dooropttime as doorOptTime,
+		bo_cabinetdoorevent.cabinetdoorNumber as cabinetDoorNumber,
+		bo_cabinetdoorevent.`status`,
+		bo_cabinetdoorevent.temporaryStatus as temporaryStatus,
+		bo_cabinetdoorevent.remark as remark,
+		bo_employee.employeeNumber as employeeCardNumber
+		 FROM BO_CABINETDOOREVENT,BO_EMPLOYEE WHERE to_days(DOOROPTTIME) = to_days(#{date,jdbcType=DATE}) AND bo_cabinetdoorevent.employeecardnumber = bo_employee.iccardnumber
 	</select>
 
 	<select id="findOneEMPByOneDay" resultType="CabinetDoorEvent" parameterType="string">
@@ -88,6 +150,14 @@
 		<include refid="column_base"/>
 		from checkinfo where to_days(dooropttime) = to_days(#{0}) order by dooropttime ASC
 	</select>
+
+	<select id="test" resultType="java.util.Map">
+		SELECT * FROM eventinfo
+	</select>
+
+	<sql id="eventBase">
+		id,cabinetnumber,cabinetpositiondetail,cabinetdoorname,employeename,status,remark,dooropttime,picFilePath,videoFilePath
+	</sql>
 
 	<insert id="insertUrgentEvent" parameterType="UrgentEvent">
 		insert into BO_URGENTEVENT(
@@ -115,5 +185,24 @@
 		where id = #{id}
 	</update>
 
+	<insert id="addPic">
+		insert into BO_MONITOR(
+		CABINETDOOREVENTID,
+		PICFILEPATH
+		) VALUES (
+		#{0},
+		#{1}
+		)
+	</insert>
 
-</mapper> 
+    <update id="addVideo">
+		update BO_MONITOR set
+		VIDEOFILEPATH = {0}
+		WHERE CABINETDOOREVENTID = #{1}
+	</update>
+
+	<select id="findAllNeedSend" resultType="CabinetDoorEvent">
+		SELECT * FROM BO_CABINETDOOREVENT WHERE TEMPORARYSTATUS = 1;
+	</select>
+
+</mapper>

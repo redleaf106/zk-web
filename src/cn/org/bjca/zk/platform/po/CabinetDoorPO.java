@@ -25,6 +25,21 @@ public class CabinetDoorPO implements  Serializable{
 	private String cabinetNumber;
 	
 	private String cabinetDoorNumber;
+
+	private String cabinetDoorName;
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
+
+	public String getCabinetDoorName() {
+		return cabinetDoorName;
+	}
+
+	public void setCabinetDoorName(String cabinetDoorName) {
+		this.cabinetDoorName = cabinetDoorName;
+	}
+
 	public String getCabinetIp() {
 		return cabinetIp;
 	}

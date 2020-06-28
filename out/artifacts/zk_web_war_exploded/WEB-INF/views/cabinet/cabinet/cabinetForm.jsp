@@ -10,10 +10,10 @@
 				<label>机柜编号：</label>
 				<c:choose>
 				   <c:when test="${cabinet.id == null}">
-				       <input type="text" name="cabinetNumber" size="40" minlength="1" maxlength="20" class="required" value="${cabinet.cabinetNumber}"/>
+				       <input type="text" name="cabinetNumber" size="40" minlength="2" maxlength="20" class="required" value="${cabinet.cabinetNumber}"/>
 				   </c:when>
 				   <c:otherwise>
-				   	   <input type="text" name="cabinetNumber" size="40" minlength="1" maxlength="20" class="required" value="${cabinet.cabinetNumber}" readonly/>
+				   	   <input type="text" name="cabinetNumber" size="40" minlength="2" maxlength="20" class="required" value="${cabinet.cabinetNumber}" readonly/>
 				   </c:otherwise>
 				</c:choose>
 			</div>
@@ -25,9 +25,7 @@
 				<select name="cabinetPosition" id="cabinetPosition" class="required">
 					<option value="北京市" <c:if test="${cabinet.cabinetPosition}=='北京市'  ">selected="selected"</c:if> >北京市</option>
 					<option value="上海市" <c:if test="${cabinet.cabinetPosition}=='上海市'  ">selected="selected"</c:if> >上海市</option>
-					<option value="天津市" <c:if test="${cabinet.cabinetPosition}=='天津市'  ">selected="selected"</c:if> >天津市</option>
-					<option value="广州市" <c:if test="${cabinet.cabinetPosition}=='广州市'  ">selected="selected"</c:if> >广州市</option>
-					<option value="深圳市" <c:if test="${cabinet.cabinetPosition}=='深圳市'  ">selected="selected"</c:if> >深圳市</option>
+					<option value="河北省" <c:if test="${cabinet.cabinetPosition}=='河北省'  ">selected="selected"</c:if> >河北省</option> 
 				</select>
 			</div> 
 			<div class="divider"></div>
@@ -47,7 +45,7 @@
 			
 			<div class="unit">
 				<label>软件版本：</label>				
-				<input  type="text" name="software" size="40" value="${cabinet.software}">
+				<input  type="text" name="software" size="40" class="required" value="${cabinet.software}">			
 			</div>
 			<div class="divider"></div>
 			

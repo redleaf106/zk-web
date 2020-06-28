@@ -1,6 +1,6 @@
 package cn.org.bjca.zk.platform.tools;
 
-import cn.org.bjca.zk.hikvision.HCNetSDK;
+import cn.org.bjca.zk.hikvision.ClientDemo.HCNetSDK;
 import com.sun.jna.NativeLong;
 import com.sun.jna.ptr.IntByReference;
 import org.slf4j.Logger;
@@ -34,8 +34,8 @@ public class GrabHIKPicAndVideoUtils {
 	* @return void 返回类型  
 	* @throws  
 	**/
+	//static HCNetSDK hCNetSDK =  (HCNetSDK) Native.loadLibrary(ClientDemo.DLL_PATH+"HCNetSDK.dll", HCNetSDK.class);
 	static HCNetSDK hCNetSDK = HCNetSDK.INSTANCE;
-	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		GrabHIKPicAndVideoUtils cap = new GrabHIKPicAndVideoUtils();
@@ -54,7 +54,7 @@ public class GrabHIKPicAndVideoUtils {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");//时间格式，文件名的命名相关
 			StringBuilder fileName = null;
 			// 获取视频
-//			fileName = new StringBuilder("D:/HIKVISION/" + dateFormat.format(new Date()) + ".mp4");//创建视频文件的文件名
+			fileName = new StringBuilder("D:/HIKVISION/" + dateFormat.format(new Date()) + ".mp4");//创建视频文件的文件名
 //			cap.GetFileByTime(m_sDeviceIP, iPort, userName, pwd, m_iChanShowNum, startTime, endTime, fileName.toString());//截取视频
 			// 抓取拍照
 			fileName = new StringBuilder("D:/HIKVISION/" + dateFormat.format(new Date()) + ".jpg");

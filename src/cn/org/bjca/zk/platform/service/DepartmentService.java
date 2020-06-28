@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -209,5 +210,24 @@ public class DepartmentService {
 	 */
 	public List<Department> findByDepartmentName(String depatmentName) {
 		return departmentDao.findByDepartmentName(depatmentName);
+	}
+
+
+	//调整时间
+	@Transactional(readOnly = false)
+	public void updateDepartmentTime(int timeStartIndex,int timeEndIndex){
+		List<TimeArea> list = timeAreaDao.getAll();
+		for(TimeArea timeArea:list){
+			Calendar calendarStart = Calendar.getInstance();
+			calendarStart.setTime(timeArea.getStartTime());
+			calendarStart.add(Calendar.MINUTE,timeStartIndex);
+			Calendar calendarEnd = Calendar.getInstance();
+			calendarEnd.setTime(timeArea.getEndTime());
+			calendarEnd.add(Calendar.MINUTE,timeEndIndex);
+			System.out.println(calendarStart.getTime().toString());
+			timeArea.setStartTime(new Timestamp(calendarStart.getTime().getTime()));
+			timeArea.setEndTime(new Timestamp(calendarEnd.getTime().getTime()));
+			timeAreaDao.update(timeArea);
+		}
 	}
 }

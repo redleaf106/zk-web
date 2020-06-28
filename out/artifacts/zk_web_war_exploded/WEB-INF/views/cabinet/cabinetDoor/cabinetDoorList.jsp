@@ -6,6 +6,7 @@
 	<input type="hidden" name="numPerPage" value="${cabinetDoorPage.pageVO.pageSize}" />
 </form>
 
+
 <div class="pageHeader">
 	<form onsubmit="return navTabSearch(this);" action="${ctx}/cabinet/cabinetDoor" method="post">
 	<div class="searchBar">
@@ -47,7 +48,7 @@
 					<th width="10%">柜门编号</th>
 					<th width="10%">使用人</th>
 					<th width="10%">操作时间</th>
-					<%--<th width="10%">存取次数</th>--%>
+					<th width="10%">存取次数</th>
 					<th width="10%">状态</th>
 					<th width="20%" align="center">操作</th>
 				</tr>
@@ -62,18 +63,17 @@
 						<td>${item.cabinetDoorNumber}</td>
 						<td>${item.employee.employeeName}</td>
 						<td><fmt:formatDate value="${item.doorOptTime}" type="both" pattern="yyyy-MM-dd HH:mm:ss"/></td>
-						<%--<td>${item.accessCount}</td>--%>
+						<td>${item.accessCount}</td>
 						<td>
 							<c:choose>
-								<c:when test="${item.status=='1'}"><i class="iconfont">&#xe6a2;</i>存入</c:when>
-								<c:when test="${item.status=='2'}"><i class="iconfont">&#xe6a1;</i>取出</c:when>
-								<c:otherwise>--</c:otherwise>
+								<c:when test="${item.status=='1'}">存入</c:when>
+								<c:when test="${item.status=='2'}">取出</c:when>
+								<c:otherwise>-</c:otherwise>
 							</c:choose>
 						</td>
 						<td>&nbsp;
 							<a title="确定要删除吗?" target="ajaxTodo" href="${ctx}/cabinet/cabinetDoor/delete/${item.id}" class="btnDel">删除</a>&nbsp;&nbsp;   
-							<a title="修改授权信息" href="${ctx}/cabinet/cabinetDoor/toEditFormPage/${item.id}" class="btnEdit" target="navTab">修改</a>&nbsp;
-							<%--<a title="确定开柜门吗？" href="${ctx}/cabinet/cabinetDoor/openCabinetDoor/${item.id}" class="btnView" target="ajaxTodo">开门</a>&nbsp;--%>
+							<a title="修改授权信息" href="${ctx}/cabinet/cabinetDoor/toEditFormPage/${item.id}" class="btnEdit" target="navTab">修改</a>&nbsp;&nbsp;
 						</td>
 					</tr>
 				</c:forEach>

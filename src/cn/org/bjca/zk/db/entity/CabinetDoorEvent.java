@@ -82,6 +82,17 @@ public class CabinetDoorEvent extends IdEntity {
 	 */
 	private String remark;
 
+	//临时的
+	private int temporaryStatus;
+
+	public int getTemporaryStatus() {
+		return temporaryStatus;
+	}
+
+	public void setTemporaryStatus(int temporaryStatus) {
+		this.temporaryStatus = temporaryStatus;
+	}
+
 	public String getCabinetDoorNumber() {
 		return cabinetDoorNumber;
 	}

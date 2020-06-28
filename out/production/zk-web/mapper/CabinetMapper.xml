@@ -12,7 +12,7 @@
 		<if test="cabinetNumber != null">
 			AND CABINETNUMBER like #{cabinetNumber}
 		</if>
-		ORDER BY OPTTIME DESC 
+		ORDER BY CABINETNUMBER DESC
 	</select>
 	
 	<!-- 保存数据 -->

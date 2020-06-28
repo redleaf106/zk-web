@@ -32,7 +32,7 @@
 		<thead>
 			<tr>
 			    <th width="10%">序号</th>
-				<th width="10%">员工工号</th>
+				<th width="10%">员工编号</th>
 				<th width="10%">姓名</th>
 				<th width="10%">部门</th>
 				<th width="15%">手机号码</th>
@@ -45,7 +45,7 @@
 			<c:forEach var="item" items="${employeePage.data}" varStatus="serial">
 				<tr target="sid_employee" rel="${item.id}">
 						<td >
-								${(employeePage.pageVO.pageSize * (employeePage.pageVO.currentPage - 1))+ serial.index + 1 }</td>
+							${(employeePage.pageVO.pageSize * (employeePage.pageVO.currentPage - 1))+ serial.index + 1 }</td>
 						
 						<td >${item.employeeNumber}</td>
 						<td >${item.employeeName}</td>

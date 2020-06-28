@@ -87,4 +87,12 @@
 		</if>
 		
 	</select>
+
+	<select id="selectDoorByCabinetIdAndCabinetDoorNumber" resultMap="cabinetDoorMap" parameterType="string">
+		SELECT * FROM BO_CABINETDOOR WHERE CABINETID = #{0} AND CABINETDOORNUMBER = #{1}
+	</select>
+
+	<select id="findUniqueById" resultMap="cabinetDoorMap">
+		SELECT * FROM BO_CABINETDOOR WHERE id = #{id}
+	</select>
 </mapper> 

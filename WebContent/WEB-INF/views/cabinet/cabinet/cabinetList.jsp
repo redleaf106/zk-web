@@ -18,7 +18,9 @@
 				<td><div class="buttonActive"><div class="buttonContent"><button id="cabinetList_submit" type="submit">检索</button></div></div></td>
 			</tr>
 		</table>
-		
+		<%--<a class="button" href="${ctx}/cabinet/cabinet/toEditFormPage/-1" target="dialog" rel="dlg_page11" mask="true">--%>
+			<%--<span>模态框</span>--%>
+		<%--</a>--%>
 	</div>
 	</form>
 </div>
@@ -30,6 +32,8 @@
 			<li><a class="delete" href="${ctx}/cabinet/cabinet/delete/{sid_cabinet}" target="ajaxTodo" title="确定要删除吗?"><span>删除</span></a></li>
 			<li class="line">line</li>
 			<li><a class="edit" href="${ctx}/cabinet/cabinet/toEditFormPage/{sid_cabinet}" target="navTab"><span>修改</span></a></li>
+			<li class="line">line</li>
+			<li><a class="add" href="${ctx}/cabinet/cabinet/toChooseDoor/{sid_cabinet}" target="navTab"><span>柜门分配</span></a></li>
 		</ul>
 	</div>
 	
@@ -40,11 +44,11 @@
 					<th width="5%">序号</th>
 					<th width="15%">机柜编号</th>
 					<th width="20%">机柜位置</th>
-					<th width="10%">机柜IP</th>
-					<th width="15%">操作时间</th>
+					<th width="8%">机柜IP</th>
+					<th width="12%">操作时间</th>
 					<th width="5%">已使用/空闲/总数</th>
 					<th width="10%">软件版本号</th>
-					<th width="10%" align="center">操作</th>
+					<th width="15%" align="center">操作</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -62,6 +66,10 @@
 						<td>&nbsp;
 							<a title="确定要删除吗?" target="ajaxTodo" href="${ctx}/cabinet/cabinet/delete/${item.id}" class="btnDel">删除</a>&nbsp;&nbsp;   
 							<a title="修改机柜信息" href="${ctx}/cabinet/cabinet/toEditFormPage/${item.id}" class="btnEdit" target="navTab">修改</a>&nbsp;&nbsp;
+							<a title="查看使用状态" href="${ctx}/cabinet/cabinet/toInfoFormPage/${item.id}" class="btnLook" target="navTab">查看</a>
+							<a title="一键全开（检查）" href="${ctx}/cabinet/cabinet/openAllDoor?id=${item.id}&code=6" class="" target="ajaxTodo"><img src="${ctx}/images/icons/openAllDoor.png" height="15" width="15"></a>
+							<a title="一键全开（存柜）" href="${ctx}/cabinet/cabinet/openAllDoor?id=${item.id}&code=7" class="" target="ajaxTodo"><img src="${ctx}/images/icons/openAllDoor.png" height="15" width="15"></a>
+							<a title="一键全开（取柜）" href="${ctx}/cabinet/cabinet/openAllDoor?id=${item.id}&code=8" class="" target="ajaxTodo"><img src="${ctx}/images/icons/openAllDoor.png" height="15" width="15"></a>
 						</td>
 					</tr>
 				</c:forEach>

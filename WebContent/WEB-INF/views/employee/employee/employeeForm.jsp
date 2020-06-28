@@ -122,7 +122,7 @@ function scaleImg(obj){
                         <input type="hidden" name="attachment.id" value="">
                         <input type="hidden" id="attachmentId" name="attachment.attachmentPath" value="" >
                         <input type="hidden" id="attachmentSize" name="attachment.attachmentSize" value="" >
-                        <input type="hidden" id="attachmentMaxSize" name="attachment.attachmentMaxSize" value="" > 
+                        <input type="hidden" id="attachmentMaxSize" name="attachment.attachmentMaxSize" value="" >
                         <input class="readonly" name="attachment.fileName" value="" readonly="readonly" type="text" size="40"/>
 <%--                        <span id="imgSPAN" class="info" style="color:red;">*</span>--%>
                         <a class="btnAttach" href="${ctx}/employee/employee/toAttachmentLookUpPage" lookupGroup="attachment" width="560" height="300" title="员工图片">员工图片</a>
@@ -130,7 +130,7 @@ function scaleImg(obj){
                         <span class="unit">
 					<div class="buttonActive"><div class="buttonContent"><button id="showPicId" >显示图片</button></div></div></span>
               </div>
-			
+
 			 <div id="picDivId" class="unit" style="display: none;">
 						<label>&nbsp;</label>
 						<img id="picId" alt="员工图片" onload="scaleImg(this);" src=""/>

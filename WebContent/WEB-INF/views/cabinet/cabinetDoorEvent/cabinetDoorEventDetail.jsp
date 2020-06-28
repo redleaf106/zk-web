@@ -1,73 +1,94 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/commons/taglibs.jsp" %>
 <%--机柜编号表单 --%>
+<script type="text/javascript">
+	$('#cabinetId').select2();
+	$('#employeeId').select2();
+	$('#statusId').select2();
+
+	function changeCabinet(id) {
+		$.ajax({
+			type : "post",
+			url : "${ctx}/cabinet/cabinet/getEmployeeList?cabinetId=" + id,
+			async : true,
+			success : function(data){
+				$("#employeeId").html(data);
+			},
+			error : function(e) {
+				alert("error");
+				//请求失败时调用此函数
+			}
+		});
+	}
+
+	function showAllEMP(checkbox){
+		var vau = document.getElementById("checkchooseAllEmployee").checked;
+		var param;
+		if(vau){
+			param=0;
+			$("#employeeId").removeClass("required");
+		}else {
+			param=1;
+			$("#employeeId").addClass("required");
+		}
+		$.ajax({
+			type : "post",
+			url : "${ctx}/employee/employee/chooseAllEmpOrNot?check="+param,
+			async : true,
+			success : function(data){
+				$("#allEmpOrNotId").val(data);
+			},
+			error : function(e) {
+				alert("error");
+				//请求失败时调用此函数
+			}
+		});
+	}
+</script>
 
 <div class="pageContent">
-	<form:form method="post" action=""   modelAttribute="cabinetDoorEvent" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
-		<input type="hidden" name="id" value="${cabinetDoor.id}" />
+	<form:form method="post" action="${ctx}/cabinet/sendEvent/saveOrUpdate"   modelAttribute="cabinetDoorEvent" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
 		<div class="pageFormContent" layoutH="58">
 			<div class="unit">
-				<label>事件id：</label>
-				<input type="text" size="40" minlength="1" maxlength="20" class="required" value="${cabinetDoorEvent.id}" readonly/>
+				<label>机柜编号：</label>
+				<select name="cabinetId" id="cabinetId" class="required" onchange="changeCabinet(this.value)">
+					<option value=""  desc="">-- 请选择机柜--</option>
+					<c:forEach items="${cabinetList}" var="cabinetObj">
+						<option value="${cabinetObj.id}" <c:if test="${cabinetObj.id==cabinetDoor.cabinetId}">selected="selected"</c:if> > ${cabinetObj.cabinetPositionDetail} </option>
+					</c:forEach>
+				</select>
+				<input type="text" value="1" id = "cabinetDoorNameId" name="cabinetDoorName" style="display: none">
+			</div>
+			<div class="divider"></div>
+			<div class="unit">
+				<label>使用人：</label>
+				<select name="employeeId" id="employeeId" class="required">
+					<option value=""  desc="">-- 请选择员工--</option>
+				</select>
+				<input type="checkbox" value="0" onchange="showAllEMP(checked)" id="checkchooseAllEmployee"/>选择全部
+			</div>
+			<div class="divider"></div>
+			<input type="text" value="1" name="allEmployee" id="allEmpOrNotId" style="display: none">
+			<div class="unit">
+				<label>开柜时间：</label>
+				<input type="datetime-local" name="doorOptTime" class="required"/>
+			</div> 
+			<div class="divider"></div>
+			<div class="unit">
+				<label>状态：</label>
+				<select name="status" id="statusId" class="required">
+					<option value=""  desc="">-- 请选择状态--</option>
+					<option value="0">正常存</option>
+					<option value="1">正常取</option>
+					<option value="4">紧急</option>
+				</select>
 			</div>
 			<div class="divider"></div>
 
-			<div class="unit">
-				<label>机柜编号：</label>
-				<input type="text" name="cabinetNumber" size="40" minlength="1" maxlength="20" class="required" value="${cabinetDoorEvent.cabinetNumber}" readonly/>
-			
-			</div>
-			<div class="divider"></div>
-		
-		
-			<div class="unit">
-				<label>柜门编号：</label>
-				<input type="text" name="cabinetDoorNumber" size="40" minlength="1" maxlength="20" class="required" value="${cabinetDoorEvent.cabinetDoorNumber}" readonly/>
-			</div>
-			<div class="divider"></div>
-				
-			<div class="unit">
-				<label>员工IC卡号：</label>
-				<input type="text" name="employeeCardNumber" size="40" minlength="1" maxlength="20" class="required" value="${cabinetDoorEvent.employeeCardNumber}" readonly/>
-			</div> 
-			<div class="divider"></div>
-			
-				
-			<div class="unit">
-				<label>操作时间：</label>
-				<input type="text" name="doorOptTime" size="40" minlength="1" maxlength="20" class="required" value="<fmt:formatDate value='${cabinetDoorEvent.doorOptTime}' type='both' pattern='yyyy-MM-dd HH:mm:ss'/>" readonly/>
-			</div> 
-			<div class="divider"></div>
-			
-			
-				
-			<div class="unit">
-				<label>状态：</label>
-				<label>
-					<c:choose>
-								<c:when test="${cabinetDoorEvent.status=='0'}">正常开门</c:when>
-								<c:when test="${cabinetDoorEvent.status=='1'}">正常关门</c:when>
-								<c:when test="${cabinetDoorEvent.status=='2'}">晚存件</c:when>
-								<c:when test="${cabinetDoorEvent.status=='3'}">紧急取</c:when>
-								<c:when test="${cabinetDoorEvent.status=='4'}">未存</c:when>
-								<c:otherwise>-</c:otherwise>
-							</c:choose>
-			    </label>
-			</div> 
-			<div class="divider"></div>
-			
-			
-				
-			<div class="unit">
-				<label>备注：</label>
-				<textarea name="remark" cols="44" rows="3"  maxlength="60" readonly>${cabinetDoorEvent.remark}</textarea>
-			</div> 
-			<div class="divider"></div>
-			
-			
 		</div>
 		<div class="formBar">
 			<ul>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">提交</button></div></div></li>
 				<li><div class="button"><div class="buttonContent"><button type="button" class="close">关闭</button></div></div></li>
 			</ul>
 		</div>

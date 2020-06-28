@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.org.bjca.zk.platform.dao.UrgentReasonDao">
+    <resultMap id="urgentReasonMap" type="cn.org.bjca.zk.db.entity.UrgentReason">
+        <id jdbcType="INTEGER" property="id" column="id"/>
+        <result property="reason" column="reason" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="opttime" column="opttime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!-- 分页查询 -->
+    <select id="findPage" parameterType="cn.org.bjca.zk.platform.web.page.UrgentReasonPage" resultMap="urgentReasonMap">
+        SELECT *
+        FROM BO_URGENTREASON
+        WHERE 1=1
+        ORDER BY OPTTIME DESC
+    </select>
+
+    <update id="update" parameterType="cn.org.bjca.zk.db.entity.UrgentReason">
+        UPDATE BO_URGENTREASON SET
+        <if test="{reason != null}">
+            reason = #{reason},
+        </if>
+        type=#{type}
+        where id = #{id}
+    </update>
+
+</mapper>

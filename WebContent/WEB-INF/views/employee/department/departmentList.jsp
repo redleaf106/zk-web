@@ -18,8 +18,25 @@
 				<td><div class="buttonActive"><div class="buttonContent"><button id="departmentList_submit" type="submit">检索</button></div></div></td>
 			</tr>
 		</table>
-		
+
 	</div>
+	</form>
+
+	<form onsubmit="return validateCallback(this, navTabAjaxDone);" action="${ctx}/employee/department/updateDepartmentTime" method="post">
+		<div class="searchBar">
+			<table class="searchContent">
+				<tr>
+					<td>
+						修改存柜时间：<input type="number" step="1" min="-30" max="30" name="timeStartIndex" value="0"/> 分钟
+					</td>
+					<td>
+						修改取柜时间：<input type="number" step="1" min="-30" max="30" name="timeEndIndex" value="0"/> 分钟
+					</td>
+					<td><div class="buttonActive"><div class="buttonContent"><button id="updateDepartmentTime" type="submit">修改</button></div></div></td>
+				</tr>
+			</table>
+
+		</div>
 	</form>
 </div>
 <div class="pageContent">
@@ -75,10 +92,10 @@
 		<div class="pages">
 			<span>显示</span>
 			<select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value,pageNum:1})">
-				<option value="10" <c:if test="${departmentPage.pageVO.pageSize == 10}">selected="selected"</c:if>>10</option>
-				<option value="20" <c:if test="${departmentPage.pageVO.pageSize == 20}">selected="selected"</c:if>>20</option>
-				<option value="50" <c:if test="${departmentPage.pageVO.pageSize == 50}">selected</c:if>>50</option>
+				<option value="30" <c:if test="${departmentPage.pageVO.pageSize == 30}">selected="selected"</c:if>>30</option>
+				<option value="50" <c:if test="${departmentPage.pageVO.pageSize == 50}">selected="selected"</c:if>>50</option>
 				<option value="100" <c:if test="${departmentPage.pageVO.pageSize == 100}">selected</c:if>>100</option>
+				<option value="150" <c:if test="${departmentPage.pageVO.pageSize == 150}">selected</c:if>>150</option>
 				<option value="200" <c:if test="${departmentPage.pageVO.pageSize == 200}" >selected</c:if>>200</option>
 			</select>
 			<span>条，共${departmentPage.pageVO.totalRows}条</span>

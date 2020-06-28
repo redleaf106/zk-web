@@ -4,12 +4,10 @@
 package cn.org.bjca.zk.platform.service;
 
 import cn.org.bjca.zk.db.entity.*;
-import cn.org.bjca.zk.platform.dao.CabinetDoorDao;
-import cn.org.bjca.zk.platform.dao.CabinetDoorEventDao;
-import cn.org.bjca.zk.platform.dao.DepartmentDao;
-import cn.org.bjca.zk.platform.dao.EmployeeDao;
+import cn.org.bjca.zk.platform.dao.*;
 import cn.org.bjca.zk.platform.utils.EssPdfUtil;
 import cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage;
+import cn.org.bjca.zk.platform.web.page.EventInfoPage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -47,6 +45,9 @@ public class CabinetDoorEventService {
 	@Autowired
 	private DepartmentDao departmentDao;
 
+	@Autowired
+	private MonitorDao monitorDao;
+
 	/**
 	  * <p>分页查询</p>
 	  * @Description:
@@ -57,6 +58,23 @@ public class CabinetDoorEventService {
 		List<CabinetDoorEvent> list =cabinetDoorEventDao.findPage(cabinetDoorEventPage);
 		cabinetDoorEventPage.setData(list);
 		return cabinetDoorEventPage;
+	}
+
+	public CabinetDoorEventPage<CabinetDoorEvent> findTemporaryPage(CabinetDoorEventPage<CabinetDoorEvent> cabinetDoorEventPage){
+		List<CabinetDoorEvent> list =cabinetDoorEventDao.findTemporaryPage(cabinetDoorEventPage);
+		cabinetDoorEventPage.setData(list);
+		return cabinetDoorEventPage;
+	}
+
+
+	public EventInfoPage<EventInfo> findEventInfoPage(EventInfoPage<EventInfo> eventInfoPage){
+		List<EventInfo> list = cabinetDoorEventDao.findEventPage(eventInfoPage);
+		eventInfoPage.setData(list);
+		return eventInfoPage;
+	}
+
+	public List<EventInfo> test(){
+		return cabinetDoorEventDao.test();
 	}
 	
 	/**
@@ -75,12 +93,27 @@ public class CabinetDoorEventService {
 	  * @param cabinetDoorEvent
 	 */
 	@Transactional(readOnly = false)
-	public void saveOrUpdate(CabinetDoorEvent cabinetDoorEvent){
+	public String saveOrUpdate(CabinetDoorEvent cabinetDoorEvent){
+		String cabinetEventId = "";
 		if(StringUtils.isNotBlank(cabinetDoorEvent.getId())){//id不为空时
+			cabinetEventId = cabinetDoorEvent.getId();
 		}else{
-			cabinetDoorEvent.setId(EssPdfUtil.genrRandomUUID());
+			cabinetEventId = EssPdfUtil.genrRandomUUID();
+			cabinetDoorEvent.setId(cabinetEventId);
 			cabinetDoorEventDao.save(cabinetDoorEvent);
+//			cabinetDoorEventDao.addPic(cabinetDoorEvent.getId(),EssPdfUtil.genrRandomUUID());
 		}
+		return cabinetEventId;
+	}
+
+	@Transactional(readOnly = false)
+	public void send(String id){
+		cabinetDoorEventDao.send(id);
+	}
+
+	@Transactional(readOnly = false)
+	public void sendAll(){
+		cabinetDoorEventDao.sendAll();
 	}
 	
 	/**
@@ -154,10 +187,11 @@ public class CabinetDoorEventService {
 				checkInfo.setEmployeeNumber(e.getEmployeeNumber());
 				checkInfo.setRemark("未交手机");
 				checkInfo.setEmployeeName(e.getEmployeeName());
-				CabinetDoor cabinetDoor = cabinetDoorDao.selectDoorByEmployeeId(e.getId());
-				if(cabinetDoor!=null){
-					checkInfo.setCabinetDoorNumber(cabinetDoor.getCabinetDoorNumber());
-				}
+				checkInfo.setCabinetDoorNumber("");
+				//CabinetDoor cabinetDoor = cabinetDoorDao.selectDoorByEmployeeId(e.getId());
+//				if(cabinetDoor!=null){
+//					checkInfo.setCabinetDoorNumber(cabinetDoor.getCabinetDoorNumber());
+//				}
 				checkInfo.setDepartmentName(departmentDao.findUniqueById(e.getDepartmentId()).getDepartmentName());
 				checkInfoArrayList.add(checkInfo);
 			}
@@ -165,6 +199,11 @@ public class CabinetDoorEventService {
 		return checkInfoArrayList;
 	}
 
+
+	//获取所有待推送事件
+	public List<CabinetDoorEvent> findAllNeedSend(){
+		return cabinetDoorEventDao.findAllNeedSend();
+	}
 
 
 }

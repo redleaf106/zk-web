@@ -42,5 +42,7 @@
     <orderEntry type="library" name="xfire-core-1.2.6" level="project" />
     <orderEntry type="library" name="xfire" level="project" />
     <orderEntry type="library" name="jna" level="project" />
+    <orderEntry type="library" name="jave-1.0.2" level="project" />
+    <orderEntry type="library" name="mybatis-3.1.1" level="project" />
   </component>
 </module>

@@ -8,12 +8,14 @@ import cn.org.bjca.zk.db.entity.*;
 import cn.org.bjca.zk.platform.bean.Message;
 import cn.org.bjca.zk.platform.exception.DialogException;
 import cn.org.bjca.zk.platform.service.*;
-import cn.org.bjca.zk.platform.tools.CabinetDoorServer;
 import cn.org.bjca.zk.platform.tools.CreateDayCheckUtils;
+import cn.org.bjca.zk.platform.tools.SocketServer;
+import cn.org.bjca.zk.platform.utils.EssPdfUtil;
 import cn.org.bjca.zk.platform.vo.HTFOAResult;
 import cn.org.bjca.zk.platform.web.controller.AutoRunTask;
 import cn.org.bjca.zk.platform.web.controller.BaseController;
 import cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage;
+import cn.org.bjca.zk.platform.web.page.EventInfoPage;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -25,7 +27,9 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -34,6 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -51,6 +56,8 @@ import java.util.*;
  ***************************************************************************/
 @Controller
 @RequestMapping("/cabinet/cabinetDoorEvent")
+@EnableAsync
+@Service
 public class CabinetDoorEventController extends BaseController {
 
 	@Autowired
@@ -71,6 +78,12 @@ public class CabinetDoorEventController extends BaseController {
 	@Autowired
 	private CabinetService cabinetService;
 
+	@Autowired
+	private MonitorService monitorService;
+
+	@Autowired
+	private SendEventToKM sendEventToKM;
+
 
 	/**
 	 * <p>角色管理列表</p>
@@ -79,7 +92,7 @@ public class CabinetDoorEventController extends BaseController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping("")
+	@RequestMapping("kk")
 	public String list(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		CabinetDoorEventPage<CabinetDoorEvent> cabinetDoorEventPage = new CabinetDoorEventPage<CabinetDoorEvent>();
 		Page page = new Pagination();
@@ -89,11 +102,11 @@ public class CabinetDoorEventController extends BaseController {
 			page.setCurrentPage(Integer.parseInt(pageNum));
 		}
 		String numPerPage = request.getParameter("numPerPage");//每页显示条数
-		numPerPage = "300";
 		if(StringUtils.isNotBlank(numPerPage)) {
 			page.setPageSize(Integer.parseInt(numPerPage));
+		}else{
+			page.setPageSize(300);
 		}
-
 		String cabinetNumber = request.getParameter("cabinetNumber");//机柜编号
 		if(StringUtils.isNotBlank(cabinetNumber)) {
 			cabinetDoorEventPage.setCabinetNumber("%"+cabinetNumber.trim()+"%");
@@ -103,8 +116,6 @@ public class CabinetDoorEventController extends BaseController {
 		if(StringUtils.isNotBlank(cabinetDoorNumber)) {
 			cabinetDoorEventPage.setCabinetDoorNumber("%"+cabinetDoorNumber.trim()+"%");
 		}
-
-
 		cabinetDoorEventPage.setPageVO(page);
 		cabinetDoorEventPage = cabinetDoorEventService.findPage(cabinetDoorEventPage);
 		cabinetDoorEventPage.setCabinetNumber(cabinetNumber);
@@ -118,6 +129,44 @@ public class CabinetDoorEventController extends BaseController {
 		return "/cabinet/cabinetDoorEvent/cabinetDoorEventList";
 	}
 
+	@RequestMapping("")
+	public String eventInfoList(ModelMap modelMap, HttpServletRequest request)throws IOException{
+		EventInfoPage<EventInfo> eventInfoPage = new EventInfoPage<EventInfo>();
+		Page page = new Pagination();
+		String pageNum = request.getParameter("pageNum");//当前页码
+		String source = request.getParameter("source");//请求来源
+		if(StringUtils.isNotBlank(pageNum)) {
+			page.setCurrentPage(Integer.parseInt(pageNum));
+		}
+		String numPerPage = request.getParameter("numPerPage");//每页显示条数
+		if(StringUtils.isNotBlank(numPerPage)) {
+			page.setPageSize(Integer.parseInt(numPerPage));
+		}else{
+			page.setPageSize(300);
+		}
+		String cabinetNumber = request.getParameter("cabinetNumber");//机柜编号
+		if(StringUtils.isNotBlank(cabinetNumber)) {
+			eventInfoPage.setCabinetNumber("%"+cabinetNumber.trim()+"%");
+		}
+		String cabinetDoorName = request.getParameter("cabinetDoorNumber");//柜门编号
+		if(StringUtils.isNotBlank(cabinetDoorName)) {
+			eventInfoPage.setCabinetDoorName("%"+cabinetDoorName.trim()+"%");
+		}
+		eventInfoPage.setPageVO(page);
+		eventInfoPage = cabinetDoorEventService.findEventInfoPage(eventInfoPage);
+		eventInfoPage.setCabinetNumber(cabinetNumber);
+		eventInfoPage.setCabinetDoorName(cabinetDoorName);
+		modelMap.put("eventInfoPage", eventInfoPage);
+		return "/cabinet/cabinetDoorEvent/eventInfoList";
+	}
+
+	@RequestMapping("testEventInfo")
+    @ResponseBody
+    public String testEventInfo(){
+	    List<EventInfo> list = cabinetDoorEventService.test();
+	   return JSONObject.toJSONString(list);
+    }
+
 	@RequestMapping(value = "saveOrUpdate")
 	public ModelAndView saveOrUpdate(@RequestBody CabinetDoorEvent CabinetDoorEvent, HttpServletRequest request) throws DialogException {
 		try {
@@ -130,6 +179,8 @@ public class CabinetDoorEventController extends BaseController {
 			cabinetDoor.setCabinetDoorNumber(cabinetDoorNumber);
 			Cabinet cabinet = cabinetService.findByCabinetNumber(cabinetNumber);
 			CabinetDoor cabinetDoorResult = cabinetDoorService.selectDoorByCabinetIdAndCabinetDoorNumber(cabinet.getId(),cabinetDoorNumber);
+			cabinetDoorResult.setDoorOptTime(new Timestamp(new Date().getTime()));
+			cabinetDoorService.saveOrUpdate(cabinetDoorResult);
 			int status = Integer.parseInt(CabinetDoorEvent.getStatus());
 			if(status==0||status==2){
 				doorStatus = "1";
@@ -137,68 +188,84 @@ public class CabinetDoorEventController extends BaseController {
 				doorStatus = "2";
 			}
 			cabinetDoorResult.setStatus(doorStatus);
-			if(status==4||status==2){
+			String icCardNumber = CabinetDoorEvent.getEmployeeCardNumber();
+			//根据卡号查找工号
+			Employee employeeResult = employeeService.findByicCardNumber(icCardNumber);
+//			CabinetDoorEvent.setEmployeeCardNumber(employeeResult.getEmployeeNumber());
+			if(status==4||status==2){//这个是判断晚存和紧急for金鹰
 				System.out.println("紧急开门");
-				UrgentEvent urgentEvent = new UrgentEvent();
-				if(Integer.parseInt(CabinetDoorEvent.getStatus())==4){
-					urgentEvent.setStatus(0);//紧急事件
-				}else if(Integer.parseInt(CabinetDoorEvent.getStatus())==2){
-					urgentEvent.setStatus(1);//晚存事件
-				}
-				String icCardNumber = CabinetDoorEvent.getEmployeeCardNumber();
-				//根据卡号查找工号
-				Employee employeeResult = employeeService.findByicCardNumber(icCardNumber);
-				if(employeeResult==null){
-					message.setContent("员工卡号不存在");
-					return this.ajaxDone(message);
-				}
-				urgentEvent.setEmployeeCardNumber(employeeResult.getEmployeeNumber());
-				String employeeName = employeeResult.getEmployeeName();
-				System.out.println("员工姓名为"+employeeName);
-				urgentEvent.setEmployeeName(employeeName);
-				urgentEvent.setRemark(CabinetDoorEvent.getRemark());
+				UrgentEvent urgentEvent = sendEventToKM.createUrgent(CabinetDoorEvent,employeeResult);
 				cabinetDoorEventService.insertUrgentEvent(urgentEvent);
-			}else if(Integer.parseInt(CabinetDoorEvent.getStatus())>1){
-				System.out.println("存取出现异常行为");
-				//emailService.sendOneMail(CabinetDoorEvent);
-			}else {
-
-				if (StringUtils.isNotBlank(CabinetDoorEvent.getId()))
-					message.setContent(this.UPDATE);//内容提示
-				else {
-					message.setContent(this.SAVE);//内容提示
-				}
 			}
-			//User user = (User) request.getSession().getAttribute(PDFSealConstants.SESSION_USER);
+			if (StringUtils.isNotBlank(CabinetDoorEvent.getId()))
+				message.setContent(this.UPDATE);//内容提示
+			else {
+				message.setContent(this.SAVE);//内容提示
+				cabinetDoor.setId(EssPdfUtil.genrRandomUUID());
+			}
 			CabinetDoorEvent.setRemark(CabinetDoorEvent.getRemark().replace(" ",""));
-			cabinetDoorEventService.saveOrUpdate(CabinetDoorEvent);
+			String cabinetEventId = cabinetDoorEventService.saveOrUpdate(CabinetDoorEvent);
 			cabinetDoorService.saveOrUpdate(cabinetDoorResult);
-//			List<CabinetDoor> list = cabinetDoorService.findByCabinetNumberAndDoorNumber(CabinetDoorEvent.getCabinetNumber(), CabinetDoorEvent.getCabinetDoorNumber());
-//			if(list.size()>0){
-//				CabinetDoor cabinetDoor = list.get(0);
-//				//存取次数+1
-//				cabinetDoor.setAccessCount(cabinetDoor.getAccessCount()+1);
-//				cabinetDoorService.saveOrUpdate(cabinetDoor);
-//			}
 			message.setStatusCode(this.SUCCESS);
 			message.setCallbackType("closeCurrent");
 			message.setNavTabId("cabinetDoorEvent");
+			CabinetDoorEvent.setCabinetIp(cabinet.getCabinetIP());
+			sendEventToKM.sendEventMessageToKM(CabinetDoorEvent,employeeResult.getEmployeeNumber());
+			Date date = new Date(CabinetDoorEvent.getDoorOptTime().getTime());
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String startTime = simpleDateFormat.format(date);
+			sendEventToKM.createPic(CabinetDoorEvent,startTime);
 			return this.ajaxDone(message);
 		}catch (Exception ex){
 			throw new DialogException(ex);
 		}
 	}
 
-	/**
-	 * <p>指向编辑表单页面</p>
-	 * @Description:
-	 * @return
-	 */
+//	@RequestMapping("")
+	public String eventInfoList(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		EventInfoPage<EventInfo> eventInfoPage = new EventInfoPage<EventInfo>();
+		Page page = new Pagination();
+		String pageNum = request.getParameter("pageNum");//当前页码
+		String source = request.getParameter("source");//请求来源
+		if(StringUtils.isNotBlank(pageNum)) {
+			page.setCurrentPage(Integer.parseInt(pageNum));
+		}
+		String numPerPage = request.getParameter("numPerPage");//每页显示条数
+		numPerPage = "300";
+		if(StringUtils.isNotBlank(numPerPage)) {
+			page.setPageSize(Integer.parseInt(numPerPage));
+		}
+		String cabinetNumber = request.getParameter("cabinetNumber");//机柜编号
+		if(StringUtils.isNotBlank(cabinetNumber)) {
+			eventInfoPage.setCabinetNumber("%"+cabinetNumber.trim()+"%");
+		}
+
+		String cabinetDoorName = request.getParameter("cabinetDoorName");//柜门编号
+		if(StringUtils.isNotBlank(cabinetDoorName)) {
+			eventInfoPage.setCabinetDoorName("%"+cabinetDoorName.trim()+"%");
+		}
+		eventInfoPage.setPageVO(page);
+		eventInfoPage = cabinetDoorEventService.findEventInfoPage(eventInfoPage);
+		modelMap.put("eventInfoPage", eventInfoPage);
+		eventInfoPage.setCabinetNumber(cabinetNumber);
+		eventInfoPage.setCabinetDoorName(cabinetDoorName);
+		return "/cabinet/cabinetDoorEvent/eventInfoList";
+
+	}
+
+		/**
+         * <p>指向编辑表单页面</p>
+         * @Description:
+         * @return
+         */
 	@RequestMapping(value = "toDetailPage/{id}", method = RequestMethod.GET)
 	public String toDetailPage(@PathVariable String id,ModelMap modelMap) throws Exception {
 		CabinetDoorEvent cabinetDoorEvent = null;
 		if(StringUtils.isNotBlank(id)&& !BLANK_PARAM_VALUE.equals(id)){
 			cabinetDoorEvent = cabinetDoorEventService.findUniqueById(id);
+		}else if(BLANK_PARAM_VALUE.equals(id)){
+			List<Cabinet> cabinetList = cabinetService.getAll();
+			modelMap.put("cabinetList",cabinetList);
 		}
 		modelMap.put("cabinetDoorEvent",cabinetDoorEvent);
 		return "/cabinet/cabinetDoorEvent/cabinetDoorEventDetail";
@@ -214,8 +281,8 @@ public class CabinetDoorEventController extends BaseController {
 	@ResponseBody
 	public String openSocketServer(){
 		System.out.println("server start...");
-		CabinetDoorServer cabinetDoorServer = CabinetDoorServer.getInstance();
-		cabinetDoorServer.openDoor("192.168.3.140", "1");
+		SocketServer socketServer = SocketServer.getInstance();
+		socketServer.sendDoorMessage("0","192.168.3.140", "1");
 		return "success";
 	}
 
@@ -592,5 +659,122 @@ public class CabinetDoorEventController extends BaseController {
 		}
 	}
 
+	@ResponseBody
+	@RequestMapping("testVideo")
+	public String testVideo(String cabinetNumber, String cabinetDoorEventId,String startTime){
+		new SendEventToKM().createVideos(cabinetNumber,cabinetDoorEventId,startTime);
+		return "hello hikvision";
+	}
+
+	@ResponseBody
+	@RequestMapping("testConVideo")
+	public String testConVideo(String oldpath,String newpath){
+		new SendEventToKM().conVideo(oldpath,newpath);
+		return "hello hikvision";
+	}
+
+	@RequestMapping("todayVideo")
+	public void todayVideo(String date) throws ParseException {
+        SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		List<CabinetDoorEvent> list = cabinetDoorEventService.findOneDay(simpleDateFormat1.parse(date));
+		SendEventToKM sendEventToKM = new SendEventToKM();
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		for(CabinetDoorEvent cabinetDoorEvent:list){
+			long l = cabinetDoorEvent.getDoorOptTime().getTime();
+			Date date1 = new Date(l);
+			String starttime = simpleDateFormat.format(date1);
+			sendEventToKM.createVideos(cabinetDoorEvent.getCabinetNumber(),cabinetDoorEvent.getId(),starttime);
+		}
+	}
+
+	@RequestMapping("jiematodayVideo")
+	public void jiemaTodayVideo(String date) throws ParseException {
+	    SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		List<CabinetDoorEvent> list = cabinetDoorEventService.findOneDay(simpleDateFormat1.parse(date));
+		String filePath = "/usr/share/tomcat/hk/HKVideos/";
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+		SendEventToKM sendEventToKM = new SendEventToKM();
+		for(CabinetDoorEvent cabinetDoorEvent:list){
+			Date date1 = new Date();
+			String fileName = simpleDateFormat.format(date1)+".mp4";
+			String newpath = filePath+fileName;
+			String oldpath = filePath+cabinetDoorEvent.getId()+".mp4";
+			sendEventToKM.conVideo(oldpath,newpath);
+			monitorService.addVideo(cabinetDoorEvent.getId(),fileName);
+			try {
+				Thread.sleep(4000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+
+	@ResponseBody
+	@RequestMapping("testPic")
+	public String testPic(String startTime){
+		new SendEventToKM().createPic(new CabinetDoorEvent(),startTime);
+		return "hello hikvision";
+	}
+
+	@RequestMapping(value = "sendEventToKM")
+	public void sendEventToKM(@RequestBody CabinetDoorEvent cabinetDoorEvent, HttpServletRequest request) throws DialogException {
+		try {
+			//new SendEventToKM().sendEventMessageToKM(cabinetDoorEvent);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	@RequestMapping("showMonitorPic")
+	public String showPic(String picFilePath, ModelMap modelMap){
+		modelMap.addAttribute("picFilePath",picFilePath);
+		return "/cabinet/cabinetDoorEvent/showPic";
+	}
+
+	@RequestMapping("showMonitorVideo")
+	public String showVideo(String videoFilePath, ModelMap modelMap){
+		modelMap.addAttribute("videoFilePath",videoFilePath);
+		return "/cabinet/cabinetDoorEvent/showVideo";
+	}
+
+	@RequestMapping("sendAllEvent")
+	@ResponseBody
+	public String sendAllEvent(){
+		List<CabinetDoorEvent> cabinetDoorEventList = cabinetDoorEventService.findAllNeedSend();
+		cabinetDoorEventService.sendAll();
+		for(CabinetDoorEvent cabinetDoorEvent:cabinetDoorEventList){
+			String icCard = cabinetDoorEvent.getEmployeeCardNumber();
+			Employee employee = employeeService.findByicCardNumber(icCard);
+			try {
+				cabinetDoorEvent.setTemporaryStatus(0);
+				sendEventToKM.sendEventMessageToKM(cabinetDoorEvent,employee.getEmployeeNumber());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		Message message = new Message();
+		message.setStatusCode(this.SUCCESS);
+		message.setContent(this.UPDATE);//内容提示
+		return this.toJsonString(message);
+	}
+
+	@RequestMapping(value = "sendOneEvent", method = RequestMethod.GET)
+	public String sendOneEvent(String id,ModelMap modelMap){
+		cabinetDoorEventService.send(id);
+		CabinetDoorEvent cabinetDoorEvent = cabinetDoorEventService.findUniqueById(id);
+		String icCard = cabinetDoorEvent.getEmployeeCardNumber();
+		Employee employee = employeeService.findByicCardNumber(icCard);
+		try {
+			sendEventToKM.sendEventMessageToKM(cabinetDoorEvent,employee.getEmployeeNumber());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Message message = new Message();
+		message.setStatusCode(this.SUCCESS);
+		message.setContent(this.DELETE);//内容提示
+		return this.toJsonString(message);
+	}
 
 }

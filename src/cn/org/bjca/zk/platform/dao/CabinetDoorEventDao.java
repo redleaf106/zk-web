@@ -5,8 +5,10 @@ package cn.org.bjca.zk.platform.dao;
 
 import cn.org.bjca.zk.db.entity.CabinetDoorEvent;
 import cn.org.bjca.zk.db.entity.CheckInfo;
+import cn.org.bjca.zk.db.entity.EventInfo;
 import cn.org.bjca.zk.db.entity.UrgentEvent;
 import cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage;
+import cn.org.bjca.zk.platform.web.page.EventInfoPage;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Select;
 
@@ -35,6 +37,10 @@ public interface CabinetDoorEventDao {
 	  * @return
 	 */
 	List<CabinetDoorEvent> findPage(CabinetDoorEventPage<CabinetDoorEvent> webPage);
+
+	List<CabinetDoorEvent> findTemporaryPage(CabinetDoorEventPage<CabinetDoorEvent> webPage);
+
+	List<EventInfo> findEventPage(EventInfoPage<EventInfo> eventInfoPage);
 	
 	/**
 	  * <p>根据id删除记录</p>
@@ -51,7 +57,9 @@ public interface CabinetDoorEventDao {
 	 */
 	void save(CabinetDoorEvent cabinetDoorEvent);
 	
-	
+	void send(String id);
+
+	void sendAll();
 	/**
 	  * <p>根据ID查询对象</p>
 	  * @Description:
@@ -91,6 +99,14 @@ public interface CabinetDoorEventDao {
 	List<UrgentEvent> getAllUnactivatedUrgentEvent();
 
 	int updateUrgentEventEmailStatus(int id);
+
+	int addPic(String cabinetDoorEventId, String picFilePath);
+
+	int addVideo(String cabinetDoorEventId, String videoFilePath);
+
+	List<EventInfo> test();
+
+	List<CabinetDoorEvent> findAllNeedSend();
 
 
 

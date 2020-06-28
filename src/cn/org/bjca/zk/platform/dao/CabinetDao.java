@@ -70,7 +70,7 @@ public interface CabinetDao {
 	  * @Description:
 	  * @return
 	 */
-	@Select("SELECT * FROM BO_CABINET")
+	@Select("SELECT * FROM BO_CABINET ORDER BY CABINETNUMBER DESC")
 	List<Cabinet> getAll();
 	
 	/**

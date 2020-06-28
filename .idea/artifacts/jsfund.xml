@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="war" name="jsfund">
-    <output-path>$PROJECT_DIR$/out/artifacts/jsfund</output-path>
-    <root id="archive" name="jsfund.war">
-      <element id="artifact" artifact-name="zk-web:war exploded" />
-    </root>
-  </artifact>
-</component>

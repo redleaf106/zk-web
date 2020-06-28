@@ -3,37 +3,6 @@
  */
 package cn.org.bjca.zk.platform.web.controller.api;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-
-import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import cn.org.bjca.zk.db.entity.CabinetDoorEvent;
 import cn.org.bjca.zk.db.entity.Department;
 import cn.org.bjca.zk.db.entity.SoftwarePackage;
@@ -44,12 +13,31 @@ import cn.org.bjca.zk.platform.service.CabinetDoorEventService;
 import cn.org.bjca.zk.platform.service.DepartmentService;
 import cn.org.bjca.zk.platform.service.EmployeeService;
 import cn.org.bjca.zk.platform.service.SoftwarePackageService;
-import cn.org.bjca.zk.platform.web.controller.api.vo.CabinetDoorEventRequest;
-import cn.org.bjca.zk.platform.web.controller.api.vo.CabinetDoorEventResponse;
-import cn.org.bjca.zk.platform.web.controller.api.vo.DepartmentResponse;
-import cn.org.bjca.zk.platform.web.controller.api.vo.EmployeeRegisterRequest;
-import cn.org.bjca.zk.platform.web.controller.api.vo.EmployeeRegisterResponse;
-import cn.org.bjca.zk.platform.web.controller.api.vo.SoftwarePackageResponse;
+import cn.org.bjca.zk.platform.web.controller.api.vo.*;
+import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /***************************************************************************
 
@@ -136,6 +124,9 @@ public class CabinetServiceAPI {
 	public @ResponseBody SoftwarePackageResponse getSoftwarePackageInfo() {
 		SoftwarePackage softwarePackage = softwarePackageService.getLatestSoftwarePackage();
 		SoftwarePackageResponse softwarePackageResponse = new SoftwarePackageResponse();
+		if(softwarePackage==null){
+			return softwarePackageResponse;
+		}
 		softwarePackageResponse.setApkMd5(softwarePackage.getDigest());
 		softwarePackageResponse.setApkSize(softwarePackage.getSize());
 		softwarePackageResponse.setDownloadUrl(String.format("%s/%s", address,softwarePackage.getId()));

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package cn.org.bjca.zk.platform.web.controller.employee;
 
@@ -11,9 +11,11 @@ import cn.org.bjca.zk.platform.PDFSealConstants;
 import cn.org.bjca.zk.platform.bean.Message;
 import cn.org.bjca.zk.platform.exception.DialogException;
 import cn.org.bjca.zk.platform.service.DepartmentService;
+import cn.org.bjca.zk.platform.tools.SocketServer;
 import cn.org.bjca.zk.platform.utils.EssPdfUtil;
 import cn.org.bjca.zk.platform.web.controller.BaseController;
 import cn.org.bjca.zk.platform.web.page.DepartmentPage;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.cn.bjca.seal.esspdf.core.pagination.page.Page;
 import com.cn.bjca.seal.esspdf.core.pagination.page.Pagination;
@@ -28,6 +30,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 /***************************************************************************
@@ -36,7 +40,7 @@ import java.util.List;
  * @包   路   径： cn.org.bjca.zk.platform.web.controller.employee
  * @版权所有：北京数字认证股份有限公司 (C) 2019
  *
- * @类描述:  
+ * @类描述:
  * @版本: V2.0
  * @创建人： gaozhijiang
  * @创建时间：2019年11月27日
@@ -50,35 +54,50 @@ public class DepartmentController extends BaseController {
 	 */
 	@Autowired
 	private DepartmentService departmentService;
-	
+
 	/**
-	  * <p>角色管理列表</p>
-	  * @Description:
-	  * @param model
-	  * @param request
-	  * @return
+	 * <p>角色管理列表</p>
+	 * @Description:
+	 * @param
+	 * @param request
+	 * @return
 	 */
 	@RequestMapping("")
-	public String list(ModelMap modelMap,HttpServletRequest request) {
+	public String list(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) {
 		DepartmentPage<Department> departmentPage = new DepartmentPage<Department>();
-        Page page = new Pagination();
-        String pageNum = request.getParameter("pageNum");//当前页码
+		Page page = new Pagination();
+		String from = request.getParameter("from");
+		String pageNum = request.getParameter("pageNum");//当前页码
 		if(StringUtils.isNotBlank(pageNum)) {
 			page.setCurrentPage(Integer.parseInt(pageNum));
 		}
-        String numPerPage = request.getParameter("numPerPage");//每页显示条数
-        if(StringUtils.isNotBlank(numPerPage)) {
+		String numPerPage = request.getParameter("numPerPage");//每页显示条数
+		if(StringUtils.isNotBlank(numPerPage)) {
 			page.setPageSize(Integer.parseInt(numPerPage));
+		}else{
+			page.setPageSize(30);
 		}
 
 		String departmentName = request.getParameter("departmentName");//角色名称
 		if(StringUtils.isNotBlank(departmentName)) {
 			departmentPage.setDepartmentName("%"+departmentName.trim()+"%");
 		}
-
+		if("android".equals(from)){
+			page.setPageSize(1000);
+		}
 		departmentPage.setPageVO(page);
 		departmentPage = departmentService.findPage(departmentPage);
 		departmentPage.setDepartmentName(departmentName);
+		System.out.println(departmentPage.getData().get(0).getTimeAreas().get(0).getStartTime().getTime());
+		System.out.println(departmentPage.getData().get(0).getTimeAreas().get(0).getStartTime());
+		if("android".equals(from)){
+			try {
+				response.getWriter().write(JSONArray.toJSONString(departmentPage.getData()));
+				return null;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		modelMap.put("departmentPage", departmentPage);
 		return "/employee/department/departmentList";
 	}
@@ -91,9 +110,9 @@ public class DepartmentController extends BaseController {
 	}
 
 	/**
-	  * <p>指向编辑表单页面</p>
-	  * @Description:
-	  * @return
+	 * <p>指向编辑表单页面</p>
+	 * @Description:
+	 * @return
 	 */
 	@RequestMapping(value = "toEditFormPage/{id}", method = RequestMethod.GET)
 	public String toEditFormPage(@PathVariable String id,ModelMap modelMap) throws Exception {
@@ -107,19 +126,24 @@ public class DepartmentController extends BaseController {
 		modelMap.put("department",department);
 		return "/employee/department/departmentForm";
 	}
-	
+
 	/**
-	  * <p>保存或更新表单信息</p>
-	  * @Description:
-	  * @param signKey
-	  * @return
+	 * <p>保存或更新表单信息</p>
+	 * @Description:
+	 * @param
+	 * @return
 	 */
 	@RequestMapping(value = "saveOrUpdate")
 	public ModelAndView saveOrUpdate(Department department,HttpServletRequest request) throws DialogException {
 		try{
 			Message message = new Message();
-			if(StringUtils.isNotBlank(department.getId()))
+			boolean flag = false;
+			if(StringUtils.isNotBlank(department.getId())){
 				message.setContent(this.UPDATE);//内容提示
+				if(department.getEndTime().size()>0&&department.getStartTime().size()>0){
+					flag = true;
+				}
+			}
 			else{
 				message.setContent(this.SAVE);//内容提示
 			}
@@ -133,6 +157,12 @@ public class DepartmentController extends BaseController {
 				}
 			}
 			departmentService.saveOrUpdate(department);
+			if(flag){
+				List<String> startTime = department.getStartTime();
+				List<String> endTime = department.getEndTime();
+				SocketServer socketServer = SocketServer.getInstance();
+				socketServer.updateDepartmentTime(department.getDepartmentName(),startTime,endTime);
+			}
 			message.setStatusCode(this.SUCCESS);
 			message.setCallbackType("closeCurrent");
 			message.setNavTabId("department");
@@ -167,14 +197,14 @@ public class DepartmentController extends BaseController {
 		jsonObject.put("code", status);
 		return jsonObject.toString();
 	}
-	
+
 	/**
-	  * <p>根据id删除记录</p>
-	  * @Description:
-	  * @param id ,id主键
-	  * @param model
-	  * @return
-	 * @throws DialogException 
+	 * <p>根据id删除记录</p>
+	 * @Description:
+	 * @param id ,id主键
+	 * @param id
+	 * @return
+	 * @throws DialogException
 	 */
 	@RequestMapping(value = "delete/{id}")
 	public @ResponseBody String delete(@PathVariable("id") String id) throws DialogException {
@@ -187,5 +217,22 @@ public class DepartmentController extends BaseController {
 		}catch(Exception ex){
 			throw new DialogException(ex);
 		}
+	}
+
+	@RequestMapping("updateDepartmentTime")
+	@ResponseBody
+	public String updateDepartmentTime(int timeStartIndex, int timeEndIndex){
+		System.out.println(timeStartIndex);
+		System.out.println(timeEndIndex);
+		Message message = new Message();
+		message.setStatusCode(this.SUCCESS);
+		message.setContent(this.UPDATE);//内容提示
+		if(timeStartIndex!=0||timeEndIndex!=0){
+			departmentService.updateDepartmentTime(timeStartIndex,timeEndIndex);
+			List<Department> list = departmentService.getAll();
+			SocketServer socketServer = SocketServer.getInstance();
+			socketServer.updateDepartmentTime(list);
+		}
+		return this.toJsonString(message);
 	}
 }

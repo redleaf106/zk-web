@@ -8,6 +8,7 @@ import cn.org.bjca.zk.platform.PDFSealConstants;
 import cn.org.bjca.zk.platform.service.MenuService;
 import cn.org.bjca.zk.platform.service.RoleMenuService;
 import cn.org.bjca.zk.platform.service.UserService;
+import cn.org.bjca.zk.platform.tools.SocketServer;
 import cn.org.bjca.zk.platform.utils.DateUtil;
 import cn.org.bjca.zk.platform.utils.PDFSealUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -244,6 +245,14 @@ public class LoginController extends BaseController {
 	@RequestMapping(value = "/checkLogin")
 	@ResponseBody
 	public String checkLogin(){
+		return "success";
+	}
+
+	@ResponseBody
+	@RequestMapping("openServer")
+	public String openServer(){
+		SocketServer socketServer = SocketServer.getInstance();
+		socketServer.init();
 		return "success";
 	}
 

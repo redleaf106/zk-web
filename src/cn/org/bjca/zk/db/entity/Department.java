@@ -77,4 +77,14 @@ public class Department extends IdEntity {
 		this.timeAreas = timeAreas;
 	}
 
+	@Override
+	public String toString() {
+		return "Department{" +
+				"departmentName='" + departmentName + '\'' +
+				", departmentNumber='" + departmentNumber + '\'' +
+				", startTime=" + startTime +
+				", endTime=" + endTime +
+				", timeAreas=" + timeAreas +
+				'}';
+	}
 }

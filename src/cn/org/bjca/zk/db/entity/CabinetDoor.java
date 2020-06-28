@@ -1,7 +1,6 @@
 package cn.org.bjca.zk.db.entity;
 
 import java.sql.Timestamp;
-import java.util.Date;
 
 /**
    *  机柜门实体
@@ -29,6 +28,13 @@ public class CabinetDoor extends IdEntity {
 	 * 柜门编号
 	 */
 	private String cabinetDoorNumber;
+
+	/**
+	 * 柜门名称
+	 */
+	private String cabinetDoorName;
+
+
 	/**
 	 * 机柜
 	 */
@@ -48,7 +54,7 @@ public class CabinetDoor extends IdEntity {
 	 */
 	private String status;
 	
-	private Timestamp  doorOptTime = new Timestamp(new Date().getTime());// 操作时间
+	private Timestamp  doorOptTime;// 操作时间
 	
 	
 	/**
@@ -110,7 +116,14 @@ public class CabinetDoor extends IdEntity {
 		this.status = status;
 	}
 
-	
+	public String getCabinetDoorName() {
+		return cabinetDoorName;
+	}
+
+	public void setCabinetDoorName(String cabinetDoorName) {
+		this.cabinetDoorName = cabinetDoorName;
+	}
+
 	public Timestamp getDoorOptTime() {
 		return doorOptTime;
 	}

@@ -1,16 +1,15 @@
 package cn.org.bjca.zk.platform.web.controller;
 
+import cn.org.bjca.zk.db.entity.CabinetDoorEvent;
 import cn.org.bjca.zk.db.entity.CheckInfo;
 import cn.org.bjca.zk.db.entity.Employee;
 import cn.org.bjca.zk.db.entity.HTFCheck;
-import cn.org.bjca.zk.platform.service.CabinetDoorEventService;
-import cn.org.bjca.zk.platform.service.CheckListService;
-import cn.org.bjca.zk.platform.service.EmployeeService;
-import cn.org.bjca.zk.platform.service.MessageService;
+import cn.org.bjca.zk.platform.service.*;
 import cn.org.bjca.zk.platform.tools.CreateDayCheckUtils;
 import cn.org.bjca.zk.platform.tools.HtfOainterface;
 import cn.org.bjca.zk.platform.utils.MD5Util;
 import cn.org.bjca.zk.platform.vo.HTFOAResult;
+import cn.org.bjca.zk.platform.web.controller.cabinet.SendEventToKM;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.http.HttpEntity;
@@ -59,6 +58,9 @@ public class AutoRunTask {
 
     @Autowired
     private CheckListService checkListService;
+
+    @Autowired
+    private MonitorService monitorService;
 
 
     private final static String MESSAGEURL = "http://10.50.115.157:10090/messagesend";//短信接口地址
@@ -152,7 +154,7 @@ public class AutoRunTask {
     }
 
     //定时任务
-    @Scheduled(cron = "0 0 19 * * ?")//下午19点生成日报表
+    //@Scheduled(cron = "0 0 19 * * ?")//下午19点生成日报表
     public void createDayClock(){
         List<CheckInfo> listMata = cabinetDoorEventService.findDayInfo(new Date());//获取当天存取记录
         List<CheckInfo> responseList = new LinkedList<>();
@@ -469,6 +471,42 @@ public class AutoRunTask {
             return "出差";
         }else{
             return "获取失败";
+        }
+    }
+
+    //获取视频
+    @Scheduled(cron = "0 0 22 * * ?")
+    public void getVideos(){
+        List<CabinetDoorEvent> list = cabinetDoorEventService.findOneDay(new Date());
+        SendEventToKM sendEventToKM = new SendEventToKM();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        for(CabinetDoorEvent cabinetDoorEvent:list){
+            long l = cabinetDoorEvent.getDoorOptTime().getTime();
+            Date date = new Date(l);
+            String starttime = simpleDateFormat.format(date);
+            sendEventToKM.createVideos(cabinetDoorEvent.getCabinetNumber(),cabinetDoorEvent.getId(),starttime);
+        }
+    }
+
+    //视频解码
+    @Scheduled(cron = "0 0 23 * * ?")
+    public void petVideos(){
+        List<CabinetDoorEvent> list = cabinetDoorEventService.findOneDay(new Date());
+        String filePath = "/usr/share/tomcat/hk/HKVideos/";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        SendEventToKM sendEventToKM = new SendEventToKM();
+        for(CabinetDoorEvent cabinetDoorEvent:list){
+            Date date = new Date();
+            String fileName = simpleDateFormat.format(date)+".mp4";
+            String newpath = filePath+fileName;
+            String oldpath = filePath+cabinetDoorEvent.getId()+".mp4";
+            sendEventToKM.conVideo(oldpath,newpath);
+            monitorService.addVideo(cabinetDoorEvent.getId(),fileName);
+            try {
+                Thread.sleep(4000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -16,6 +16,16 @@
 		</table>
 	</div>
 	</form>
+	<form onsubmit="return navTabSearch(this);" action="${ctx}/employee/employee/" method="post">
+		<div class="searchBar">
+			<table class="searchContent">
+				<input type="text" name="shixisheng" value="yes" style="display: none"/>
+				<tr>
+					<td><div class="buttonActive"><div class="buttonContent"><button id="shixisheng_submit" type="submit">实习生查看</button></div></div></td>
+				</tr>
+			</table>
+		</div>
+	</form>
 </div>
 
 <div class="pageContent" style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid">
@@ -23,7 +33,7 @@
 		<ul class="toolBar">
 			<li><a class="add" href="${ctx}/employee/employee/toEditFormPage/-1" target="navTab" ><span>添加员工</span></a></li>
 			<li class="line">line</li>
-			<li><a class="delete" href="${ctx}/employee/employee/delete/{sid_employee}" target="ajaxTodo" title="确定要删除吗?"><span>删除</span></a></li>
+			<li><a class="delete" href="${ctx}/employee/employee/deleteFace/{sid_employee}" target="ajaxTodo" title="确定要删除吗?"><span>删除</span></a></li>
 			<li class="line">line</li>
 			<li><a class="edit" href="${ctx}/employee/employee/toEditFormPage/{sid_employee}" target="navTab"><span>修改</span></a></li>
 		</ul>
@@ -54,7 +64,7 @@
 						<td >${item.email}</td>
 						<td><fmt:formatDate value="${item.optTime}" type="both" pattern="yyyy-MM-dd HH:mm:ss"/></td>			
 						<td><div class="center" style="width: 116px;">&nbsp;
-							<a title="确定要删除吗?" target="ajaxTodo" href="${ctx}/employee/employee/delete/${item.id}" class="btnDel">删除</a>&nbsp;&nbsp;&nbsp;&nbsp;   
+							<a title="确定要删除吗?" target="ajaxTodo" href="${ctx}/employee/employee/deleteFace/${item.id}" class="btnDel">删除</a>&nbsp;&nbsp;&nbsp;&nbsp;
 							<a title="修改" target="navTab" mask="true" href="${ctx}/employee/employee/toEditFormPage/${item.id}" class="btnEdit">修改</a>
 						</div>
 						</td>
@@ -65,12 +75,12 @@
 	<div class="panelBar">
 		<div class="pages">
 			<span>显示</span>
-			<select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value,pageNum:1}, 'employeeBox')">
-				<option value="10" <c:if test="${employeePage.pageVO.pageSize == 10}">selected="selected"</c:if>>10</option>
-				<option value="20" <c:if test="${employeePage.pageVO.pageSize == 20}">selected="selected"</c:if>>20</option>
-				<option value="50" <c:if test="${employeePage.pageVO.pageSize == 50}">selected</c:if>>50</option>
-				<option value="100" <c:if test="${employeePage.pageVO.pageSize == 100}">selected</c:if>>100</option>
-				<option value="200" <c:if test="${employeePage.pageVO.pageSize == 200}" >selected</c:if>>200</option>
+			<select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value,pageNum:1})">
+				<option value="100" <c:if test="${employeePage.pageVO.pageSize == 100}">selected="selected"</c:if>>100</option>
+				<option value="150" <c:if test="${employeePage.pageVO.pageSize == 150}">selected="selected"</c:if>>150</option>
+				<option value="200" <c:if test="${employeePage.pageVO.pageSize == 200}">selected</c:if>>200</option>
+				<option value="300" <c:if test="${employeePage.pageVO.pageSize == 300}">selected</c:if>>300</option>
+				<option value="500" <c:if test="${employeePage.pageVO.pageSize == 500}" >selected</c:if>>500</option>
 			</select>
 			<span>条，共${employeePage.pageVO.totalRows}条</span>
 		</div>
