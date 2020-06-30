@@ -41,7 +41,7 @@
 <div class="pageContent">
 	<div class="panelBar">
 		<ul class="toolBar">
-			<li><a class="add" href="${ctx}/cabinet/cabinetDoor/toEditFormPage/-1" target="navTab"><span>绑定柜门</span></a></li>
+			<li><a class="add" href="${ctx}/cabinet/cabinetDoor/chooseDoor" target="navTab"><span>绑定柜门</span></a></li>
 			<li class="line">line</li>
 			<li><a class="delete" href="${ctx}/cabinet/cabinetDoor/delete/{sid_cabinetDoor}" target="ajaxTodo" title="确定要删除吗?"><span>删除</span></a></li>
 			<%--<li class="line">line</li>--%>

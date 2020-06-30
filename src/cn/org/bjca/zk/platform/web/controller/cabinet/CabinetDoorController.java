@@ -146,7 +146,6 @@ public class CabinetDoorController extends BaseController {
 	}
 
 	@RequestMapping("chooseDoor")
-	@ResponseBody
 	public String chooseDoor(ModelMap modelMap,String cabinetId){
 		modelMap.addAttribute("flood","16");
 		return "/cabinet/cabinetDoor/index";
