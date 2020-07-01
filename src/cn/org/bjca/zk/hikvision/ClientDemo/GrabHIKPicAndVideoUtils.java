@@ -4,7 +4,11 @@ import com.sun.jna.NativeLong;
 import com.sun.jna.ptr.IntByReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -48,7 +52,7 @@ public class GrabHIKPicAndVideoUtils {
 		boolean initSuc = hCNetSDK.NET_DVR_Init();
 		if (initSuc) {
 			//录像机相关参数
-			String m_sDeviceIP = "192.168.18.100";//录像机ip
+			String m_sDeviceIP = "172.16.1.108";//录像机ip
 			//String m_sDeviceIP = "10.11.28.28";//录像机ip
 			int iPort = 8000;//录像机端口
 			String userName = "admin";//录像机用户名
@@ -56,8 +60,8 @@ public class GrabHIKPicAndVideoUtils {
 			int m_iChanShowNum = 33; // 摄像头通道39是16层
 
 			// 20200421225208_20200421225218
-			String startTime = "2020-06-02 15:26:09";//截取视频的起始时间
-			String endTime = "2020-06-02 15:26:19";//截取视频的结束时间
+			String startTime = "2020-06-29 15:26:09";//截取视频的起始时间
+			String endTime = "2020-06-29 15:26:19";//截取视频的结束时间
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");//时间格式，文件名的命名相关
 			StringBuilder fileName = null;
 			// 获取视频
@@ -197,10 +201,15 @@ public class GrabHIKPicAndVideoUtils {
 			struStopTime.dwMinute = Integer.parseInt(endTimes[1].split(":")[1]);
 			struStopTime.dwSecond = Integer.parseInt(endTimes[1].split(":")[2]);
 			HCNetSDK.NET_DVR_DEVICEINFO_V30 m_strDeviceInfo = new HCNetSDK.NET_DVR_DEVICEINFO_V30();//设备信息
+			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+			HttpSession session =request.getSession();
 			//NativeLong lUserID;//用户句柄
-			lUserID = hCNetSDK.NET_DVR_Login_V30(m_sDeviceIP,
-					(short) iPort, userName, pwd, m_strDeviceInfo);
-
+			lUserID =(NativeLong)session.getAttribute("lUserID");
+			if(lUserID==null){
+				lUserID = hCNetSDK.NET_DVR_Login_V30(m_sDeviceIP,
+						(short) iPort, userName, pwd, m_strDeviceInfo);
+				session.setAttribute("lUserID",lUserID);
+			}
 			m_lLoadHandle = hCNetSDK.NET_DVR_GetFileByTime(lUserID, new NativeLong(m_iChanShowNum), struStartTime, struStopTime, fileName);
 			System.out.println("m_lLoadHandle: " + m_lLoadHandle);
 			System.out.println(" ==================================== ");

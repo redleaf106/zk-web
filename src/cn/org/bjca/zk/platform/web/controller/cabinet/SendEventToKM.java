@@ -41,7 +41,7 @@ public class SendEventToKM {
     private MonitorService monitorService;
 
     //录像机ip
-    String lxjIp = "10.11.28.28";
+    String lxjIp = "172.16.1.108";
     //摄像头ip
     String sxtIp = "10.11.28.55";
 
@@ -108,19 +108,19 @@ public class SendEventToKM {
         //String m_sDeviceIP = "10.11.28.28";//录像机ip
         int iPort = 8000;//录像机端口
         String userName = "admin";//录像机用户名
-        String pwd = "1234abcd";//录像机密码
-        int m_iChanShowNum = 0; // 摄像头通道39是16层,40是12层，36是17层，34是18层，33是20层
-        if(cabinetNumber.equals("120")){
-            m_iChanShowNum = 40;
-        }else if(cabinetNumber.equals("200")){
-            m_iChanShowNum = 33;
-        }else if(cabinetNumber.equals("161")||cabinetNumber.equals("162")){
-            m_iChanShowNum = 39;
-        }else if(cabinetNumber.equals("171")||cabinetNumber.equals("172")){
-            m_iChanShowNum = 36;
-        }else if(cabinetNumber.equals("181")||cabinetNumber.equals("182")){
-            m_iChanShowNum = 34;
-        }
+        String pwd = "wd12345678";//录像机密码
+        int m_iChanShowNum = 33; // 摄像头通道39是16层,40是12层，36是17层，34是18层，33是20层
+//        if(cabinetNumber.equals("120")){
+//            m_iChanShowNum = 40;
+//        }else if(cabinetNumber.equals("200")){
+//            m_iChanShowNum = 33;
+//        }else if(cabinetNumber.equals("161")||cabinetNumber.equals("162")){
+//            m_iChanShowNum = 39;
+//        }else if(cabinetNumber.equals("171")||cabinetNumber.equals("172")){
+//            m_iChanShowNum = 36;
+//        }else if(cabinetNumber.equals("181")||cabinetNumber.equals("182")){
+//            m_iChanShowNum = 34;
+//        }
         System.out.println(startTime);
         String videoResult = GrabHIKPicAndVideoUtils.createVideo(m_sDeviceIP,iPort,userName,pwd,m_iChanShowNum,startTime,cabinetDoorEventId);
         System.out.println("录像路径为："+videoResult);
