@@ -91,7 +91,6 @@
         $("#cabinetDoorNumber").val(dnum);
     }
     function showCabinetDoor(cabinetId,dnumber,obj){
-        alert(cabinetId);
         $(obj).parent().parent().addClass("active");
         $(obj).parent().parent().siblings().removeClass("active");
         $("#ceform").find('input[type=text],select,input[type=hidden]').each(function() {
