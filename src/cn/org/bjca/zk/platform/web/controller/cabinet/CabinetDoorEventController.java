@@ -105,7 +105,7 @@ public class CabinetDoorEventController extends BaseController {
 		if(StringUtils.isNotBlank(numPerPage)) {
 			page.setPageSize(Integer.parseInt(numPerPage));
 		}else{
-			page.setPageSize(100);
+			page.setPageSize(300);
 		}
 		String cabinetNumber = request.getParameter("cabinetNumber");//机柜编号
 		if(StringUtils.isNotBlank(cabinetNumber)) {

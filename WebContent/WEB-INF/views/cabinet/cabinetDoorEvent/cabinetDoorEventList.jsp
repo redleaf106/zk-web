@@ -88,11 +88,11 @@
 		<div class="pages">
 			<span>显示</span>
 			<select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value,pageNum:1})">
-				<option value="10" <c:if test="${cabinetDoorEventPage.pageVO.pageSize == 10}">selected="selected"</c:if>>10</option>
-				<option value="20" <c:if test="${cabinetDoorEventPage.pageVO.pageSize == 20}">selected="selected"</c:if>>20</option>
-				<option value="50" <c:if test="${cabinetDoorEventPage.pageVO.pageSize == 50}">selected</c:if>>50</option>
-				<option value="100" <c:if test="${cabinetDoorEventPage.pageVO.pageSize == 100}">selected</c:if>>100</option>
-				<option value="200" <c:if test="${cabinetDoorEventPage.pageVO.pageSize == 200}" >selected</c:if>>200</option>
+				<option value="300" <c:if test="${cabinetDoorEventPage.pageVO.pageSize == 300}">selected="selected"</c:if>>300</option>
+				<option value="500" <c:if test="${cabinetDoorEventPage.pageVO.pageSize == 500}">selected="selected"</c:if>>500</option>
+				<option value="800" <c:if test="${cabinetDoorEventPage.pageVO.pageSize == 800}">selected</c:if>>800</option>
+				<option value="1000" <c:if test="${cabinetDoorEventPage.pageVO.pageSize == 1000}">selected</c:if>>1000</option>
+				<option value="1200" <c:if test="${cabinetDoorEventPage.pageVO.pageSize == 1200}" >selected</c:if>>1200</option>
 			</select>
 			<span>条，共${cabinetDoorEventPage.pageVO.totalRows}条</span>
 		</div>
