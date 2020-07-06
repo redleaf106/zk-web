@@ -4,11 +4,19 @@
 package cn.org.bjca.zk.platform.web.controller.cabinet;
 
 
-import javax.servlet.http.HttpServletRequest;
-
+import cn.org.bjca.zk.db.entity.Cabinet;
 import cn.org.bjca.zk.db.entity.HTFCheck;
+import cn.org.bjca.zk.db.entity.User;
+import cn.org.bjca.zk.platform.PDFSealConstants;
+import cn.org.bjca.zk.platform.bean.Message;
+import cn.org.bjca.zk.platform.exception.DialogException;
+import cn.org.bjca.zk.platform.service.CabinetService;
 import cn.org.bjca.zk.platform.service.CheckListService;
+import cn.org.bjca.zk.platform.web.controller.BaseController;
+import cn.org.bjca.zk.platform.web.page.CabinetPage;
 import com.alibaba.fastjson.JSONObject;
+import com.cn.bjca.seal.esspdf.core.pagination.page.Page;
+import com.cn.bjca.seal.esspdf.core.pagination.page.Pagination;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,18 +30,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.cn.bjca.seal.esspdf.core.pagination.page.Page;
-import com.cn.bjca.seal.esspdf.core.pagination.page.Pagination;
-
-import cn.org.bjca.zk.db.entity.Cabinet;
-import cn.org.bjca.zk.db.entity.User;
-import cn.org.bjca.zk.platform.PDFSealConstants;
-import cn.org.bjca.zk.platform.bean.Message;
-import cn.org.bjca.zk.platform.exception.DialogException;
-import cn.org.bjca.zk.platform.service.CabinetService;
-import cn.org.bjca.zk.platform.web.controller.BaseController;
-import cn.org.bjca.zk.platform.web.page.CabinetPage;
-
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -178,7 +175,7 @@ public class CabinetController extends BaseController{
 		//将当前上下文初始化给  CommonsMutipartResolver （多部分解析器）
 		CommonsMultipartResolver multipartResolver=new CommonsMultipartResolver(
 				request.getSession().getServletContext());
-		//检查form中是否有enctype="multipart/form-data"
+			//检查form中是否有enctype="multipart/form-data"
 		if(multipartResolver.isMultipart(request))
 		{
 			//将request变成多部分request
@@ -194,8 +191,8 @@ public class CabinetController extends BaseController{
 				{
 
 					//文件存放路径
-					String path="/root/dayCheck/"+city+"/"+file.getOriginalFilename();
-//					String path = "D:\\/"+city+"/"+file.getOriginalFilename();
+//					String path="/root/dayCheck/"+city+"/"+file.getOriginalFilename();
+					String path = "D:\\/"+city+"/"+file.getOriginalFilename();
 					//上传
 					file.transferTo(new File(path));
 					HTFCheck htfCheck = new HTFCheck();

@@ -1,7 +1,6 @@
 package cn.org.bjca.zk.platform.dao;
 
 
-import cn.org.bjca.zk.db.entity.CheckInfo;
 import cn.org.bjca.zk.db.entity.HTFCheck;
 import cn.org.bjca.zk.platform.web.page.CheckListPage;
 
@@ -13,4 +12,6 @@ public interface CheckListDao {
     List<HTFCheck> findPage(CheckListPage<HTFCheck> checkListPage);
 
     int save(HTFCheck htfCheck);
+
+    HTFCheck findById(int id);
 }

@@ -10,7 +10,6 @@ import cn.org.bjca.zk.platform.exception.DialogException;
 import cn.org.bjca.zk.platform.service.*;
 import cn.org.bjca.zk.platform.tools.CabinetDoorServer;
 import cn.org.bjca.zk.platform.tools.CreateDayCheckUtils;
-import cn.org.bjca.zk.platform.web.controller.AutoRunTask;
 import cn.org.bjca.zk.platform.web.controller.BaseController;
 import cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage;
 import com.alibaba.fastjson.JSON;
@@ -35,7 +34,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 /***************************************************************************
 
@@ -375,8 +377,8 @@ public class CabinetDoorEventController extends BaseController {
 				//金鹰考勤
 				//String OAInfo = getOA(objNo);
 				//汇添富考勤
-				String OAInfo = new AutoRunTask().getHtfOA(objNo);
-				//String OAInfo = "";
+				//String OAInfo = new AutoRunTask().getHtfOA(objNo);
+				String OAInfo = "";
 				c.setOAInfo(OAInfo);
 			}
 

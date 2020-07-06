@@ -1,8 +1,8 @@
 package cn.org.bjca.zk.platform.web.controller.cabinet;
 
-import cn.org.bjca.zk.db.entity.CheckInfo;
 import cn.org.bjca.zk.db.entity.HTFCheck;
 import cn.org.bjca.zk.platform.service.CheckListService;
+import cn.org.bjca.zk.platform.tools.ExcelToHtml;
 import cn.org.bjca.zk.platform.web.page.CheckListPage;
 import com.cn.bjca.seal.esspdf.core.pagination.page.Page;
 import com.cn.bjca.seal.esspdf.core.pagination.page.Pagination;
@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,9 +48,18 @@ public class CheckListController {
             System.out.println(htfCheck.getFileName());
         }
         modelMap.put("checkListPage", checkListPage);
-
         System.out.println("进入页面");
         return "/cabinet/checkList/checkList";
-
     }
+
+    @RequestMapping("showDayChcek/{id}")
+    public String showDayChcek(ModelMap modelMap,@PathVariable String id){
+        System.out.println(id);
+        int databaseid = Integer.parseInt(id);
+        HTFCheck htfCheck = checkListService.findById(databaseid);
+        String msg = ExcelToHtml.excelToHtml(htfCheck.getFilePath()+htfCheck.getFileName());
+        modelMap.addAttribute("msg",msg);
+        return "/cabinet/checkList/showOneDayCheck";
+    }
+
 }

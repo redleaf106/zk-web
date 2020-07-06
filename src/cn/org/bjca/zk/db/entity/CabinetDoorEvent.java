@@ -82,6 +82,16 @@ public class CabinetDoorEvent extends IdEntity {
 	 */
 	private String remark;
 
+	private String employeeName;
+
+	public String getEmployeeName() {
+		return employeeName;
+	}
+
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
+	}
+
 	public String getCabinetDoorNumber() {
 		return cabinetDoorNumber;
 	}
