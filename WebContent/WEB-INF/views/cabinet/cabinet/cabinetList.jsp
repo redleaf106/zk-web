@@ -67,9 +67,9 @@
 							<a title="确定要删除吗?" target="ajaxTodo" href="${ctx}/cabinet/cabinet/delete/${item.id}" class="btnDel">删除</a>&nbsp;&nbsp;   
 							<a title="修改机柜信息" href="${ctx}/cabinet/cabinet/toEditFormPage/${item.id}" class="btnEdit" target="navTab">修改</a>&nbsp;&nbsp;
 							<a title="查看使用状态" href="${ctx}/cabinet/cabinet/toInfoFormPage/${item.id}" class="btnLook" target="navTab">查看</a>
-							<a title="一键全开（检查）" href="${ctx}/cabinet/cabinet/openAllDoor?id=${item.id}&code=6" class="" target="ajaxTodo"><img src="${ctx}/images/icons/openAllDoor.png" height="15" width="15"></a>
-							<a title="一键全开（存柜）" href="${ctx}/cabinet/cabinet/openAllDoor?id=${item.id}&code=7" class="" target="ajaxTodo"><img src="${ctx}/images/icons/openAllDoor.png" height="15" width="15"></a>
-							<a title="一键全开（取柜）" href="${ctx}/cabinet/cabinet/openAllDoor?id=${item.id}&code=8" class="" target="ajaxTodo"><img src="${ctx}/images/icons/openAllDoor.png" height="15" width="15"></a>
+							<a title="一键全开（检查）" href="${ctx}/cabinet/cabinet/openAllDoor?id=${item.id}&code=6" class="" target="ajaxTodo"><img src="${ctx}/images/icons/jiancha.png" height="20px" width="20px"></a>
+							<a title="一键全开（存柜）" href="${ctx}/cabinet/cabinet/openAllDoor?id=${item.id}&code=7" class="" target="ajaxTodo"><img src="${ctx}/images/icons/cungui.png" height="20px" width="20px"></a>
+							<a title="一键全开（取柜）" href="${ctx}/cabinet/cabinet/openAllDoor?id=${item.id}&code=8" class="" target="ajaxTodo"><img src="${ctx}/images/icons/qugui.png" height="20px" width="20px"></a>
 						</td>
 					</tr>
 				</c:forEach>
