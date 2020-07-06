@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.org.bjca.zk.platform.dao.CabinetBannerDao">
+    <resultMap id="BannerPictureResultMap" type="cn.org.bjca.zk.db.entity.BannerPicture">
+
+    </resultMap>
+
+    <insert id="save" parameterType="cn.org.bjca.zk.db.entity.BannerPicture">
+        insert into BO_CABINETBANNER(
+        picFilePath,picStatus，top,optTime
+        )values (
+        #{picFilePath},
+        #{picStatus},
+        #{top},
+        now()
+        )
+    </insert>
+
+    <select id="findActivePicture" resultMap="BannerPictureResultMap" parameterType="int">
+        SELECT * FROM BO_CABINETBANNER WHERE picStatus = #{0}
+        order by
+        top desc,
+        opttime DESC;
+    </select>
+
+    <select id="findPage" resultMap="BannerPictureResultMap" parameterType="cn.org.bjca.zk.platform.web.page.CabinetBannerPage">
+        SELECT *
+        FROM BO_CABINETBANNER
+        WHERE 1=1
+        order by
+        top desc,
+        opttime DESC
+    </select>
+
+    <select id="findUniqueById" resultMap="BannerPictureResultMap">
+        SELECT *
+        FROM BO_CABINETBANNER
+        WHERE ID = #{0}
+    </select>
+
+    <update id="update" parameterType="int">
+        UPDATE BO_CABINETBANNER SET
+        PICSTATUS = ABS(PICSTATUS-1),
+        opttime = now()
+        WHERE ID = #{0}
+    </update>
+
+    <update id="updateTop" parameterType="int">
+        UPDATE BO_CABINETBANNER SET
+        TOP = ABS(TOP-1),
+        opttime = now()
+        WHERE ID = #{0}
+    </update>
+
+    <delete id="delBannerPicById" parameterType="int">
+        DELETE FROM BO_CABINETBANNER WHERE ID = #{0}
+    </delete>
+</mapper>

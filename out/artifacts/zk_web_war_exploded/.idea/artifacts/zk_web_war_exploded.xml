@@ -1,0 +1,19 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="zk-web:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/zk_web_war_exploded</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="zk-web" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="xfire-core-1.2.6" />
+          <element id="library" level="project" name="xfire" />
+          <element id="library" level="project" name="jna" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="zk-web/web/Web2" />
+      <element id="javaee-facet-resources" facet="zk-web/web/Web" />
+    </root>
+  </artifact>
+</component>

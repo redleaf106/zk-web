@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="xfire">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/WebContent/WEB-INF/lib/xfire" />
+      <root url="jar://$PROJECT_DIR$/WebContent/WEB-INF/lib/xfire/xfire-core/1.2.6/xfire-core-1.2.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/WebContent/WEB-INF/lib/xfire" recursive="false" />
+  </library>
+</component>

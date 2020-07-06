@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="cn.org.bjca.zk.platform.dao.CabinetDao">
+
+	<!-- 分页查询 -->
+	<select id="findPage" parameterType="cn.org.bjca.zk.platform.web.page.CabinetPage" resultType="Cabinet">
+		SELECT * 
+		FROM BO_CABINET
+		WHERE 1=1 
+		<if test="cabinetNumber != null">
+			AND CABINETNUMBER like #{cabinetNumber}
+		</if>
+		ORDER BY OPTTIME DESC 
+	</select>
+	
+	<!-- 保存数据 -->
+	<insert id="save" parameterType="Cabinet">
+		INSERT INTO BO_CABINET (
+			ID, 
+			CABINETNUMBER, 
+			CABINETPOSITION, 
+			CABINETPOSITIONDETAIL, 
+			CABINETIP, 
+			LEFTCAMERAIP, 
+			FRONTCAMERAIP, 
+			RIGHTCAMERAIP, 
+			SOFTWARE,
+			DOORCOUNT,
+			FULLDOORCOUNT,
+			USERID,
+			OPTTIME)
+		VALUES (
+			#{id}, 
+			#{cabinetNumber}, 
+			#{cabinetPosition}, 
+			#{cabinetPositionDetail}, 
+			#{cabinetIP}, 
+			#{leftCameraIP}, 
+			#{frontCameraIP}, 
+			#{rightCameraIP}, 
+			#{software}, 
+			#{doorCount},
+			#{fullDoorCount},
+			#{userId}, 
+			#{optTime})
+	</insert>
+	
+	
+	<!-- 更新数据 -->
+	<update id="update" parameterType="Cabinet">
+		UPDATE BO_CABINET SET
+        	CABINETPOSITION = #{cabinetPosition}, 
+			CABINETPOSITIONDETAIL = #{cabinetPositionDetail}, 
+			CABINETIP = #{cabinetIP},
+			LEFTCAMERAIP = #{leftCameraIP}, 
+			FRONTCAMERAIP = #{frontCameraIP}, 
+			RIGHTCAMERAIP = #{rightCameraIP},
+			SOFTWARE = #{software},
+			DOORCOUNT = #{doorCount},
+			FULLDOORCOUNT = #{fullDoorCount},
+			USERID = #{userId},
+			OPTTIME = #{optTime}
+        WHERE 
+	        ID = #{id} 
+	</update>
+	
+	<select id="findByCondition" resultType="Cabinet">
+		SELECT *  FROM BO_CABINET WHERE 1 = 1
+		
+		<if test="cabinetIp != null">
+			AND CABINETIP = #{cabinetIp}
+		</if>
+		<if test="cabinetNumber != null">
+			AND CABINETNUMBER = #{cabinetNumber}
+		</if>
+		ORDER BY OPTTIME DESC  
+	</select>
+
+	<select id="findByIP" parameterType="string" resultType="Cabinet">
+		SELECT * FROM BO_CABINET WHERE cabinetip = #{0}
+	</select>
+</mapper> 
