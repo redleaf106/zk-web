@@ -51,7 +51,7 @@
                     <td>${item.filePath}</td>
                     <td><fmt:formatDate value="${item.createTime}" type="both" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                     <td>&nbsp;
-                        <a title="下载日报表" href="${ctx}/checkList/${item.fileName}" class="btnInfo" >下载</a>&nbsp;&nbsp;
+                        <a href="${ctx}/checkList/${item.fileName}" ><img src="${ctx}/images/icons/download.png" height="10" width="20"/></a>&nbsp;&nbsp;
                     </td>
                 </tr>
             </c:forEach>

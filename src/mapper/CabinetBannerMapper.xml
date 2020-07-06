@@ -8,7 +8,7 @@
 
     <insert id="save" parameterType="cn.org.bjca.zk.db.entity.BannerPicture">
         insert into BO_CABINETBANNER(
-        picFilePath,picStatus，top,optTime
+        picFilePath,picStatus,top,optTime
         )values (
         #{picFilePath},
         #{picStatus},

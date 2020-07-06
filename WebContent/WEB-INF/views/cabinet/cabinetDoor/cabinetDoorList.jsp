@@ -86,7 +86,9 @@
 						<td>&nbsp;
 							<a title="确定要删除吗?" target="ajaxTodo" href="${ctx}/cabinet/cabinetDoor/delete/${item.id}" class="btnDel">删除</a>&nbsp;&nbsp;   
 							<%--<a title="修改授权信息" href="${ctx}/cabinet/cabinetDoor/toEditFormPage/${item.id}" class="btnEdit" target="navTab">修改</a>&nbsp;--%>
-							<a title="确定开柜门吗？" href="${ctx}/cabinet/cabinetDoor/openCabinetDoor/${item.id}" class="btnView" target="ajaxTodo">开门</a>&nbsp;
+							<a title="确定开柜门吗？" href="${ctx}/cabinet/cabinetDoor/openCabinetDoor/${item.id}?type=0" class="" target="ajaxTodo"><img src="${ctx}/images/icons/jiancha.png" height="20px" width="20px"></a>&nbsp;
+							<a title="确定开柜门吗？" href="${ctx}/cabinet/cabinetDoor/openCabinetDoor/${item.id}?type=1" class="" target="ajaxTodo"><img src="${ctx}/images/icons/cungui.png" height="20px" width="20px"></a>&nbsp;
+							<a title="确定开柜门吗？" href="${ctx}/cabinet/cabinetDoor/openCabinetDoor/${item.id}?type=2" class="" target="ajaxTodo"><img src="${ctx}/images/icons/qugui.png" height="20px" width="20px"></a>&nbsp;
 						</td>
 					</tr>
 				</c:forEach>

@@ -292,11 +292,12 @@ public class CabinetDoorController extends BaseController {
 
 
 	@RequestMapping(value = "openCabinetDoor/{id}",produces = "text/plain;charset=UTF-8")
-	public @ResponseBody String openCabinetDoor(@PathVariable("id") String id){
+	public @ResponseBody String openCabinetDoor(@PathVariable("id") String id,String type){
 		System.out.println("获取到id为："+id);
 		CabinetDoor cabinetDoor = cabinetDoorService.findUniqueById(id);
 		String ip = cabinetService.findUniqueById(cabinetDoor.getCabinetId()).getCabinetIP();
 		System.out.println("柜门的ip地址为"+ip);
+		System.out.println(type);
 		SocketServer socketServer = SocketServer.getInstance();
 		System.out.println(cabinetDoor.getCabinetDoorNumber());
 		socketServer.sendDoorMessage("0",ip, cabinetDoor.getCabinetDoorNumber());

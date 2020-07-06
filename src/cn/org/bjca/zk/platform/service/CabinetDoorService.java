@@ -211,6 +211,8 @@ public class CabinetDoorService {
             type = 3;
         }else if(ip.equals("10.17.36.86")){
             type = 4;
+        }else{
+            type = 2;
         }
         if(type==1){
             for(int i:list){
