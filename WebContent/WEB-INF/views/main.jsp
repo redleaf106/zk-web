@@ -71,8 +71,8 @@
 
 	<!-- 选座jQuery-->
 	<%--<script type="text/javascript" src="${ctx}/scripts/jquery.min.js"></script>--%>
-	<script type="text/javascript" src="${ctx}/scripts/jquery.seat-charts.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="${ctx}/scripts/seat/jq22.css" />
+	<%--<script type="text/javascript" src="${ctx}/scripts/jquery.seat-charts.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="${ctx}/scripts/seat/jq22.css" />--%>
 
 	<!-- select 动态检索 -->
 	<script src="${ctx}/scripts/select2/js/select2.js" type="text/javascript"></script>

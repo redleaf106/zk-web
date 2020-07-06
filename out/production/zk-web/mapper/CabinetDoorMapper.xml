@@ -74,7 +74,15 @@
 		AND bo_cabinetdoor.employeeid = bo_employee.id
 		ORDER BY bo_employee.employeenumber ASC
 	</select>
-	
+	<select id="findCEByCabinetID" parameterType="String" resultMap="cabinetDoorMap">
+		select
+		   bo_cabinetdoor.id,
+		   bo_cabinetdoor.ext2,
+		   bo_cabinetdoor.cabinetdoorname,
+		   bo_cabinetdoor.employeeid
+		from bo_cabinetdoor,bo_employee
+		where bo_cabinetdoor.cabinetid=#{cabinetId} and bo_cabinetdoor.employeeid = bo_employee.id
+	</select>
 	<!-- 保存数据 -->
 	<insert id="save" parameterType="CabinetDoor">
 		INSERT INTO BO_CABINETDOOR (
@@ -95,7 +103,9 @@
 			#{optTime})
 	</insert>
 	
-	
+	<update id="saveCabinetImg" parameterType="String">
+		update BO_CABINET set ext2 = #{1} where id = #{0}
+	</update>
 	<!-- 更新数据 -->
 	<update id="update" parameterType="CabinetDoor">
 		UPDATE BO_CABINETDOOR SET

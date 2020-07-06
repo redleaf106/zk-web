@@ -35,27 +35,47 @@
 		<result column="picFilePath" property="picFilePath" jdbcType="VARCHAR"/>
 		<result column="videoFilePath" property="videoFilePath" jdbcType="VARCHAR"/>
 	</resultMap>
+	<resultMap id="CabinetDoorEventMap" type="cn.org.bjca.zk.db.entity.CabinetDoorEvent">
+		<id column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="cabinetdoorNumber" property="cabinetDoorNumber" jdbcType="VARCHAR"></result>
+		<result column="cabinetNumber" property="cabinetNumber" jdbcType="VARCHAR"/>
+		<result column="cabinetdoorname" property="cabinetdoorname" jdbcType="VARCHAR"/>
+		<result column="employeecardnumber" property="employeeCardNumber" jdbcType="VARCHAR"/>
+		<result column="dooropttime" property="doorOptTime" jdbcType="VARCHAR"/>
+		<result column="status" property="status" jdbcType="VARCHAR"/>
+		<result column="temporaryStatus" property="temporaryStatus" jdbcType="INTEGER"/>
+		<result column="remark" property="remark" jdbcType="VARCHAR"/>
+		<association property="employee" javaType="cn.org.bjca.zk.db.entity.Employee" column="employeecardnumber"  select="cn.org.bjca.zk.platform.dao.EmployeeDao.findByIcCardNumber"/>
+		<association property="cabinet" javaType="cn.org.bjca.zk.db.entity.Cabinet" column="cabinetNumber"  select="cn.org.bjca.zk.platform.dao.CabinetDao.findByCabinetNumber"/>
+	</resultMap>
 
 
 	<!-- 分页查询 -->
-	<select id="findPage" parameterType="cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage" resultType="CabinetDoorEvent">
-		SELECT *
-		FROM BO_CABINETDOOREVENT
-		WHERE 1=1
+	<select id="findPage" parameterType="cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage" resultMap="CabinetDoorEventMap">
+		SELECT
+			BO_CABINETDOOREVENT.id,
+		    BO_CABINETDOOREVENT.cabinetdoorNumber,
+			BO_CABINETDOOREVENT.cabinetNumber,
+			BO_CABINETDOOREVENT.employeecardnumber,
+			BO_CABINETDOOREVENT.dooropttime,
+			BO_CABINETDOOREVENT.status,
+			BO_CABINETDOOREVENT.temporaryStatus,
+			BO_CABINETDOOREVENT.remark,
+		    bo_cabinetdoor.cabinetdoorname
+		FROM BO_CABINETDOOREVENT,bo_employee,bo_cabinet,bo_cabinetdoor
+		WHERE BO_CABINETDOOREVENT.employeecardnumber = bo_employee.iccardnumber
+		and BO_CABINETDOOREVENT.cabinetNumber = bo_cabinet.cabinetnumber
+		and bo_cabinetdoor.cabinetdoornumber = BO_CABINETDOOREVENT.cabinetdoorNumber
+		and bo_cabinetdoor.cabinetid = bo_cabinet.id
+		and bo_cabinetdoor.employeeid = bo_employee.id
 		<if test="cabinetNumber != null">
-			AND CABINETNUMBER LIKE #{cabinetNumber}
+			AND BO_CABINETDOOREVENT.CABINETNUMBER LIKE #{cabinetNumber}
 		</if>
-		<if test="cabinetIp != null">
-			AND CABINETIp LIKE #{cabinetIp}
+		<if test="cabinetdoorname != null">
+			AND bo_cabinetdoor.cabinetdoorname LIKE #{cabinetdoorname}
 		</if>
 		<if test="cabinetDoorNumber != null">
 			AND CABINETDOORNUMBER LIKE #{cabinetDoorNumber}
-		</if>
-		<if test="employeeCardNumber != null">
-			AND EMPLOYEECARDNUMBER LIKE #{employeeCardNumber}
-		</if>
-		<if test="actionCardNumber != null">
-			AND ACTIONCARDNUMBER LIKE #{actionCardNumber}
 		</if>
 		ORDER BY DOOROPTTIME DESC
 	</select>
@@ -83,7 +103,7 @@
 	</select>
 
 	<select id="findEventPage" resultType="java.util.Map" parameterType="cn.org.bjca.zk.platform.web.page.EventInfoPage">
-		SELECT * FROM eventinfo ORDER BY DOOROPTTIME DESC LIMIT 0,500
+		SELECT * FROM eventinfo ORDER BY DOOROPTTIME DESC
 	</select>
 
 	<!-- 保存数据 -->

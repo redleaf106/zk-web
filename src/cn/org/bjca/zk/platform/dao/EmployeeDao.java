@@ -40,7 +40,7 @@ public interface EmployeeDao {
 	/**
 	  * <p>根据CardNumber查询对象</p>
 	  * @Description:
-	  * @param id
+	  * @param cardNumber
 	  * @return
 	 */
 	@Select("SELECT * FROM BO_EMPLOYEE WHERE ICCARDNUMBER = #{cardNumber}")
@@ -59,7 +59,7 @@ public interface EmployeeDao {
 	/**
 	  * <p>根据DEPARTMENTID查询对象</p>
 	  * @Description:
-	  * @param id
+	  * @param icCardNumber
 	  * @return
 	 */
 	@Select("SELECT * FROM BO_EMPLOYEE WHERE ICCARDNUMBER = #{icCardNumber} ORDER BY OPTTIME DESC")

@@ -29,10 +29,8 @@ public class CabinetDoor extends IdEntity {
 	 */
 	private String cabinetDoorNumber;
 
-	/**
-	 * 柜门名称
-	 */
-	private String cabinetDoorName;
+
+	private String ext2;
 
 
 	/**
@@ -56,7 +54,7 @@ public class CabinetDoor extends IdEntity {
 	
 	private Timestamp  doorOptTime;// 操作时间
 	
-	
+	private String cabinetDoorName;
 	/**
 	 * 使用人(员工）
 	 */
@@ -75,7 +73,16 @@ public class CabinetDoor extends IdEntity {
 		this.cabinetDoorNumber = cabinetDoorNumber;
 	}
 
-	
+	@Override
+	public String getExt2() {
+		return ext2;
+	}
+
+	@Override
+	public void setExt2(String ext2) {
+		this.ext2 = ext2;
+	}
+
 	public String getCabinetId() {
 		return cabinetId;
 	}

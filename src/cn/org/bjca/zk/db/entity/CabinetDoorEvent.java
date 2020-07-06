@@ -84,6 +84,33 @@ public class CabinetDoorEvent extends IdEntity {
 
 	//临时的
 	private int temporaryStatus;
+	private Employee employee;
+	private Cabinet cabinet;
+	private String cabinetdoorname;
+
+	public String getCabinetdoorname() {
+		return cabinetdoorname;
+	}
+
+	public void setCabinetdoorname(String cabinetdoorname) {
+		this.cabinetdoorname = cabinetdoorname;
+	}
+
+	public Cabinet getCabinet() {
+		return cabinet;
+	}
+
+	public void setCabinet(Cabinet cabinet) {
+		this.cabinet = cabinet;
+	}
+
+	public Employee getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
+	}
 
 	public int getTemporaryStatus() {
 		return temporaryStatus;

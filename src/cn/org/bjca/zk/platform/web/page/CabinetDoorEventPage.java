@@ -46,7 +46,16 @@ public class CabinetDoorEventPage  <T> extends BasePage<T> {
 	 * 实际开门卡号
 	 */
 	private String actionCardNumber;
-	
+
+	private String cabinetdoorname;
+
+	public String getCabinetdoorname() {
+		return cabinetdoorname;
+	}
+
+	public void setCabinetdoorname(String cabinetdoorname) {
+		this.cabinetdoorname = cabinetdoorname;
+	}
 
 	public String getCabinetNumber() {
 		return cabinetNumber;

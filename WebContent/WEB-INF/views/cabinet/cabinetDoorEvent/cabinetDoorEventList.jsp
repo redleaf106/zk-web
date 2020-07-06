@@ -16,7 +16,7 @@
 					机柜编号：<input type="text" name="cabinetNumber" value="${cabinetDoorEventPage.cabinetNumber}"/>
 				</td>
 				<td>
-					柜门编号：<input type="text" name="cabinetDoorNumber" value="${cabinetDoorEventPage.cabinetDoorNumber}"/>
+					柜门名称：<input type="text" name="cabinetdoorname" value="${cabinetDoorEventPage.cabinetdoorname}"/>
 				</td>
 				<td><div class="buttonActive"><div class="buttonContent"><button id="cabinetDoorEventList_submit" type="submit">检索</button></div></div></td>
 			</tr>
@@ -34,12 +34,14 @@
 		<table class="table" width="100%" layoutH="138">
 			<thead>
 				<tr>
-					<th width="10%">序号</th>
-					<th width="20%">机柜编号</th>
-					<th width="10%">柜门编号</th>
-					<th width="10%">员工IC卡号</th>
+					<th width="5%">序号</th>
+					<th width="5%">机柜编号</th>
+					<th width="10%">机柜位置</th>
+					<th width="5%">柜门名称</th>
+					<th width="10%">员工姓名</th>
+					<th width="5%">状态</th>
+					<th width="10%">异常原因</th>
 					<th width="10%">操作时间</th>
-					<th width="10%">状态</th>
 					<th width="20%" align="center">操作</th>
 				</tr>
 			</thead>
@@ -50,9 +52,9 @@
 							${(cabinetDoorEventPage.pageVO.pageSize * (cabinetDoorEventPage.pageVO.currentPage - 1))+ serial.index + 1 } 
 						</td>
 						<td>${item.cabinetNumber}</td>
-						<td>${item.cabinetDoorNumber}</td>
-						<td>${item.employeeCardNumber}</td>
-						<td><fmt:formatDate value="${item.doorOptTime}" type="both" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+						<td>${item.cabinet.cabinetPositionDetail}</td>
+						<td>${item.cabinetdoorname}</td>
+						<td>${item.employee.employeeName}</td>
 						<td>
 							<c:choose>
 								<c:when test="${item.status=='0'}">正常存件</c:when>
@@ -63,8 +65,18 @@
 								<c:otherwise>-</c:otherwise>
 							</c:choose>
 						</td>
+						<td>${item.remark}</td>
+						<td><fmt:formatDate value="${item.doorOptTime}" type="both" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 						<td>&nbsp;
-							<a title="查看详情" href="${ctx}/cabinet/cabinetDoorEvent/toDetailPage/${item.id}" class="btnEdit" target="navTab">查看详情</a>&nbsp;&nbsp;
+							<a title="预览监控图" href="${ctx}/cabinet/cabinetDoorEvent/showMonitorPic/${item.id}" target="dialog" rel="dlg_page1" max="true" mask="true" style="margin-right: 15%">
+								<img src="${ctx}/styles/default/images/button/1190943.png" width="5%" height="100%">
+							</a>
+							<a title="预览监控视频" href="${ctx}/cabinet/cabinetDoorEvent/showMonitorVideo/${item.id}" target="dialog" rel="dlg_page1"  max="true"mask="true" style="margin-right: 15%">
+								<img src="${ctx}/styles/default/images/button/1230619.png" width="5%" height="100%">
+							</a>
+							<a title="查看详情" href="${ctx}/cabinet/cabinetDoorEvent/toDetailPage/${item.id}" target="navTab" style="margin-right: 15%">
+								<img src="${ctx}/styles/default/images/button/1152103.png" width="5%" height="100%">
+							</a>
 						</td>
 					</tr>
 				</c:forEach>

@@ -14,6 +14,9 @@
 		SELECT * FROM BO_MONITOR WHERE id = #{id}
 	</select>
 
+    <select id="findEntityByCabinetId" parameterType="String" resultType="cn.org.bjca.zk.db.entity.Monitor">
+        select picFilePath,videoFilePath from BO_MONITOR where cabinetdooreventid=#{id}
+    </select>
     <insert id="addPic" parameterType="string">
         INSERT INTO BO_MONITOR(
         CABINETDOOREVENTID,
