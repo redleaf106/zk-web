@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="war" name="htf">
-    <output-path>$PROJECT_DIR$/out/artifacts/htf</output-path>
-    <root id="archive" name="htf.war">
-      <element id="artifact" artifact-name="zk-web:war exploded" />
-    </root>
-  </artifact>
-</component>
