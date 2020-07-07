@@ -21,27 +21,39 @@
 		<result column="doorOptTime" property="doorOptTime" jdbcType="VARCHAR"/>
 		<result column="remark" property="remark" jdbcType="VARCHAR"/>
 	</resultMap>
-
+	<resultMap id="CabinetDoorEventMap" type="cn.org.bjca.zk.db.entity.CabinetDoorEvent">
+		<id column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="cabinetdoorNumber" property="cabinetDoorNumber" jdbcType="VARCHAR"></result>
+		<result column="cabinetNumber" property="cabinetNumber" jdbcType="VARCHAR"/>
+		<result column="employeeName" property="employeeName" jdbcType="VARCHAR"/>
+		<result column="doorOptTime" property="doorOptTime" jdbcType="TIMESTAMP"/>
+		<result column="status" property="status" jdbcType="VARCHAR"/>
+		<result column="remark" property="remark" jdbcType="VARCHAR"/>
+	</resultMap>
 
 	<!-- 分页查询 -->
 	<select id="findPage" parameterType="cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage" resultType="CabinetDoorEvent">
-		SELECT *
-		FROM BO_CABINETDOOREVENT
-		WHERE 1=1
+		SELECT
+		bo_cabinetdoorevent.id,
+		bo_cabinetdoorevent.cabinetNumber,
+		bo_cabinetdoorevent.cabinetdoorNumber,
+		bo_employee.employeename,
+		bo_cabinetdoorevent.dooropttime,
+		bo_cabinetdoorevent.`status`,
+		bo_cabinetdoorevent.remark
+		FROM
+		BO_CABINETDOOREVENT ,
+		BO_EMPLOYEE
+		WHERE
+		bo_cabinetdoorevent.employeecardnumber = bo_employee.iccardnumber
 		<if test="cabinetNumber != null">
 			AND CABINETNUMBER LIKE #{cabinetNumber}
-		</if>
-		<if test="cabinetIp != null">
-			AND CABINETIp LIKE #{cabinetIp}
 		</if>
 		<if test="cabinetDoorNumber != null">
 			AND CABINETDOORNUMBER LIKE #{cabinetDoorNumber}
 		</if>
-		<if test="employeeCardNumber != null">
-			AND EMPLOYEECARDNUMBER LIKE #{employeeCardNumber}
-		</if>
-		<if test="actionCardNumber != null">
-			AND ACTIONCARDNUMBER LIKE #{actionCardNumber}
+		<if test="employeeName != null">
+			AND EMPLOYEENAME LIKE #{employeeName}
 		</if>
 		ORDER BY DOOROPTTIME DESC
 	</select>
