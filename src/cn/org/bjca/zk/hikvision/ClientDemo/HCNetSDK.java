@@ -19,9 +19,9 @@ import java.util.List;
 public interface HCNetSDK extends Library {
 
     //个人pc
-    String sdkPath = "D:\\迅雷下载\\CH-HCNetSDKV6.1.4.17_build20200331_Win64\\CH-HCNetSDKV6.1.4.17_build20200331_Win64\\库文件\\HCNetSDK";
-    //万道服务器
-//    String sdkPath = "/usr/lib64/libhcnetsdk.so";
+//    String sdkPath = "D:\\迅雷下载\\CH-HCNetSDKV6.1.4.17_build20200331_Win64\\CH-HCNetSDKV6.1.4.17_build20200331_Win64\\库文件\\HCNetSDK";
+    //嘉实服务器
+    String sdkPath = "/usr/lib64/libhcnetsdk.so";
     HCNetSDK INSTANCE = (HCNetSDK) Native.loadLibrary(sdkPath, HCNetSDK.class);
     /***宏定义***/
     //常量

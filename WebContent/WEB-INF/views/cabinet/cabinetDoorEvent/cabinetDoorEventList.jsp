@@ -1,30 +1,24 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/commons/taglibs.jsp" %>
 
-<form id="pagerForm" method="post" action="${ctx}/cabinet/cabinetDoorEvent">
+<div class="pageHeader">
+    <form id="pagerForm" onsubmit="return navTabSearch(this);" method="post" action="${ctx}/cabinet/cabinetDoorEvent">
 	<input type="hidden" name="pageNum" value="${cabinetDoorEventPage.pageVO.currentPage}" />
 	<input type="hidden" name="numPerPage" value="${cabinetDoorEventPage.pageVO.pageSize}" />
-</form>
-
-
-<div class="pageHeader">
-	<form onsubmit="return navTabSearch(this);" action="${ctx}/cabinet/cabinetDoorEvent" method="post">
-	<div class="searchBar">
-		<table class="searchContent">
-			<tr>
-				<td>
-					机柜编号：<input type="text" name="cabinetNumber" value="${cabinetDoorEventPage.cabinetNumber}"/>
-				</td>
-				<td>
-					柜门名称：<input type="text" name="cabinetdoorname" value="${cabinetDoorEventPage.cabinetdoorname}"/>
-				</td>
-				<td><div class="buttonActive"><div class="buttonContent"><button id="cabinetDoorEventList_submit" type="submit">检索</button></div></div></td>
-			</tr>
-		</table>
-		
-	</div>
-	</form>
-	<%--<li><a class="add" href="${ctx}/cabinet/cabinetDoorEvent/jumpMedia" target="navTab"><span>查看监控</span></a></li>--%>
+		<div class="searchBar">
+			<table class="searchContent">
+				<tr>
+					<td>
+						机柜编号：<input type="text" name="cabinetNumber" value="${cabinetDoorEventPage.cabinetNumber}"/>
+					</td>
+					<td>
+						柜门名称：<input type="text" name="cabinetdoorname" value="${cabinetDoorEventPage.cabinetdoorname}"/>
+					</td>
+					<td><div class="buttonActive"><div class="buttonContent"><button id="cabinetDoorEventList_submit" type="submit">检索</button></div></div></td>
+				</tr>
+			</table>
+		</div>
+    </form>
 </div>
 <div class="pageContent">
 	<div class="panelBar">

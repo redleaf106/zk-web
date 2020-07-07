@@ -34,9 +34,9 @@ public class GrabHIKPicAndVideoUtils {
 	NativeLong lUserID;//用户句柄
 
 	//个人pc
-	static String filePath = "D:/TomCat/apache-tomcat-9.0.16/hk/HKVideos/";
+//	static String filePath = "D:/TomCat/apache-tomcat-9.0.16/hk/HKVideos/";
 	//嘉实服务器
-//    static String filePath = "/usr/share/tomcat/hk/HKVideos/";
+    static String filePath = "/usr/share/tomcat/hk/HKVideos/";
 	/**
 	 * @Title: main
 	 * @Description: TODO(这里用一句话描述这个方法的作用)
