@@ -41,7 +41,7 @@ public class SendEventToKM {
     private MonitorService monitorService;
 
     //录像机ip
-    String lxjIp = "10.11.28.28";
+    String lxjIp = "10.11.28.128";
     //摄像头ip
     String sxtIp = "10.11.28.55";
 
@@ -108,7 +108,7 @@ public class SendEventToKM {
         //String m_sDeviceIP = "10.11.28.28";//录像机ip
         int iPort = 8000;//录像机端口
         String userName = "admin";//录像机用户名
-        String pwd = "1234abcd";//录像机密码
+        String pwd = "1234abcde";//录像机密码
         int m_iChanShowNum = 0; // 摄像头通道39是16层,40是12层，36是17层，34是18层，33是20层
         if(cabinetNumber.equals("120")){
             m_iChanShowNum = 40;

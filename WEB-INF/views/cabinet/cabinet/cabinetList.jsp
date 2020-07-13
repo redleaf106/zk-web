@@ -1,14 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/commons/taglibs.jsp" %>
 
-<form id="pagerForm" method="post" action="${ctx}/cabinet/cabinet">
-	<input type="hidden" name="pageNum" value="${cabinetPage.pageVO.currentPage}" />
-	<input type="hidden" name="numPerPage" value="${cabinetPage.pageVO.pageSize}" />
-</form>
-
 
 <div class="pageHeader">
-	<form onsubmit="return navTabSearch(this);" action="${ctx}/cabinet/cabinet" method="post">
+	<form id="pagerForm" onsubmit="return navTabSearch(this);" action="${ctx}/cabinet/cabinet" method="post">
+		<input type="hidden" name="pageNum" value="${cabinetPage.pageVO.currentPage}" />
+		<input type="hidden" name="numPerPage" value="${cabinetPage.pageVO.pageSize}" />
 	<div class="searchBar">
 		<table class="searchContent">
 			<tr>
