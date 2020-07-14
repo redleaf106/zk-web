@@ -174,9 +174,9 @@ public class CabinetDoorController extends BaseController {
 				}else {
 					cabinetDoorService.saveOrUpdate(cabinetDoor);
 				}
-
 				message.setStatusCode(this.SUCCESS);
 				message.setNavTabId("cabinetDoor");
+				message.setCallbackType("closeCurrent");
 				return this.ajaxDone(message);
 			}catch(Exception ex){
 				throw new DialogException(ex);

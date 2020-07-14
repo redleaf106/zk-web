@@ -28,4 +28,8 @@ public class CheckListService {
     public int add(HTFCheck htfCheck){
         return checkListDao.save(htfCheck);
     }
+
+    public HTFCheck findById(int id){
+        return checkListDao.findById(id);
+    }
 }

@@ -65,8 +65,8 @@
 						<%--<td>${item.accessCount}</td>--%>
 						<td>
 							<c:choose>
-								<c:when test="${item.status=='1'}"><i class="iconfont">&#xe6a2;</i>存入</c:when>
-								<c:when test="${item.status=='2'}"><i class="iconfont">&#xe6a1;</i>取出</c:when>
+								<c:when test="${item.status=='1'}"><img src="${ctx}/images/icons/yes.png" width="20px" height="20px">存入</c:when>
+								<c:when test="${item.status=='2'}"><img src="${ctx}/images/icons/no.png" width="20px" height="20px">取出</c:when>
 								<c:otherwise>--</c:otherwise>
 							</c:choose>
 						</td>

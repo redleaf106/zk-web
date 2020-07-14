@@ -17,4 +17,6 @@ public interface CheckListDao {
     List<HTFCheck> findPage(CheckListPage<HTFCheck> checkListPage);
 
     int save(HTFCheck htfCheck);
+
+    HTFCheck findById(int id);
 }
