@@ -5,6 +5,7 @@ package cn.org.bjca.zk.platform.dao;
 
 import cn.org.bjca.zk.db.entity.CabinetDoorEvent;
 import cn.org.bjca.zk.db.entity.CheckInfo;
+import cn.org.bjca.zk.db.entity.CheckWMInfo;
 import cn.org.bjca.zk.db.entity.UrgentEvent;
 import cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage;
 import org.apache.ibatis.annotations.Delete;
@@ -93,5 +94,7 @@ public interface CabinetDoorEventDao {
 	int updateUrgentEventEmailStatus(int id);
 
 
+	List<CheckWMInfo> getMonthList(String date);
 
+	List<CheckWMInfo> getWeekList(String date);
 }

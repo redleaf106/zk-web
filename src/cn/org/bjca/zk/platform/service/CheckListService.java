@@ -2,11 +2,9 @@ package cn.org.bjca.zk.platform.service;
 
 import cn.org.bjca.zk.db.entity.HTFCheck;
 import cn.org.bjca.zk.platform.dao.CheckListDao;
-import cn.org.bjca.zk.db.entity.CheckInfo;
 import cn.org.bjca.zk.platform.web.page.CheckListPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

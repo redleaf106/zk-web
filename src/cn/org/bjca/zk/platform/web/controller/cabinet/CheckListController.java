@@ -1,6 +1,5 @@
 package cn.org.bjca.zk.platform.web.controller.cabinet;
 
-import cn.org.bjca.zk.db.entity.CheckInfo;
 import cn.org.bjca.zk.db.entity.HTFCheck;
 import cn.org.bjca.zk.platform.service.CheckListService;
 import cn.org.bjca.zk.platform.web.page.CheckListPage;
@@ -32,6 +31,7 @@ public class CheckListController {
 
         CheckListPage<HTFCheck> checkListPage = new CheckListPage<HTFCheck>();
         Page page = new Pagination();
+        String reportType = request.getParameter("reportType");
         String pageNum = request.getParameter("pageNum");//当前页码
         if(StringUtils.isNotBlank(pageNum)) {
             page.setCurrentPage(Integer.parseInt(pageNum));
@@ -40,16 +40,24 @@ public class CheckListController {
         if(StringUtils.isNotBlank(numPerPage)) {
             page.setPageSize(Integer.parseInt(numPerPage));
         }
-
+        if(StringUtils.isNotBlank(reportType)) {
+            checkListPage.setReportType(reportType);
+        }else{
+            checkListPage.setReportType("1");
+        }
         checkListPage.setPageVO(page);
         checkListPage = checkListService.findPage(checkListPage);
-        for(HTFCheck htfCheck:checkListPage.getData()){
+        /*for(HTFCheck htfCheck:checkListPage.getData()){
             System.out.println(htfCheck.getFileName());
-        }
+        }*/
         modelMap.put("checkListPage", checkListPage);
-
-        System.out.println("进入页面");
-        return "/cabinet/checkList/checkList";
-
+        modelMap.put("reportType",reportType);
+        if (reportType.equalsIgnoreCase("1")){
+            return "/cabinet/checkList/checkList";
+        }else if (reportType.equalsIgnoreCase("2")){
+            return "/cabinet/checkList/checkWeekList";
+        }else {
+            return "/cabinet/checkList/checkMonthList";
+        }
     }
 }
