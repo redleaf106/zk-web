@@ -3,29 +3,30 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.org.bjca.zk.platform.dao.CheckListDao">
 
-    <resultMap id="HTFChcekResultMap" type="cn.org.bjca.zk.db.entity.HTFCheck">
+    <resultMap id="HTFCheckResultMap" type="cn.org.bjca.zk.db.entity.HTFCheck">
         <id jdbcType="INTEGER" property="id" column="id"/>
         <result property="fileName" column="file_name" jdbcType="VARCHAR"/>
         <result property="filePath" column="file_path" jdbcType="VARCHAR"/>
-        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="VARCHAR"/>
     </resultMap>
 
     <!-- 分页查询 -->
-    <select id="findPage" parameterType="cn.org.bjca.zk.platform.web.page.CheckListPage" resultMap="HTFChcekResultMap">
+    <select id="findPage" parameterType="cn.org.bjca.zk.platform.web.page.CheckListPage" resultMap="HTFCheckResultMap">
         SELECT *
         FROM HTF_CHECK
-        WHERE 1=1
+        WHERE report_type =#{reportType}
         ORDER BY CREATE_TIME DESC
     </select>
 
     <!--添加数据 -->
     <insert id="save" parameterType="HTFCheck">
         INSERT INTO HTF_CHECK(
-        file_name,file_path,create_time
+        file_name,file_path,create_time,report_type
         )VALUES(
         #{fileName},
         #{filePath},
-        now()
+        now(),
+        #{reportType}
         )
     </insert>
 

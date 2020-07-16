@@ -399,6 +399,17 @@ public class CabinetDoorEventController extends BaseController {
 
 	}
 
+	@RequestMapping(value = "checkWMInfo" ,produces ="text/html;charset=UTF-8")
+	public ModelAndView checkWMInfo(String date,String reportType){
+		Message message = new Message();
+		List<CheckWMInfo> list = new ArrayList<CheckWMInfo>();
+		list = cabinetDoorEventService.findWMList(date,reportType);
+		HTFCheck htfCheck = CreateDayCheckUtils.checkWMCheck(list, date,reportType);
+		checkListService.add(htfCheck);
+		message.setStatusCode(this.SUCCESS);
+		message.setNavTabId("checkList");
+		return this.ajaxDone(message);
+	}
 	//获取所有未发邮件的应急开门事件
 	@RequestMapping(value = "getAllUnactivatedUrgentEvent" ,produces="application/json;charset=UTF-8")
 	@ResponseBody

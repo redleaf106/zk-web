@@ -12,6 +12,13 @@ public class CheckListPage <T> extends BasePage<T>{
 
     private static final long serialVersionUID = -6183879852924320372L;
 
+    private String reportType;
 
+    public String getReportType() {
+        return reportType;
+    }
 
+    public void setReportType(String reportType) {
+        this.reportType = reportType;
+    }
 }

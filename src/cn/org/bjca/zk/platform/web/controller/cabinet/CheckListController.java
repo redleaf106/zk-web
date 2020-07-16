@@ -33,6 +33,7 @@ public class CheckListController {
 
         CheckListPage<HTFCheck> checkListPage = new CheckListPage<HTFCheck>();
         Page page = new Pagination();
+        String reportType = request.getParameter("reportType");
         String pageNum = request.getParameter("pageNum");//当前页码
         if(StringUtils.isNotBlank(pageNum)) {
             page.setCurrentPage(Integer.parseInt(pageNum));
@@ -41,20 +42,29 @@ public class CheckListController {
         if(StringUtils.isNotBlank(numPerPage)) {
             page.setPageSize(Integer.parseInt(numPerPage));
         }
-
+        if(StringUtils.isNotBlank(reportType)) {
+            checkListPage.setReportType(reportType);
+        }else{
+            checkListPage.setReportType("1");
+        }
         checkListPage.setPageVO(page);
         checkListPage = checkListService.findPage(checkListPage);
-        for(HTFCheck htfCheck:checkListPage.getData()){
+        /*for(HTFCheck htfCheck:checkListPage.getData()){
             System.out.println(htfCheck.getFileName());
-        }
+        }*/
         modelMap.put("checkListPage", checkListPage);
-        System.out.println("进入页面");
-        return "/cabinet/checkList/checkList";
+        modelMap.put("reportType",reportType);
+        if (reportType.equalsIgnoreCase("1")){
+            return "/cabinet/checkList/checkList";
+        }else if (reportType.equalsIgnoreCase("2")){
+            return "/cabinet/checkList/checkWeekList";
+        }else {
+            return "/cabinet/checkList/checkMonthList";
+        }
     }
 
     @RequestMapping("showDayChcek/{id}")
     public String showDayChcek(ModelMap modelMap,@PathVariable String id){
-        System.out.println(id);
         int databaseid = Integer.parseInt(id);
         HTFCheck htfCheck = checkListService.findById(databaseid);
         String msg = ExcelToHtml.excelToHtml(htfCheck.getFilePath()+htfCheck.getFileName());

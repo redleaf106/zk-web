@@ -165,5 +165,13 @@ public class CabinetDoorEventService {
 	}
 
 
-
+	public List<CheckWMInfo> findWMList(String date, String reportType) {
+		List<CheckWMInfo> list = new ArrayList<CheckWMInfo>();
+		if(reportType.equals("2")){//周报表
+			list = cabinetDoorEventDao.getWeekList(date);
+		}else{
+			list = cabinetDoorEventDao.getMonthList(date);
+		}
+		return list;
+	}
 }
