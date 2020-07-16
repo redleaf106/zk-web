@@ -34,13 +34,13 @@
 	<!-- 分页查询 -->
 	<select id="findPage" parameterType="cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage" resultType="CabinetDoorEvent">
 		SELECT
-		bo_cabinetdoorevent.id,
-		bo_cabinetdoorevent.cabinetNumber,
-		bo_cabinetdoorevent.cabinetdoorNumber,
-		bo_employee.employeename,
-		bo_cabinetdoorevent.dooropttime,
-		bo_cabinetdoorevent.`status`,
-		bo_cabinetdoorevent.remark
+		BO_CABINETDOOREVENT.id,
+		BO_CABINETDOOREVENT.cabinetNumber,
+		BO_CABINETDOOREVENT.cabinetdoorNumber,
+		BO_EMPLOYEE.employeename,
+		BO_CABINETDOOREVENT.dooropttime,
+		BO_CABINETDOOREVENT.`status`,
+		BO_CABINETDOOREVENT.remark
 		FROM
 		BO_CABINETDOOREVENT ,
 		BO_EMPLOYEE
