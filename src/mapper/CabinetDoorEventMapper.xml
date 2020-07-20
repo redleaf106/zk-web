@@ -45,7 +45,7 @@
 		BO_CABINETDOOREVENT ,
 		BO_EMPLOYEE
 		WHERE
-		bo_cabinetdoorevent.employeecardnumber = bo_employee.iccardnumber
+		BO_CABINETDOOREVENT.employeecardnumber = BO_EMPLOYEE.iccardnumber
 		<if test="cabinetNumber != null">
 			AND CABINETNUMBER LIKE #{cabinetNumber}
 		</if>

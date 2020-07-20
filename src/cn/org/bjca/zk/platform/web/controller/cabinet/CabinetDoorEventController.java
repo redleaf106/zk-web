@@ -10,6 +10,7 @@ import cn.org.bjca.zk.platform.exception.DialogException;
 import cn.org.bjca.zk.platform.service.*;
 import cn.org.bjca.zk.platform.tools.CabinetDoorServer;
 import cn.org.bjca.zk.platform.tools.CreateDayCheckUtils;
+import cn.org.bjca.zk.platform.web.controller.AutoRunTask;
 import cn.org.bjca.zk.platform.web.controller.BaseController;
 import cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage;
 import com.alibaba.fastjson.JSON;
@@ -23,6 +24,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -34,10 +36,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /***************************************************************************
 
@@ -71,6 +70,9 @@ public class CabinetDoorEventController extends BaseController {
 
 	@Autowired
 	private CabinetService cabinetService;
+
+		@Value("#{MessageConfig['99FUNDOAURL']}")
+		private String JYJJOAURL;
 
 
 	/**
@@ -341,7 +343,8 @@ public class CabinetDoorEventController extends BaseController {
 					checkInfo.setCabinetDoorNumber(ci.getCabinetDoorNumber());
 					checkInfo.setDepartmentName(ci.getDepartmentName());
 					checkInfo.setEmployeeName(ci.getEmployeeName());
-					checkInfo.setIcCardNumber(ci.getIcCardNumber());
+					String empnum = employeeService.findByicCardNumber(ci.getIcCardNumber()).getEmployeeNumber();
+					checkInfo.setIcCardNumber(empnum);
 					checkInfo.setRemark(ci.getRemark());
 					if("0".equals(ci.getDoorOptStatus())){//修改存件时间
 						checkInfo.setPushTime(ci.getDoorOptTime());
@@ -375,10 +378,10 @@ public class CabinetDoorEventController extends BaseController {
 			for (CheckInfo c:responseList){
 				String objNo = c.getIcCardNumber();
 				//金鹰考勤
-				//String OAInfo = getOA(objNo);
+				String OAInfo = new AutoRunTask().getOA(objNo,date,JYJJOAURL);
 				//汇添富考勤
 				//String OAInfo = new AutoRunTask().getHtfOA(objNo);
-				String OAInfo = "";
+//				String OAInfo = "";
 				c.setOAInfo(OAInfo);
 			}
 
@@ -410,6 +413,7 @@ public class CabinetDoorEventController extends BaseController {
 		message.setNavTabId("checkList");
 		return this.ajaxDone(message);
 	}
+
 	//获取所有未发邮件的应急开门事件
 	@RequestMapping(value = "getAllUnactivatedUrgentEvent" ,produces="application/json;charset=UTF-8")
 	@ResponseBody
@@ -430,5 +434,10 @@ public class CabinetDoorEventController extends BaseController {
 		return "error";
 	}
 
+	@RequestMapping(value = "get99FUNDOAURL")
+	@ResponseBody
+	public String get99FUNDOAURL() {
+		return JYJJOAURL;
+	}
 
 }

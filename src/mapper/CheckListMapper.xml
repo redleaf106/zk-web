@@ -30,7 +30,7 @@
         )
     </insert>
 
-    <select id="findById" resultType="HTFCheck" parameterType="int">
+    <select id="findById" resultMap="HTFCheckResultMap" parameterType="int">
         SELECT * FROM HTF_CHECK WHERE ID = #{0}
     </select>
 </mapper>

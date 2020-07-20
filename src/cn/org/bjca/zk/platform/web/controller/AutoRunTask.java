@@ -26,6 +26,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.xfire.client.Client;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
@@ -62,8 +63,10 @@ public class AutoRunTask {
 
     private final static String MESSAGEURL = "http://10.50.115.157:10090/messagesend";//短信接口地址
     private final static String HTFOAURL = "http://172.26.100.36/services/checkLeaveByEMP?wsdl";//OA接口地址
-    private final  static String JYJJOAURL = "https://crm.gefund.com.cn/gefundCRM/holiday/query";//金鹰OA接口地址
+    //private final  static String JYJJOAURL = "https://crm.gefund.com.cn/gefundCRM/holiday/query";//金鹰OA接口地址
 
+    @Value("#{MessageConfig['99FUNDOAURL']}")
+    private String JYJJOAURL;
 
     //@Scheduled(cron = "0/5 * * * * ? ") // 间隔5秒执行
     //@Scheduled(cron = "0 1 16 * * ?")
@@ -188,7 +191,8 @@ public class AutoRunTask {
                 checkInfo.setCabinetDoorNumber(ci.getCabinetDoorNumber());
                 checkInfo.setDepartmentName(ci.getDepartmentName());
                 checkInfo.setEmployeeName(ci.getEmployeeName());
-                checkInfo.setIcCardNumber(ci.getIcCardNumber());
+                String empnum = employeeService.findByicCardNumber(ci.getIcCardNumber()).getEmployeeNumber();
+                checkInfo.setIcCardNumber(empnum);
                 checkInfo.setRemark(ci.getRemark());
                 if("0".equals(ci.getDoorOptStatus())){//修改存件时间
                     checkInfo.setPushTime(ci.getDoorOptTime());
@@ -222,11 +226,11 @@ public class AutoRunTask {
         for (CheckInfo c:responseList){
             String objNo = c.getIcCardNumber();
             //金鹰考勤
-            //String OAInfo = getOA(objNo);
+            String OAInfo = getOA(objNo);
             //汇添富考勤
             //String OAInfo = getHtfOA(objNo);
             //考勤接口如果没通
-            String OAInfo = "";
+//            String OAInfo = "";
             c.setOAInfo(OAInfo);
         }
 
@@ -323,6 +327,67 @@ public class AutoRunTask {
             }
             else{
                 System.err.println("请求返回:"+state+"("+JYJJOAURL+")");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e){
+            e.printStackTrace();
+            return "获取失败";
+        }
+        return "";
+    }
+
+    //金鹰考勤
+    public String getOA(String objNo,String date,String oaUrl){
+        JSONObject jsonParam = new JSONObject();
+        System.out.println(date);
+        jsonParam .put("startdate",date);
+        jsonParam .put("enddate",date);
+        jsonParam .put("objno",objNo);
+        String buffer = objNo+date+date+"gef";
+        buffer = MD5Util.MD5Encode(buffer,"utf-8");
+        jsonParam .put("secret",buffer);
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        System.out.println(oaUrl);
+        HttpPost httpPost = new HttpPost(oaUrl);// 创建httpPost
+        httpPost.setHeader("Accept", "application/json");
+        httpPost.setHeader("Content-Type", "application/json");
+        String charSet = "UTF-8";
+        StringEntity entity = new StringEntity(jsonParam.toJSONString(), charSet);
+        httpPost.setEntity(entity);
+        CloseableHttpResponse response = null;
+        try {
+            response = httpclient.execute(httpPost);
+            StatusLine status = response.getStatusLine();
+            int state = status.getStatusCode();
+            if (state == HttpStatus.SC_OK) {
+                HttpEntity responseEntity = response.getEntity();
+                String jsonString = null;
+                try {
+                    jsonString = EntityUtils.toString(responseEntity);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(jsonString);
+                JSONArray jsonArray = JSONObject.parseArray(jsonString);
+                JSONObject jsonObject = (JSONObject) jsonArray.get(0);
+                System.out.println("返回结果："+jsonObject.getString("result"));
+                if (!jsonObject.getString("result").equals("success")) {
+                    return "获取失败";
+                }
+                String check_info = jsonObject.getString("check_info");
+                String off_time = jsonObject.getString("off_time");
+                if(off_time.equals("0")){
+                    off_time = "";
+                }else if(off_time.equals("1")){
+                    off_time = "上午";
+                }else if(off_time.equals("2")){
+                    off_time = "下午";
+                }
+                return off_time+check_info;
+            }
+            else{
+                System.err.println("请求返回:"+state+"("+oaUrl+")");
             }
         } catch (IOException e) {
             e.printStackTrace();
