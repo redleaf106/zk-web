@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="war" name="jyjj">
-    <output-path>$PROJECT_DIR$/out/artifacts/jyjj</output-path>
-    <root id="archive" name="jyjj.war">
-      <element id="artifact" artifact-name="zk-web:war exploded" />
-    </root>
-  </artifact>
-</component>
