@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/commons/taglibs.jsp" %>
 
-<form id="pagerForm" method="post" action="${ctx}/cabinet/checkList">
+<form id="pagerForm" method="post" action="${ctx}/cabinet/checkList?reportType=1">
     <input type="hidden" name="pageNum" value="${checkListPage.pageVO.currentPage}" />
     <input type="hidden" name="numPerPage" value="${checkListPage.pageVO.pageSize}" />
 </form>
