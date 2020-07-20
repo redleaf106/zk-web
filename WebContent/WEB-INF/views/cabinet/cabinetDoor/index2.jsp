@@ -71,6 +71,7 @@
         borderRadius: '7px',
         size: '7px'
     });*/
+
     $('.page-left').slimScroll({
         width:$(window).width()*0.11,
         height: $(window).height()-150, //容器高度
@@ -80,6 +81,8 @@
         opacity:0.5 // 滚动条透明度
 
     });
+    var prwidth =($('.page').width()-$('.page-left').width()-100)+'px';
+    $(".page-right").width(prwidth);
 
     initPage("62ddd43da5f6400a9d6b87f74ba96ef9");
     function chooseDoor(obj,dnum){

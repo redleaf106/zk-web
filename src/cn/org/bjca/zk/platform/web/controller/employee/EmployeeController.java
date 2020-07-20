@@ -232,7 +232,7 @@ public class EmployeeController extends BaseController{
 //		}
 		boolean hasErrors = false; // 成功失败标识 ： true表示有错误
 		Employee employeeExist = null;
-		try {
+			try {
 			// 印章附件路径
 			String attachmentPath = request.getParameter("attachment.attachmentPath");
 			System.out.println("attachmentPath========="+attachmentPath);

@@ -38,14 +38,14 @@ public interface TimeAreaDao {
 	/**
 	  * <p>保存记录</p>
 	  * @Description:
-	  * @param cabinet
+	  * @param
 	 */
 	void save(TimeArea timeArea);
 	
 	/**
 	  * <p>更新记录</p>
 	  * @Description:
-	  * @param cabinet
+	  * @param
 	 */
 	void update(TimeArea timeArea);
 	
@@ -69,7 +69,7 @@ public interface TimeAreaDao {
 	/**
 	  * <p>根据部门Id查询列表</p>
 	  * @Description:
-	  * @param sealName
+	  * @param
 	  * @return
 	 */
 	@Select("SELECT * FROM BO_TIMEAREA WHERE DEPARTMENTID = #{departmentId} ORDER BY STARTTIME ASC")
@@ -78,7 +78,7 @@ public interface TimeAreaDao {
 	/**
 	  * <p>根据部门id删除记录</p>
 	  * @Description:
-	  * @param id
+	  * @param
 	 */
 	@Delete("DELETE FROM BO_TIMEAREA WHERE DEPARTMENTID = #{departmentId}")
 	void delTimeAreaByDepartmentId(String departmentId);
