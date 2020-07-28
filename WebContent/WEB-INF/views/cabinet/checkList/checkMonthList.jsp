@@ -47,7 +47,7 @@
 
 <div class="pageHeader">
     <input type="text" id="dayCheckFilePath" value="${ctx}/checkList/" style="display: none">
-    <form action="${ctx}/cabinet/cabinetDoorEvent/checkDayInfo" method="post" id="checkListForm" onsubmit="return validateCallback(this, navTabAjaxDone)">
+    <form action="${ctx}/cabinet/cabinetDoorEvent/checkWMInfo" method="post" id="checkListForm" onsubmit="return validateCallback(this, navTabAjaxDone)">
         <input type="hidden" value="3" name="reportType"/>
         <div class="searchBar">
             <table class="searchContent">

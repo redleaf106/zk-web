@@ -1,21 +1,19 @@
 package cn.org.bjca.zk.platform.web.controller;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
+import cn.org.bjca.zk.platform.bean.Message;
+import cn.org.bjca.zk.platform.exception.DialogException;
+import cn.org.bjca.zk.platform.utils.JsonMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import cn.org.bjca.zk.platform.bean.Message;
-import cn.org.bjca.zk.platform.exception.DialogException;
-import cn.org.bjca.zk.platform.utils.JsonMapper;
+import javax.servlet.http.HttpServletRequest;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 /***************************************************************************
  * <pre>基类Controller</pre>
@@ -32,8 +30,10 @@ public abstract class BaseController {
 	
 	protected  final String SAVE = "信息添加成功！"; 
 	
-	protected  final String SAVE_ERROR = "信息添加失败！"; 
-	
+	protected  final String SAVE_ERROR = "信息添加失败！";
+
+	protected  final String FORMAT_ERROR = "时间格式有误！";
+
 	protected  final String UPDATE = "信息修改成功！"; 
 	
 	protected  final String UPDATE_ERROR = "信息修改失败！"; 

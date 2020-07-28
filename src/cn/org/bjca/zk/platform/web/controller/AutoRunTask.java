@@ -1,6 +1,7 @@
 package cn.org.bjca.zk.platform.web.controller;
 
 import cn.org.bjca.zk.db.entity.CheckInfo;
+import cn.org.bjca.zk.db.entity.CheckWMInfo;
 import cn.org.bjca.zk.db.entity.Employee;
 import cn.org.bjca.zk.db.entity.HTFCheck;
 import cn.org.bjca.zk.platform.service.CabinetDoorEventService;
@@ -9,6 +10,7 @@ import cn.org.bjca.zk.platform.service.EmployeeService;
 import cn.org.bjca.zk.platform.service.MessageService;
 import cn.org.bjca.zk.platform.tools.CreateDayCheckUtils;
 import cn.org.bjca.zk.platform.tools.HtfOainterface;
+import cn.org.bjca.zk.platform.utils.DateUtil;
 import cn.org.bjca.zk.platform.utils.MD5Util;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -173,6 +175,7 @@ public class AutoRunTask {
                     checkInfo.setPushTime(checkInfo.getPushTime()+" "+ci.getDoorOptTime());
                     checkInfo.setPushStatus(checkInfo.getPushStatus()+" 晚存");
                     reason = " 晚存：";
+                    checkInfo.setPushTime(checkInfo.getPushTime()+reason+ci.getRemark().replaceAll(" ",""));
                 }else if("1".equals(ci.getDoorOptStatus())){//修改取件时间
                     checkInfo.setPullTime(checkInfo.getPullTime()+" "+ci.getDoorOptTime());
                     checkInfo.setPullStatus(checkInfo.getPullStatus()+" 正常取");
@@ -180,6 +183,12 @@ public class AutoRunTask {
                     checkInfo.setPullTime(checkInfo.getPullTime()+" "+ci.getDoorOptTime());
                     checkInfo.setPullStatus(checkInfo.getPullStatus()+" 早取");
                     reason = " 早取：";
+                    checkInfo.setPullTime(checkInfo.getPullTime()+reason+ci.getRemark().replaceAll(" ",""));
+                }else if("4".equals(ci.getDoorOptStatus())){//修改取件时间
+                    checkInfo.setPullTime(checkInfo.getPullTime()+" "+ci.getDoorOptTime());
+                    checkInfo.setPullStatus(checkInfo.getPullStatus()+" 紧急");
+                    reason = " 紧急：";
+                    checkInfo.setPullTime(checkInfo.getPullTime()+reason+ci.getRemark().replaceAll(" ",""));
                 }
                 if(ci.getRemark()!=null||ci.getRemark().length()>0){
                     checkInfo.setRemark(checkInfo.getRemark()+reason+ci.getRemark());
@@ -192,7 +201,7 @@ public class AutoRunTask {
                 checkInfo.setDepartmentName(ci.getDepartmentName());
                 checkInfo.setEmployeeName(ci.getEmployeeName());
                 String empnum = employeeService.findByicCardNumber(ci.getIcCardNumber()).getEmployeeNumber();
-                checkInfo.setIcCardNumber(empnum);
+                checkInfo.setIcCardNumber(ci.getIcCardNumber());
                 checkInfo.setRemark(ci.getRemark());
                 if("0".equals(ci.getDoorOptStatus())){//修改存件时间
                     checkInfo.setPushTime(ci.getDoorOptTime());
@@ -200,7 +209,7 @@ public class AutoRunTask {
                     checkInfo.setPullTime("");
                     checkInfo.setPullStatus("");
                 }else if("2".equals(ci.getDoorOptStatus())){//修改存件时间
-                    checkInfo.setPushTime(ci.getDoorOptTime());
+                    checkInfo.setPushTime(ci.getDoorOptTime()+" 晚存："+ci.getRemark());
                     checkInfo.setPushStatus("晚存");
                     checkInfo.setPullTime("");
                     checkInfo.setPullStatus("");
@@ -211,11 +220,17 @@ public class AutoRunTask {
                     checkInfo.setPushTime("");
                     checkInfo.setPushStatus("");
                 }else if("3".equals(ci.getDoorOptStatus())){//修改取件时间
-                    checkInfo.setPullTime(ci.getDoorOptTime());
+                    checkInfo.setPullTime(ci.getDoorOptTime()+" 早取："+ci.getRemark());
                     checkInfo.setPullStatus("早取");
                     checkInfo.setPushTime("");
                     checkInfo.setPushStatus("");
                     checkInfo.setRemark("早取："+ci.getRemark());
+                }else if("4".equals(ci.getDoorOptStatus())){//修改取件时间
+                    checkInfo.setPullTime(ci.getDoorOptTime()+" 紧急："+ci.getRemark());
+                    checkInfo.setPullStatus("紧急");
+                    checkInfo.setPushTime("");
+                    checkInfo.setPushStatus("");
+                    checkInfo.setRemark("紧急："+ci.getRemark());
                 }
                 responseList.add(checkInfo);
             }
@@ -224,6 +239,8 @@ public class AutoRunTask {
         List<CheckInfo> checkInfoList = cabinetDoorEventService.absentEmp(new Date());
         responseList.addAll(checkInfoList);
         for (CheckInfo c:responseList){
+            String empnum = employeeService.findByicCardNumber(c.getIcCardNumber()).getEmployeeNumber();
+            c.setIcCardNumber(empnum);
             String objNo = c.getIcCardNumber();
             //金鹰考勤
             String OAInfo = getOA(objNo);
@@ -235,8 +252,33 @@ public class AutoRunTask {
         }
 
         HTFCheck htfCheck = CreateDayCheckUtils.checkDayCheck(responseList, new Date());
+        htfCheck.setReportType("1");
         checkListService.add(htfCheck);
 
+    }
+
+    //金鹰定时任务周报
+    @Scheduled(cron = "0 0 23 ? * SUN")//每周星期六凌晨1点实行一次
+    public void createWeekClock(){
+        List<CheckWMInfo> list = new ArrayList<CheckWMInfo>();
+        String reportType = "2";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DateUtil.DATE_PATTERN_YMD);
+        String date = simpleDateFormat.format(new Date());
+        list = cabinetDoorEventService.findWMList(date,reportType);
+        HTFCheck htfCheck = CreateDayCheckUtils.checkWMCheck(list, date,reportType);
+        checkListService.add(htfCheck);
+    }
+
+    //金鹰定时任务月报
+    @Scheduled(cron = "0 0 22 28 * ?")//每月最后一天22点执行一次
+    public void createMonthClock(){
+        List<CheckWMInfo> list = new ArrayList<CheckWMInfo>();
+        String reportType = "3";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DateUtil.DATE_PATTERN_YMD);
+        String date = simpleDateFormat.format(new Date());
+        list = cabinetDoorEventService.findWMList(date,reportType);
+        HTFCheck htfCheck = CreateDayCheckUtils.checkWMCheck(list, date,reportType);
+        checkListService.add(htfCheck);
     }
 
     public void sendMessage(){

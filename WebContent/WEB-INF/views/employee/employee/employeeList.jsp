@@ -65,7 +65,7 @@
 	<div class="panelBar">
 		<div class="pages">
 			<span>显示</span>
-			<select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value,pageNum:1}, 'employeeBox')">
+			<select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value,pageNum:1})">
 				<option value="10" <c:if test="${employeePage.pageVO.pageSize == 10}">selected="selected"</c:if>>10</option>
 				<option value="20" <c:if test="${employeePage.pageVO.pageSize == 20}">selected="selected"</c:if>>20</option>
 				<option value="50" <c:if test="${employeePage.pageVO.pageSize == 50}">selected</c:if>>50</option>
