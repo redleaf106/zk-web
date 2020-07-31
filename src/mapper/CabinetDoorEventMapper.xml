@@ -34,18 +34,18 @@
 	<!-- 分页查询 -->
 	<select id="findPage" parameterType="cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage" resultType="CabinetDoorEvent">
 		SELECT
-		bo_cabinetdoorevent.id,
-		bo_cabinetdoorevent.cabinetNumber,
-		bo_cabinetdoorevent.cabinetdoorNumber,
-		bo_employee.employeename,
-		bo_cabinetdoorevent.dooropttime,
-		bo_cabinetdoorevent.`status`,
-		bo_cabinetdoorevent.remark
+		BO_CABINETDOOREVENT.id,
+		BO_CABINETDOOREVENT.cabinetNumber,
+		BO_CABINETDOOREVENT.cabinetdoorNumber,
+		BO_EMPLOYEE.employeename,
+		BO_CABINETDOOREVENT.dooropttime,
+		BO_CABINETDOOREVENT.`status`,
+		BO_CABINETDOOREVENT.remark
 		FROM
 		BO_CABINETDOOREVENT ,
 		BO_EMPLOYEE
 		WHERE
-		bo_cabinetdoorevent.employeecardnumber = bo_employee.iccardnumber
+		BO_CABINETDOOREVENT.employeecardnumber = BO_EMPLOYEE.iccardnumber
 		<if test="cabinetNumber != null">
 			AND CABINETNUMBER LIKE #{cabinetNumber}
 		</if>
@@ -115,12 +115,12 @@
 		   IFNULL(t5.cc,0) AS dcTotal,
 		   IFNULL(t5.cdd,'') as dcDate
 		FROM BO_EMPLOYEE,BO_DEPARTMENT,BO_CABINETDOOREVENT
-		LEFT JOIN (SELECT COUNT(id) as aa,employeecardnumber FROM BO_CABINETDOOREVENT WHERE DATE_FORMAT(BO_CABINETDOOREVENT.dooropttime,'%Y-%M')=DATE_FORMAT(#{date},'%Y-%M') AND `status`='0' GROUP BY employeecardnumber) t0 ON BO_CABINETDOOREVENT.employeecardnumber = t0.employeecardnumber
-		LEFT JOIN (SELECT COUNT(id) as bb,employeecardnumber FROM BO_CABINETDOOREVENT WHERE DATE_FORMAT(BO_CABINETDOOREVENT.dooropttime,'%Y-%M')=DATE_FORMAT(#{date},'%Y-%M') AND `status`='1' GROUP BY employeecardnumber) t1 ON BO_CABINETDOOREVENT.employeecardnumber = t1.employeecardnumber
-		LEFT JOIN (SELECT COUNT(id) as cc,employeecardnumber,GROUP_CONCAT(DISTINCT DATE_FORMAT(dooropttime,'%m-%d')) as cdd FROM BO_CABINETDOOREVENT WHERE DATE_FORMAT(BO_CABINETDOOREVENT.dooropttime,'%Y-%M')=DATE_FORMAT(#{date},'%Y-%M') AND `status`='2' GROUP BY employeecardnumber) t2 ON BO_CABINETDOOREVENT.employeecardnumber = t2.employeecardnumber
-		LEFT JOIN (SELECT COUNT(id) as dd,employeecardnumber,GROUP_CONCAT(DISTINCT DATE_FORMAT(dooropttime,'%m-%d')) as cdd FROM BO_CABINETDOOREVENT WHERE DATE_FORMAT(BO_CABINETDOOREVENT.dooropttime,'%Y-%M')=DATE_FORMAT(#{date},'%Y-%M') AND `status`='4' GROUP BY employeecardnumber) t3 ON BO_CABINETDOOREVENT.employeecardnumber = t3.employeecardnumber
-		LEFT JOIN (SELECT COUNT(id) as ee,employeecardnumber FROM BO_CABINETDOOREVENT WHERE DATE_FORMAT(BO_CABINETDOOREVENT.dooropttime,'%Y-%M')=DATE_FORMAT(#{date},'%Y-%M') AND `status` in('0','1','2','4') GROUP BY employeecardnumber) t4 ON BO_CABINETDOOREVENT.employeecardnumber = t4.employeecardnumber
-		LEFT JOIN (SELECT COUNT(employeecardnumber) as cc,employeecardnumber,GROUP_CONCAT(DISTINCT DATE_FORMAT(dooropttime,'%m-%d')) as cdd FROM (SELECT count(id) as c,employeecardnumber,dooropttime FROM BO_CABINETDOOREVENT WHERE DATE_FORMAT(BO_CABINETDOOREVENT.dooropttime,'%Y-%M')=DATE_FORMAT(#{date},'%Y-%M') GROUP BY employeecardnumber,DATE_FORMAT(BO_CABINETDOOREVENT.dooropttime,'%Y-%M-%d') HAVING COUNT(id)>4 )t GROUP BY t.employeecardnumber,DATE_FORMAT(dooropttime,'%Y-%M')) t5 on BO_CABINETDOOREVENT.employeecardnumber = t5.employeecardnumber
+		LEFT JOIN (SELECT COUNT(id) as aa,employeecardnumber FROM BO_CABINETDOOREVENT WHERE DATE_FORMAT(BO_CABINETDOOREVENT.dooropttime,'%Y-%m')=DATE_FORMAT(#{date},'%Y-%m') AND `status`='0' GROUP BY employeecardnumber) t0 ON BO_CABINETDOOREVENT.employeecardnumber = t0.employeecardnumber
+		LEFT JOIN (SELECT COUNT(id) as bb,employeecardnumber FROM BO_CABINETDOOREVENT WHERE DATE_FORMAT(BO_CABINETDOOREVENT.dooropttime,'%Y-%m')=DATE_FORMAT(#{date},'%Y-%m') AND `status`='1' GROUP BY employeecardnumber) t1 ON BO_CABINETDOOREVENT.employeecardnumber = t1.employeecardnumber
+		LEFT JOIN (SELECT COUNT(id) as cc,employeecardnumber,GROUP_CONCAT(DISTINCT DATE_FORMAT(dooropttime,'%m-%d')) as cdd FROM BO_CABINETDOOREVENT WHERE DATE_FORMAT(BO_CABINETDOOREVENT.dooropttime,'%Y-%m')=DATE_FORMAT(#{date},'%Y-%m') AND `status`='2' GROUP BY employeecardnumber) t2 ON BO_CABINETDOOREVENT.employeecardnumber = t2.employeecardnumber
+		LEFT JOIN (SELECT COUNT(id) as dd,employeecardnumber,GROUP_CONCAT(DISTINCT DATE_FORMAT(dooropttime,'%m-%d')) as cdd FROM BO_CABINETDOOREVENT WHERE DATE_FORMAT(BO_CABINETDOOREVENT.dooropttime,'%Y-%m')=DATE_FORMAT(#{date},'%Y-%m') AND `status`='4' GROUP BY employeecardnumber) t3 ON BO_CABINETDOOREVENT.employeecardnumber = t3.employeecardnumber
+		LEFT JOIN (SELECT COUNT(id) as ee,employeecardnumber FROM BO_CABINETDOOREVENT WHERE DATE_FORMAT(BO_CABINETDOOREVENT.dooropttime,'%Y-%m')=DATE_FORMAT(#{date},'%Y-%m') AND `status` in('0','1','2','4') GROUP BY employeecardnumber) t4 ON BO_CABINETDOOREVENT.employeecardnumber = t4.employeecardnumber
+		LEFT JOIN (SELECT COUNT(employeecardnumber) as cc,employeecardnumber,GROUP_CONCAT(DISTINCT DATE_FORMAT(dooropttime,'%m-%d')) as cdd FROM (SELECT count(id) as c,employeecardnumber,DATE_FORMAT(BO_CABINETDOOREVENT.dooropttime,'%Y-%m-%d') AS dooropttime FROM BO_CABINETDOOREVENT WHERE DATE_FORMAT(BO_CABINETDOOREVENT.dooropttime,'%Y-%m')=DATE_FORMAT(#{date},'%Y-%m') GROUP BY employeecardnumber,DATE_FORMAT(BO_CABINETDOOREVENT.dooropttime,'%Y-%m-%d') HAVING COUNT(id)>4 )t GROUP BY t.employeecardnumber,DATE_FORMAT(dooropttime,'%Y-%m')) t5 on BO_CABINETDOOREVENT.employeecardnumber = t5.employeecardnumber
 		WHERE BO_EMPLOYEE.iccardnumber=BO_CABINETDOOREVENT.employeecardnumber
 		AND BO_DEPARTMENT.id=BO_EMPLOYEE.departmentid
 	</select>
@@ -143,7 +143,7 @@
 		LEFT JOIN (SELECT COUNT(id) as bb,employeecardnumber FROM BO_CABINETDOOREVENT WHERE YEARWEEK(DATE_FORMAT(dooropttime,'%Y-%m-%d')) = YEARWEEK(#{date}) AND `status`='1' GROUP BY employeecardnumber) t1 ON BO_CABINETDOOREVENT.employeecardnumber = t1.employeecardnumber
 		LEFT JOIN (SELECT COUNT(id) as cc,employeecardnumber,GROUP_CONCAT(DISTINCT DATE_FORMAT(dooropttime,'%m-%d')) as cdd FROM BO_CABINETDOOREVENT WHERE YEARWEEK(DATE_FORMAT(dooropttime,'%Y-%m-%d')) = YEARWEEK(#{date}) AND `status`='2' GROUP BY employeecardnumber) t2 ON BO_CABINETDOOREVENT.employeecardnumber = t2.employeecardnumber
 		LEFT JOIN (SELECT COUNT(id) as dd,employeecardnumber,GROUP_CONCAT(DISTINCT DATE_FORMAT(dooropttime,'%m-%d')) as cdd FROM BO_CABINETDOOREVENT WHERE YEARWEEK(DATE_FORMAT(dooropttime,'%Y-%m-%d')) = YEARWEEK(#{date}) AND `status`='4' GROUP BY employeecardnumber) t3 ON BO_CABINETDOOREVENT.employeecardnumber = t3.employeecardnumber
-		LEFT JOIN (SELECT COUNT(employeecardnumber) as cc,employeecardnumber,GROUP_CONCAT(DISTINCT DATE_FORMAT(dooropttime,'%m-%d')) as cdd FROM (SELECT count(id) as c,employeecardnumber,dooropttime FROM BO_CABINETDOOREVENT WHERE YEARWEEK(DATE_FORMAT(dooropttime,'%Y-%m-%d')) = YEARWEEK(#{date}) GROUP BY employeecardnumber,DATE_FORMAT(dooropttime,'%Y-%M-%d') HAVING COUNT(id)>4 )t GROUP BY t.employeecardnumber,YEARWEEK(DATE_FORMAT(dooropttime,'%Y-%m-%d'))) t5 on BO_CABINETDOOREVENT.employeecardnumber = t5.employeecardnumber
+		LEFT JOIN (SELECT COUNT(employeecardnumber) as cc,employeecardnumber,GROUP_CONCAT(DISTINCT DATE_FORMAT(dooropttime,'%m-%d')) as cdd FROM (SELECT count(id) as c,employeecardnumber,DATE_FORMAT(dooropttime,'%Y-%m-%d') AS dooropttime FROM BO_CABINETDOOREVENT WHERE YEARWEEK(DATE_FORMAT(dooropttime,'%Y-%m-%d')) = YEARWEEK(#{date}) GROUP BY employeecardnumber,DATE_FORMAT(dooropttime,'%Y-%m-%d') HAVING COUNT(id)>4 )t GROUP BY t.employeecardnumber,YEARWEEK(DATE_FORMAT(dooropttime,'%Y-%m-%d'))) t5 on BO_CABINETDOOREVENT.employeecardnumber = t5.employeecardnumber
 		WHERE BO_EMPLOYEE.iccardnumber=BO_CABINETDOOREVENT.employeecardnumber
 		AND BO_DEPARTMENT.id=BO_EMPLOYEE.departmentid
 	</select>

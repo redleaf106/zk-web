@@ -65,9 +65,15 @@ public class CheckListController {
 
     @RequestMapping("showDayChcek/{id}")
     public String showDayChcek(ModelMap modelMap,@PathVariable String id){
+        System.out.println(id);
         int databaseid = Integer.parseInt(id);
         HTFCheck htfCheck = checkListService.findById(databaseid);
-        String msg = ExcelToHtml.excelToHtml(htfCheck.getFilePath()+htfCheck.getFileName());
+        String msg = "";
+        try {
+            msg = ExcelToHtml.excelToHtml(htfCheck.getFilePath()+htfCheck.getFileName());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         modelMap.addAttribute("msg",msg);
         return "/cabinet/checkList/showOneDayCheck";
     }

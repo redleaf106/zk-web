@@ -1,6 +1,7 @@
 package cn.org.bjca.zk.platform.web.controller;
 
 import cn.org.bjca.zk.db.entity.CheckInfo;
+import cn.org.bjca.zk.db.entity.CheckWMInfo;
 import cn.org.bjca.zk.db.entity.Employee;
 import cn.org.bjca.zk.db.entity.HTFCheck;
 import cn.org.bjca.zk.platform.service.CabinetDoorEventService;
@@ -9,6 +10,7 @@ import cn.org.bjca.zk.platform.service.EmployeeService;
 import cn.org.bjca.zk.platform.service.MessageService;
 import cn.org.bjca.zk.platform.tools.CreateDayCheckUtils;
 import cn.org.bjca.zk.platform.tools.HtfOainterface;
+import cn.org.bjca.zk.platform.utils.DateUtil;
 import cn.org.bjca.zk.platform.utils.MD5Util;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -26,6 +28,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.xfire.client.Client;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
@@ -62,8 +65,10 @@ public class AutoRunTask {
 
     private final static String MESSAGEURL = "http://10.50.115.157:10090/messagesend";//短信接口地址
     private final static String HTFOAURL = "http://172.26.100.36/services/checkLeaveByEMP?wsdl";//OA接口地址
-    private final  static String JYJJOAURL = "https://crm.gefund.com.cn/gefundCRM/holiday/query";//金鹰OA接口地址
+    //private final  static String JYJJOAURL = "https://crm.gefund.com.cn/gefundCRM/holiday/query";//金鹰OA接口地址
 
+    @Value("#{MessageConfig['99FUNDOAURL']}")
+    private String JYJJOAURL;
 
     //@Scheduled(cron = "0/5 * * * * ? ") // 间隔5秒执行
     //@Scheduled(cron = "0 1 16 * * ?")
@@ -170,6 +175,7 @@ public class AutoRunTask {
                     checkInfo.setPushTime(checkInfo.getPushTime()+" "+ci.getDoorOptTime());
                     checkInfo.setPushStatus(checkInfo.getPushStatus()+" 晚存");
                     reason = " 晚存：";
+                    checkInfo.setPushTime(checkInfo.getPushTime()+reason+ci.getRemark().replaceAll(" ",""));
                 }else if("1".equals(ci.getDoorOptStatus())){//修改取件时间
                     checkInfo.setPullTime(checkInfo.getPullTime()+" "+ci.getDoorOptTime());
                     checkInfo.setPullStatus(checkInfo.getPullStatus()+" 正常取");
@@ -177,6 +183,12 @@ public class AutoRunTask {
                     checkInfo.setPullTime(checkInfo.getPullTime()+" "+ci.getDoorOptTime());
                     checkInfo.setPullStatus(checkInfo.getPullStatus()+" 早取");
                     reason = " 早取：";
+                    checkInfo.setPullTime(checkInfo.getPullTime()+reason+ci.getRemark().replaceAll(" ",""));
+                }else if("4".equals(ci.getDoorOptStatus())){//修改取件时间
+                    checkInfo.setPullTime(checkInfo.getPullTime()+" "+ci.getDoorOptTime());
+                    checkInfo.setPullStatus(checkInfo.getPullStatus()+" 紧急");
+                    reason = " 紧急：";
+                    checkInfo.setPullTime(checkInfo.getPullTime()+reason+ci.getRemark().replaceAll(" ",""));
                 }
                 if(ci.getRemark()!=null||ci.getRemark().length()>0){
                     checkInfo.setRemark(checkInfo.getRemark()+reason+ci.getRemark());
@@ -188,6 +200,7 @@ public class AutoRunTask {
                 checkInfo.setCabinetDoorNumber(ci.getCabinetDoorNumber());
                 checkInfo.setDepartmentName(ci.getDepartmentName());
                 checkInfo.setEmployeeName(ci.getEmployeeName());
+                String empnum = employeeService.findByicCardNumber(ci.getIcCardNumber()).getEmployeeNumber();
                 checkInfo.setIcCardNumber(ci.getIcCardNumber());
                 checkInfo.setRemark(ci.getRemark());
                 if("0".equals(ci.getDoorOptStatus())){//修改存件时间
@@ -196,7 +209,7 @@ public class AutoRunTask {
                     checkInfo.setPullTime("");
                     checkInfo.setPullStatus("");
                 }else if("2".equals(ci.getDoorOptStatus())){//修改存件时间
-                    checkInfo.setPushTime(ci.getDoorOptTime());
+                    checkInfo.setPushTime(ci.getDoorOptTime()+" 晚存："+ci.getRemark());
                     checkInfo.setPushStatus("晚存");
                     checkInfo.setPullTime("");
                     checkInfo.setPullStatus("");
@@ -207,11 +220,17 @@ public class AutoRunTask {
                     checkInfo.setPushTime("");
                     checkInfo.setPushStatus("");
                 }else if("3".equals(ci.getDoorOptStatus())){//修改取件时间
-                    checkInfo.setPullTime(ci.getDoorOptTime());
+                    checkInfo.setPullTime(ci.getDoorOptTime()+" 早取："+ci.getRemark());
                     checkInfo.setPullStatus("早取");
                     checkInfo.setPushTime("");
                     checkInfo.setPushStatus("");
                     checkInfo.setRemark("早取："+ci.getRemark());
+                }else if("4".equals(ci.getDoorOptStatus())){//修改取件时间
+                    checkInfo.setPullTime(ci.getDoorOptTime()+" 紧急："+ci.getRemark());
+                    checkInfo.setPullStatus("紧急");
+                    checkInfo.setPushTime("");
+                    checkInfo.setPushStatus("");
+                    checkInfo.setRemark("紧急："+ci.getRemark());
                 }
                 responseList.add(checkInfo);
             }
@@ -220,19 +239,46 @@ public class AutoRunTask {
         List<CheckInfo> checkInfoList = cabinetDoorEventService.absentEmp(new Date());
         responseList.addAll(checkInfoList);
         for (CheckInfo c:responseList){
+            String empnum = employeeService.findByicCardNumber(c.getIcCardNumber()).getEmployeeNumber();
+            c.setIcCardNumber(empnum);
             String objNo = c.getIcCardNumber();
             //金鹰考勤
-            //String OAInfo = getOA(objNo);
+            String OAInfo = getOA(objNo);
             //汇添富考勤
             //String OAInfo = getHtfOA(objNo);
             //考勤接口如果没通
-            String OAInfo = "";
+//            String OAInfo = "";
             c.setOAInfo(OAInfo);
         }
 
         HTFCheck htfCheck = CreateDayCheckUtils.checkDayCheck(responseList, new Date());
+        htfCheck.setReportType("1");
         checkListService.add(htfCheck);
 
+    }
+
+    //金鹰定时任务周报
+    @Scheduled(cron = "0 0 23 ? * SUN")//每周星期六凌晨1点实行一次
+    public void createWeekClock(){
+        List<CheckWMInfo> list = new ArrayList<CheckWMInfo>();
+        String reportType = "2";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DateUtil.DATE_PATTERN_YMD);
+        String date = simpleDateFormat.format(new Date());
+        list = cabinetDoorEventService.findWMList(date,reportType);
+        HTFCheck htfCheck = CreateDayCheckUtils.checkWMCheck(list, date,reportType);
+        checkListService.add(htfCheck);
+    }
+
+    //金鹰定时任务月报
+    @Scheduled(cron = "0 0 22 28 * ?")//每月最后一天22点执行一次
+    public void createMonthClock(){
+        List<CheckWMInfo> list = new ArrayList<CheckWMInfo>();
+        String reportType = "3";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DateUtil.DATE_PATTERN_YMD);
+        String date = simpleDateFormat.format(new Date());
+        list = cabinetDoorEventService.findWMList(date,reportType);
+        HTFCheck htfCheck = CreateDayCheckUtils.checkWMCheck(list, date,reportType);
+        checkListService.add(htfCheck);
     }
 
     public void sendMessage(){
@@ -323,6 +369,67 @@ public class AutoRunTask {
             }
             else{
                 System.err.println("请求返回:"+state+"("+JYJJOAURL+")");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e){
+            e.printStackTrace();
+            return "获取失败";
+        }
+        return "";
+    }
+
+    //金鹰考勤
+    public String getOA(String objNo,String date,String oaUrl){
+        JSONObject jsonParam = new JSONObject();
+        System.out.println(date);
+        jsonParam .put("startdate",date);
+        jsonParam .put("enddate",date);
+        jsonParam .put("objno",objNo);
+        String buffer = objNo+date+date+"gef";
+        buffer = MD5Util.MD5Encode(buffer,"utf-8");
+        jsonParam .put("secret",buffer);
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        System.out.println(oaUrl);
+        HttpPost httpPost = new HttpPost(oaUrl);// 创建httpPost
+        httpPost.setHeader("Accept", "application/json");
+        httpPost.setHeader("Content-Type", "application/json");
+        String charSet = "UTF-8";
+        StringEntity entity = new StringEntity(jsonParam.toJSONString(), charSet);
+        httpPost.setEntity(entity);
+        CloseableHttpResponse response = null;
+        try {
+            response = httpclient.execute(httpPost);
+            StatusLine status = response.getStatusLine();
+            int state = status.getStatusCode();
+            if (state == HttpStatus.SC_OK) {
+                HttpEntity responseEntity = response.getEntity();
+                String jsonString = null;
+                try {
+                    jsonString = EntityUtils.toString(responseEntity);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(jsonString);
+                JSONArray jsonArray = JSONObject.parseArray(jsonString);
+                JSONObject jsonObject = (JSONObject) jsonArray.get(0);
+                System.out.println("返回结果："+jsonObject.getString("result"));
+                if (!jsonObject.getString("result").equals("success")) {
+                    return "获取失败";
+                }
+                String check_info = jsonObject.getString("check_info");
+                String off_time = jsonObject.getString("off_time");
+                if(off_time.equals("0")){
+                    off_time = "";
+                }else if(off_time.equals("1")){
+                    off_time = "上午";
+                }else if(off_time.equals("2")){
+                    off_time = "下午";
+                }
+                return off_time+check_info;
+            }
+            else{
+                System.err.println("请求返回:"+state+"("+oaUrl+")");
             }
         } catch (IOException e) {
             e.printStackTrace();

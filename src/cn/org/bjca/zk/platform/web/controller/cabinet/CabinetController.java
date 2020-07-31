@@ -5,7 +5,6 @@ package cn.org.bjca.zk.platform.web.controller.cabinet;
 
 
 import cn.org.bjca.zk.db.entity.Cabinet;
-import cn.org.bjca.zk.db.entity.HTFCheck;
 import cn.org.bjca.zk.db.entity.User;
 import cn.org.bjca.zk.platform.PDFSealConstants;
 import cn.org.bjca.zk.platform.bean.Message;
@@ -25,17 +24,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /***************************************************************************
  
@@ -169,39 +161,39 @@ public class CabinetController extends BaseController{
 	public void registerForAndroid(HttpServletRequest request) throws IOException {
 		String cabinetIP = request.getParameter("cabinetIP");
 		System.out.println(cabinetIP);
-		String city = cabinetService.findByIp(cabinetIP).getCabinetPosition();
-		System.out.println(city);
-		Map<String, Object> map = new HashMap<>();
-		//将当前上下文初始化给  CommonsMutipartResolver （多部分解析器）
-		CommonsMultipartResolver multipartResolver=new CommonsMultipartResolver(
-				request.getSession().getServletContext());
-			//检查form中是否有enctype="multipart/form-data"
-		if(multipartResolver.isMultipart(request))
-		{
-			//将request变成多部分request
-			MultipartHttpServletRequest multiRequest=(MultipartHttpServletRequest)request;
-			//获取multiRequest 中所有的文件名
-			Iterator iter=multiRequest.getFileNames();
-
-			while(iter.hasNext())
-			{
-				//一次遍历所有文件
-				MultipartFile file=multiRequest.getFile(iter.next().toString());
-				if(file!=null)
-				{
-
-					//文件存放路径
-//					String path="/root/dayCheck/"+city+"/"+file.getOriginalFilename();
-					String path = "D:\\/"+city+"/"+file.getOriginalFilename();
-					//上传
-					file.transferTo(new File(path));
-					HTFCheck htfCheck = new HTFCheck();
-					htfCheck.setFilePath(path);
-					htfCheck.setFileName(file.getOriginalFilename());
-					checkListService.add(htfCheck);
-				}
-			}
-		}
+//		String city = cabinetService.findByIp(cabinetIP).getCabinetPosition();
+//		System.out.println(city);
+//		Map<String, Object> map = new HashMap<>();
+//		//将当前上下文初始化给  CommonsMutipartResolver （多部分解析器）
+//		CommonsMultipartResolver multipartResolver=new CommonsMultipartResolver(
+//				request.getSession().getServletContext());
+//			//检查form中是否有enctype="multipart/form-data"
+//		if(multipartResolver.isMultipart(request))
+//		{
+//			//将request变成多部分request
+//			MultipartHttpServletRequest multiRequest=(MultipartHttpServletRequest)request;
+//			//获取multiRequest 中所有的文件名
+//			Iterator iter=multiRequest.getFileNames();
+//
+//			while(iter.hasNext())
+//			{
+//				//一次遍历所有文件
+//				MultipartFile file=multiRequest.getFile(iter.next().toString());
+//				if(file!=null)
+//				{
+//
+//					//文件存放路径
+////					String path="/root/dayCheck/"+city+"/"+file.getOriginalFilename();
+//					String path = "D:\\/"+city+"/"+file.getOriginalFilename();
+//					//上传
+//					file.transferTo(new File(path));
+//					HTFCheck htfCheck = new HTFCheck();
+//					htfCheck.setFilePath(path);
+//					htfCheck.setFileName(file.getOriginalFilename());
+//					checkListService.add(htfCheck);
+//				}
+//			}
+//		}
 	}
 	//获取机柜信息
     @ResponseBody

@@ -1,11 +1,12 @@
 package cn.org.bjca.zk.platform.utils;
 
-import java.io.IOException;
-import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.UUID;
 
 /***************************************************************************
  * <pre>系统工具类</pre>
@@ -56,6 +57,17 @@ public class EssPdfUtil {
 			logger.error("**************get classes path fails:", e);
 		}
 		return path;
+	}
+
+
+	//获取tomcat根路径
+	public static String getTomcatPath(){
+		return System.getProperty("catalina.home");
+	}
+
+	//获取项目文件根路径
+	public static String getTomcatProjectPath(HttpServletRequest request){
+		return request.getSession().getServletContext().getRealPath("");
 	}
 
 	

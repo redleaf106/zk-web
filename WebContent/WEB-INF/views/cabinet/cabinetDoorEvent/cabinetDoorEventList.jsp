@@ -37,7 +37,7 @@
 					<th width="10%">序号</th>
 					<th width="20%">机柜编号</th>
 					<th width="10%">柜门编号</th>
-					<th width="10%">员工IC卡号</th>
+					<th width="10%">员工姓名</th>
 					<th width="10%">操作时间</th>
 					<th width="10%">状态</th>
 					<th width="20%" align="center">操作</th>
@@ -51,7 +51,7 @@
 						</td>
 						<td>${item.cabinetNumber}</td>
 						<td>${item.cabinetDoorNumber}</td>
-						<td>${item.employeeCardNumber}</td>
+						<td>${item.employeeName}</td>
 						<td><fmt:formatDate value="${item.doorOptTime}" type="both" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 						<td>
 							<c:choose>

@@ -10,6 +10,7 @@ import cn.org.bjca.zk.platform.exception.DialogException;
 import cn.org.bjca.zk.platform.service.*;
 import cn.org.bjca.zk.platform.tools.CabinetDoorServer;
 import cn.org.bjca.zk.platform.tools.CreateDayCheckUtils;
+import cn.org.bjca.zk.platform.web.controller.AutoRunTask;
 import cn.org.bjca.zk.platform.web.controller.BaseController;
 import cn.org.bjca.zk.platform.web.page.CabinetDoorEventPage;
 import com.alibaba.fastjson.JSON;
@@ -23,6 +24,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -68,6 +70,9 @@ public class CabinetDoorEventController extends BaseController {
 
 	@Autowired
 	private CabinetService cabinetService;
+
+		@Value("#{MessageConfig['99FUNDOAURL']}")
+		private String JYJJOAURL;
 
 
 	/**
@@ -305,6 +310,16 @@ public class CabinetDoorEventController extends BaseController {
 //			if(simpleDateFormat.parse(date).getTime()>=l1){
 //				break;
 //			}
+		try {
+			simpleDateFormat.parse(date);
+		}catch (Exception e){
+			System.out.println("date="+date);
+			e.printStackTrace();
+			message.setStatusCode(this.FAIL);
+			message.setContent(this.FORMAT_ERROR);
+			message.setNavTabId("checkList");
+			return this.ajaxDone(message);
+		}
 			List<CheckInfo> listMata = cabinetDoorEventService.findDayInfo(simpleDateFormat.parse(date));//获取当天存取记录
 			List<CheckInfo> responseList = new LinkedList<>();
 			for(CheckInfo ci:listMata){
@@ -320,6 +335,7 @@ public class CabinetDoorEventController extends BaseController {
 						checkInfo.setPushTime(checkInfo.getPushTime()+" "+ci.getDoorOptTime());
 						checkInfo.setPushStatus(checkInfo.getPushStatus()+" 晚存");
 						reason = " 晚存：";
+						checkInfo.setPushTime(checkInfo.getPushTime()+reason+ci.getRemark().replaceAll(" ",""));
 					}else if("1".equals(ci.getDoorOptStatus())){//修改取件时间
 						checkInfo.setPullTime(checkInfo.getPullTime()+" "+ci.getDoorOptTime());
 						checkInfo.setPullStatus(checkInfo.getPullStatus()+" 正常取");
@@ -327,6 +343,12 @@ public class CabinetDoorEventController extends BaseController {
 						checkInfo.setPullTime(checkInfo.getPullTime()+" "+ci.getDoorOptTime());
 						checkInfo.setPullStatus(checkInfo.getPullStatus()+" 早取");
 						reason = " 早取：";
+						checkInfo.setPullTime(checkInfo.getPullTime()+reason+ci.getRemark().replaceAll(" ",""));
+					}else if("4".equals(ci.getDoorOptStatus())){//修改取件时间
+						checkInfo.setPullTime(checkInfo.getPullTime()+" "+ci.getDoorOptTime());
+						checkInfo.setPullStatus(checkInfo.getPullStatus()+" 紧急");
+						reason = " 紧急：";
+						checkInfo.setPullTime(checkInfo.getPullTime()+reason+ci.getRemark().replaceAll(" ",""));
 					}
 					if(ci.getRemark()!=null||ci.getRemark().length()>0){
 						checkInfo.setRemark(checkInfo.getRemark()+reason+ci.getRemark());
@@ -338,6 +360,7 @@ public class CabinetDoorEventController extends BaseController {
 					checkInfo.setCabinetDoorNumber(ci.getCabinetDoorNumber());
 					checkInfo.setDepartmentName(ci.getDepartmentName());
 					checkInfo.setEmployeeName(ci.getEmployeeName());
+					String empnum = employeeService.findByicCardNumber(ci.getIcCardNumber()).getEmployeeNumber();
 					checkInfo.setIcCardNumber(ci.getIcCardNumber());
 					checkInfo.setRemark(ci.getRemark());
 					if("0".equals(ci.getDoorOptStatus())){//修改存件时间
@@ -346,7 +369,7 @@ public class CabinetDoorEventController extends BaseController {
 						checkInfo.setPullTime("");
 						checkInfo.setPullStatus("");
 					}else if("2".equals(ci.getDoorOptStatus())){//修改存件时间
-						checkInfo.setPushTime(ci.getDoorOptTime());
+						checkInfo.setPushTime(ci.getDoorOptTime()+" 晚存："+ci.getRemark());
 						checkInfo.setPushStatus("晚存");
 						checkInfo.setPullTime("");
 						checkInfo.setPullStatus("");
@@ -357,11 +380,17 @@ public class CabinetDoorEventController extends BaseController {
 						checkInfo.setPushTime("");
 						checkInfo.setPushStatus("");
 					}else if("3".equals(ci.getDoorOptStatus())){//修改取件时间
-						checkInfo.setPullTime(ci.getDoorOptTime());
+						checkInfo.setPullTime(ci.getDoorOptTime()+" 早取："+ci.getRemark());
 						checkInfo.setPullStatus("早取");
 						checkInfo.setPushTime("");
 						checkInfo.setPushStatus("");
 						checkInfo.setRemark("早取："+ci.getRemark());
+					}else if("4".equals(ci.getDoorOptStatus())){//修改取件时间
+						checkInfo.setPullTime(ci.getDoorOptTime()+" 紧急："+ci.getRemark());
+						checkInfo.setPullStatus("紧急");
+						checkInfo.setPushTime("");
+						checkInfo.setPushStatus("");
+						checkInfo.setRemark("紧急："+ci.getRemark());
 					}
 					responseList.add(checkInfo);
 				}
@@ -370,16 +399,19 @@ public class CabinetDoorEventController extends BaseController {
 			List<CheckInfo> checkInfoList = cabinetDoorEventService.absentEmp(simpleDateFormat.parse(date));
 			responseList.addAll(checkInfoList);
 			for (CheckInfo c:responseList){
+				String empnum = employeeService.findByicCardNumber(c.getIcCardNumber()).getEmployeeNumber();
+				c.setIcCardNumber(empnum);
 				String objNo = c.getIcCardNumber();
 				//金鹰考勤
-				//String OAInfo = getOA(objNo);
+				String OAInfo = new AutoRunTask().getOA(objNo,date,JYJJOAURL);
 				//汇添富考勤
 				//String OAInfo = new AutoRunTask().getHtfOA(objNo);
-				String OAInfo = "";
+//				String OAInfo = "";
 				c.setOAInfo(OAInfo);
 			}
 
 			HTFCheck htfCheck = CreateDayCheckUtils.checkDayCheck(responseList, simpleDateFormat.parse(date));
+			htfCheck.setReportType("1");
 			checkListService.add(htfCheck);
 			message.setStatusCode(this.SUCCESS);
 			message.setContent(this.SAVE);
@@ -399,14 +431,30 @@ public class CabinetDoorEventController extends BaseController {
 	@RequestMapping(value = "checkWMInfo" ,produces ="text/html;charset=UTF-8")
 	public ModelAndView checkWMInfo(String date,String reportType){
 		Message message = new Message();
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		if("2".equals(reportType)){
+			message.setNavTabId("checkWeekList");
+		}else if("3".equals(reportType)){
+			message.setNavTabId("checkMonthList");
+		}
+		try {
+			simpleDateFormat.parse(date);
+		}catch (Exception e){
+			System.out.println("date="+date);
+			e.printStackTrace();
+			message.setStatusCode(this.FAIL);
+			message.setContent(this.FORMAT_ERROR);
+			return this.ajaxDone(message);
+		}
 		List<CheckWMInfo> list = new ArrayList<CheckWMInfo>();
 		list = cabinetDoorEventService.findWMList(date,reportType);
 		HTFCheck htfCheck = CreateDayCheckUtils.checkWMCheck(list, date,reportType);
 		checkListService.add(htfCheck);
 		message.setStatusCode(this.SUCCESS);
-		message.setNavTabId("checkList");
+		message.setContent(this.SAVE);
 		return this.ajaxDone(message);
 	}
+
 	//获取所有未发邮件的应急开门事件
 	@RequestMapping(value = "getAllUnactivatedUrgentEvent" ,produces="application/json;charset=UTF-8")
 	@ResponseBody
@@ -427,5 +475,10 @@ public class CabinetDoorEventController extends BaseController {
 		return "error";
 	}
 
+	@RequestMapping(value = "get99FUNDOAURL")
+	@ResponseBody
+	public String get99FUNDOAURL() {
+		return JYJJOAURL;
+	}
 
 }
