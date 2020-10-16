@@ -675,7 +675,7 @@ public class CabinetDoorEventController extends BaseController {
 	public void jiemaTodayVideo(String date) throws ParseException {
 	    SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		List<CabinetDoorEvent> list = cabinetDoorEventService.findOneDay(simpleDateFormat1.parse(date));
-		String filePath = "/usr/share/tomcat/hk/HKVideos/";
+		String filePath = "/home/admin/HKVideos/";
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 		SendEventToKM sendEventToKM = new SendEventToKM();
 		for(CabinetDoorEvent cabinetDoorEvent:list){
