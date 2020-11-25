@@ -66,7 +66,6 @@ public interface CabinetDoorDao {
 	  * @return
 	 */
 	CabinetDoor findUniqueById(String id);
-	
 	/**
 	  * <p>查询所有列表</p>
 	  * @Description:
@@ -106,4 +105,7 @@ public interface CabinetDoorDao {
 	CabinetDoor findByCabinetIDAndEmployeeID( String cabinetID, String employeeID);
 
 
+    List<CabinetDoor> findCEByCabinetID(String cabinetId);
+
+	void saveCabinetImg(String cabinetId, String pageImg);
 }

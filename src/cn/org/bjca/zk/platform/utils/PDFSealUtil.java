@@ -1,6 +1,17 @@
 package cn.org.bjca.zk.platform.utils;
 
 
+import cn.org.bjca.zk.platform.PDFSealConstants;
+import com.itextpdf.text.pdf.security.BouncyCastleDigest;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.bouncycastle.util.encoders.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -10,20 +21,6 @@ import java.security.MessageDigest;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.UUID;
-
-import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.bouncycastle.util.encoders.Base64;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
-
-import com.itextpdf.text.pdf.security.BouncyCastleDigest;
-
-import cn.org.bjca.zk.platform.PDFSealConstants;
 
 /***************************************************************************
  * <pre>系统工具类</pre>

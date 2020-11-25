@@ -11,4 +11,6 @@ public interface MonitorDao {
     int addVideo(String videoFilePath, String cabinetDoorEventId);
 
     Monitor findUniqueById(String id);
+
+    Monitor findEntityByCabinetId(String id);
 }

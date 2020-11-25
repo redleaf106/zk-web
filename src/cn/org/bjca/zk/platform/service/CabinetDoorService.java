@@ -84,6 +84,10 @@ public class CabinetDoorService {
         }
     }
 
+    @Transactional(readOnly = false)
+    public void saveCabinetImg(String cabinetId, String pageImg) {
+        cabinetDoorDao.saveCabinetImg(cabinetId,pageImg);
+    }
     /**
      * <p>根据ID查询对象</p>
      * @Description:
@@ -511,6 +515,10 @@ public class CabinetDoorService {
 
     }
 
-
+    //获取柜门信息以及对应的人员的信息
+    public List<CabinetDoor> findCEByCabinetID(String cabinetId) {
+        List<CabinetDoor> list =cabinetDoorDao.findCEByCabinetID(cabinetId);
+        return list;
+    }
 
 }

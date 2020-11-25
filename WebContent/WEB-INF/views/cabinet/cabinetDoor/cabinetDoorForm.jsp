@@ -47,7 +47,7 @@
 
 
 <div class="pageContent">
-	<form:form method="post" action="${ctx}/cabinet/cabinetDoor/saveOrUpdate"   modelAttribute="cabinetDoor" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+	<form:form method="post" action="${ctx}/cabinet/cabinetDoor/saveOrUpdate"   modelAttribute="cabinetDoor" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)" >
 		<input type="hidden" name="id" value="${cabinetDoor.id}" />
 		<div class="pageFormContent" layoutH="58">
 

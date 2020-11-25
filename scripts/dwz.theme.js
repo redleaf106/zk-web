@@ -5,11 +5,11 @@
 	$.fn.extend({
 		theme: function(options){
 			var op = $.extend({themeBase:"themes"}, options);
-			var _themeHref = op.themeBase + "/#theme#/style.css";
+			var _themeHref = op.themeBase + "/#theme#/cabinetdoor.css";
 			return this.each(function(){
 				var jThemeLi = $(this).find(">li[theme]");
 				var setTheme = function(themeName){
-					$("head").find("link[href$='style.css']").attr("href", _themeHref.replace("#theme#", themeName));
+					$("head").find("link[href$='cabinetdoor.css']").attr("href", _themeHref.replace("#theme#", themeName));
 					jThemeLi.find(">div").removeClass("selected");
 					jThemeLi.filter("[theme="+themeName+"]").find(">div").addClass("selected");
 					

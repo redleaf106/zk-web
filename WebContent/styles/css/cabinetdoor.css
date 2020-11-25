@@ -1,0 +1,76 @@
+.active{
+    border:5px solid #d88d1c;
+}
+.page-left{
+    float:left;
+   /* width: 10%!important;*/
+    overflow: hidden;
+    clear: both;
+    display: inline-block;
+    border-right: 1px solid #c8daec;
+}
+.page-right{
+    float:right;
+    /*width: 87%;*/
+}
+.slimScrollDiv{
+    float:left;
+    clear:both;
+}
+ul.main-menu {
+    list-style-type: none;
+    margin: 0px;
+}
+.main-menu li {
+    float: left;
+    display: block;
+    margin: 10px 5px 0px 0px;
+    text-align: center;
+}
+.pp-name{
+    /*float:left;*/
+    font-size:20px;
+}
+.page-img{
+    float:left;
+    min-height:94px;
+    /* overflow-y:scroll; */
+    border:1px #ccc solid;
+    clear: both;
+}
+.left-1,.left-2,.left-3,.left-20{
+    float:left;
+}
+.cdoor{
+    float: left;
+    clear: both;
+    padding: 5% 8%;
+    border-right: 1px solid #c8daec;
+}
+.cemply{
+    display: block;
+}
+/*.cemply span{
+    font-size:24px;
+}*/
+.cdoor button{
+    border: none;
+    width: 101px;
+    height: 24px;
+    margin:5px 2px 5px 5px;
+    background:#48acb1;
+    color:#FFFFFF;
+    cursor: pointer;
+}
+.cdoor button[disabled]{
+    cursor: not-allowed;
+}
+.checkdoor{
+    background:#d88d1c !important;
+}
+.selectedoor{
+    background:#d88d1c !important;
+}
+.left-20{
+    margin-left: 5%;
+}

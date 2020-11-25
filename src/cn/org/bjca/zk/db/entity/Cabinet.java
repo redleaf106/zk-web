@@ -60,7 +60,16 @@ public class Cabinet extends IdEntity {
 	 * 柜门列表
 	 */
 	private List<CabinetDoor> cabinetDoorList;
-	
+	//private CabinetDoor cabinetdoor;
+
+	/*public CabinetDoor getCabinetdoor() {
+		return cabinetdoor;
+	}
+
+	public void setCabinetdoor(CabinetDoor cabinetdoor) {
+		this.cabinetdoor = cabinetdoor;
+	}*/
+
 	public String getCabinetNumber() {
 		return cabinetNumber;
 	}

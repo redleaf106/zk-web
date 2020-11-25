@@ -210,6 +210,7 @@ public class EmployeeService {
 	 */
 	public EmployeePage<Employee> findPage(EmployeePage<Employee> employeePage) {
 		List<Employee> list = employeeDao.findPage(employeePage);
+		//System.out.println(list);
 		employeePage.setData(list);
 		return employeePage;
 	}

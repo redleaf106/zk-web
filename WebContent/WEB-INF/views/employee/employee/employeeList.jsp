@@ -64,7 +64,8 @@
 						<td >${item.email}</td>
 						<td><fmt:formatDate value="${item.optTime}" type="both" pattern="yyyy-MM-dd HH:mm:ss"/></td>			
 						<td><div class="center" style="width: 116px;">&nbsp;
-							<a title="确定要删除吗?" target="ajaxTodo" href="${ctx}/employee/employee/deleteFace/${item.id}" class="btnDel">删除</a>&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="确定要删除吗?" target="ajaxTodo" href="${ctx}/employee/employee/delete/${item.id}"><img src="${ctx}/images/icons/delete.png" height="20" width="20"></a>&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="确定要重置人脸数据吗?" target="ajaxTodo" href="${ctx}/employee/employee/deleteFace/${item.id}" class="btnDel">删除</a>&nbsp;&nbsp;&nbsp;&nbsp;
 							<a title="修改" target="navTab" mask="true" href="${ctx}/employee/employee/toEditFormPage/${item.id}" class="btnEdit">修改</a>
 						</div>
 						</td>

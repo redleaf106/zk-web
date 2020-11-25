@@ -4,11 +4,7 @@ import com.sun.jna.NativeLong;
 import com.sun.jna.ptr.IntByReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -34,9 +30,9 @@ public class GrabHIKPicAndVideoUtils {
 	NativeLong lUserID;//用户句柄
 
 	//个人pc
-	static String filePath = "D:/TomCat/apache-tomcat-9.0.16/hk/HKVideos/";
+//	static String filePath = "D:/HIKVISION/";
 	//嘉实服务器
-//    static String filePath = "/usr/share/tomcat/hk/HKVideos/";
+	static String filePath = "/home/admin/HKVideos/";
 	/**
 	 * @Title: main
 	 * @Description: TODO(这里用一句话描述这个方法的作用)
@@ -48,36 +44,40 @@ public class GrabHIKPicAndVideoUtils {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		GrabHIKPicAndVideoUtils cap = new GrabHIKPicAndVideoUtils();
-		boolean initSuc = hCNetSDK.NET_DVR_Init();
-		if (initSuc) {
-			//录像机相关参数
-			String m_sDeviceIP = "172.16.1.108";//录像机ip
-			//String m_sDeviceIP = "10.11.28.28";//录像机ip
-			int iPort = 8000;//录像机端口
-			String userName = "admin";//录像机用户名
-			String pwd = "wd12345678";//录像机密码
-			int m_iChanShowNum = 33; // 摄像头通道39是16层
+		for (int i = 0; i <1 ; i++) {
+			GrabHIKPicAndVideoUtils cap = new GrabHIKPicAndVideoUtils();
+			boolean initSuc = hCNetSDK.NET_DVR_Init();
+			if (initSuc) {
+				System.out.println("i=" + i);
+				//录像机相关参数
+				//String m_sDeviceIP = "172.16.1.108";//录像机ip
+				//String m_sDeviceIP = "10.11.28.128";//录像机ip
+				String m_sDeviceIP = "10.17.36.90";//录像机ip
+				int iPort = 8000;//录像机端口
+				String userName = "admin";//录像机用户名
+				String pwd = "1234abcd";//录像机密码
+				int m_iChanShowNum = 33; // 摄像头通道39是16层
 
-			// 20200421225208_20200421225218
-			String startTime = "2020-06-29 15:26:09";//截取视频的起始时间
-			String endTime = "2020-06-29 15:26:19";//截取视频的结束时间
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");//时间格式，文件名的命名相关
-			StringBuilder fileName = null;
-			// 获取视频
-			fileName = new StringBuilder("D:/HIKVISION/" + dateFormat.format(new Date()) + ".mp4");//创建视频文件的文件名
-			cap.GetFileByTime(m_sDeviceIP, iPort, userName, pwd, m_iChanShowNum, startTime, endTime, fileName.toString());//截取视频
-			// 抓取拍照
+				// 20200421225208_20200421225218
+				String startTime = "2020-11-24 15:26:09";//截取视频的起始时间
+				String endTime = "2020-11-24 15:26:19";//截取视频的结束时间
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");//时间格式，文件名的命名相关
+				StringBuilder fileName = null;
+				// 获取视频
+				fileName = new StringBuilder("D:/HIKVISION/" + dateFormat.format(new Date()) + i+".mp4");//创建视频文件的文件名
+				cap.GetFileByTime(m_sDeviceIP, iPort, userName, pwd, m_iChanShowNum, startTime, endTime, fileName.toString());//截取视频
+				// 抓取拍照
 //			fileName = new StringBuilder("D:/HIKVISION/" + dateFormat.format(new Date()) + ".jpg");
 //			NativeLong IChannel = new NativeLong(m_iChanShowNum);
 //			cap.GrabPicture(m_sDeviceIP, iPort, userName, pwd, IChannel, fileName.toString());
 
 
-			//cap.start(m_sDeviceIP, iPort, userName, pwd, IChannel);
-			//cap.stop(m_sDeviceIP, iPort, userName, pwd, IChannel);
-			//22:24:32 - 22:24:36
-			int errorCode = hCNetSDK.NET_DVR_GetLastError();
-			System.out.println("errorCode: " + errorCode);
+				//cap.start(m_sDeviceIP, iPort, userName, pwd, IChannel);
+				//cap.stop(m_sDeviceIP, iPort, userName, pwd, IChannel);
+				//22:24:32 - 22:24:36
+				int errorCode = hCNetSDK.NET_DVR_GetLastError();
+				System.out.println("errorCode: " + errorCode);
+			}
 		}
 	}
 	public void start(final String m_sDeviceIP, final int iPort, final String userName, final String pwd, NativeLong IChannel) {
@@ -145,12 +145,9 @@ public class GrabHIKPicAndVideoUtils {
 			lUserID = hCNetSDK.NET_DVR_Login_V30(m_sDeviceIP,
 					(short) iPort, userName, pwd, m_strDeviceInfo);
 		}
-
-
 		System.out.println("用户句柄:"+lUserID.longValue());
 		if (lUserID.longValue() >= 0) {//注册成功
 			System.out.println("lUserID: " + lUserID);
-
 			HCNetSDK.NET_DVR_JPEGPARA lpJpegPara = new HCNetSDK.NET_DVR_JPEGPARA();
 			lpJpegPara.wPicQuality = 0;
 			lpJpegPara.wPicSize = 2;
@@ -158,13 +155,10 @@ public class GrabHIKPicAndVideoUtils {
 			System.out.println("capResult:" + capResult);
 			int errorCode = hCNetSDK.NET_DVR_GetLastError();
 			System.out.println("errorCode: " + errorCode);
-
 			boolean logoutResult = hCNetSDK.NET_DVR_Logout(lUserID);
 			System.out.println("logoutResult: " + logoutResult);
-
 			boolean cleanUpResult = hCNetSDK.NET_DVR_Cleanup();
 			System.out.println("cleanUpResult: " + cleanUpResult);
-
 		} else {
 			System.out.println("注册失败");
 		}
@@ -184,7 +178,6 @@ public class GrabHIKPicAndVideoUtils {
 		}
 		HCNetSDK.NET_DVR_TIME struStartTime = new HCNetSDK.NET_DVR_TIME();
 		HCNetSDK.NET_DVR_TIME struStopTime = new HCNetSDK.NET_DVR_TIME();
-
 		if (null != startTime && !"".equals(startTime) && null != endTime && !"".equals(endTime)) {
 			String[] startTimes = startTime.split(" ");
 			String[] endTimes = endTime.split(" ");
@@ -201,25 +194,27 @@ public class GrabHIKPicAndVideoUtils {
 			struStopTime.dwMinute = Integer.parseInt(endTimes[1].split(":")[1]);
 			struStopTime.dwSecond = Integer.parseInt(endTimes[1].split(":")[2]);
 			HCNetSDK.NET_DVR_DEVICEINFO_V30 m_strDeviceInfo = new HCNetSDK.NET_DVR_DEVICEINFO_V30();//设备信息
-			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-			HttpSession session =request.getSession();
+//			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+//			HttpSession session =request.getSession();
 			//NativeLong lUserID;//用户句柄
-			lUserID =(NativeLong)session.getAttribute("lUserID");
+//			lUserID =(NativeLong)session.getAttribute("lUserID");
 			if(lUserID==null){
 				lUserID = hCNetSDK.NET_DVR_Login_V30(m_sDeviceIP,
 						(short) iPort, userName, pwd, m_strDeviceInfo);
-				session.setAttribute("lUserID",lUserID);
+//				session.setAttribute("lUserID",lUserID);
+//				lUserID = LUserCreateUtil.getInstance(m_sDeviceIP,
+//						(short) iPort, userName, pwd, m_strDeviceInfo);
 			}
 			m_lLoadHandle = hCNetSDK.NET_DVR_GetFileByTime(lUserID, new NativeLong(m_iChanShowNum), struStartTime, struStopTime, fileName);
 			System.out.println("m_lLoadHandle: " + m_lLoadHandle);
-			System.out.println(" ==================================== ");
 			if (m_lLoadHandle.intValue() >= 0) {
 				hCNetSDK.NET_DVR_PlayBackControl(m_lLoadHandle, HCNetSDK.NET_DVR_PLAYSTART, 0, null);
-				System.out.println("111111111111111111111111");
 				Downloadtimer = new Timer();//新建定时器
 				Downloadtimer.schedule(new DownloadTask(), 0, 5000);//0秒后开始响应函数
-				System.out.println("222222222222222222222");
 			}
+			boolean logoutResult = hCNetSDK.NET_DVR_Logout(lUserID);
+			System.out.println("logoutResult: " + logoutResult);
+
 		} else {
 			System.out.println("时间格式不符合要求规范!");
 		}
@@ -284,6 +279,15 @@ public class GrabHIKPicAndVideoUtils {
 			}
 		}
 		return "error";
+	}
+
+	public void lUserIDLogOut(String m_sDeviceIP, int iPort, String userName,
+							  String pwd){
+		HCNetSDK.NET_DVR_DEVICEINFO_V30 m_strDeviceInfo = new HCNetSDK.NET_DVR_DEVICEINFO_V30();//设备信息
+		lUserID = hCNetSDK.NET_DVR_Login_V30(m_sDeviceIP,
+				(short) iPort, userName, pwd, m_strDeviceInfo);
+		boolean logoutResult = hCNetSDK.NET_DVR_Logout(lUserID);
+		System.out.println("logoutResult: " + logoutResult);
 	}
 
 	public static String createPic(String m_sDeviceIP, int iPort, String userName,

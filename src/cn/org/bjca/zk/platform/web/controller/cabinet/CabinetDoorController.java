@@ -145,12 +145,22 @@ public class CabinetDoorController extends BaseController {
 		return "/cabinet/cabinetDoor/cabinetDoorForm";
 	}
 
-	@RequestMapping("chooseDoor")
-	public String chooseDoor(ModelMap modelMap,String cabinetId){
-		modelMap.addAttribute("flood","16");
-		return "/cabinet/cabinetDoor/index";
+	@RequestMapping(value = "/chooseDoor", method = RequestMethod.GET)
+	public String chooseDoor(ModelMap modelMap){
+
+		List<Cabinet> cabinetList = cabinetService.getAll();
+		List<Employee> employeeList = employeeService.findAllNoDoor();
+		modelMap.put("cabinetList", cabinetList);
+		modelMap.put("employeeList", employeeList);
+		//modelMap.addAttribute("flood","16");
+		return "/cabinet/cabinetDoor/index2";
 	}
 
+	@RequestMapping(value = "/updateCabinetImg",method = RequestMethod.POST)
+	@ResponseBody
+	public void  updateCabinetImg(String cabinetId,String pageImg){
+		cabinetDoorService.saveCabinetImg(cabinetId,pageImg);
+	}
 	/**
 	 * <p>保存或更新表单信息</p>
 	 * @Description:
@@ -159,11 +169,11 @@ public class CabinetDoorController extends BaseController {
 	 */
 	@RequestMapping(value = "saveOrUpdate")
 	public ModelAndView saveOrUpdate(CabinetDoor cabinetDoor,HttpServletRequest request) throws DialogException {
-		System.out.println(cabinetDoor.toString());
+		String pageImg = cabinetDoor.getExt2();
 		Message message = new Message();
 		boolean canUpdateFlag = true;
-		String cabinetDoorName = cabinetDoorService.setCabinetDoorName(cabinetDoor);
-		cabinetDoor.setCabinetDoorName(cabinetDoorName);
+		//String cabinetDoorName = cabinetDoorService.setCabinetDoorName(cabinetDoor);
+		//cabinetDoor.setCabinetDoorName(cabinetDoorName);
 		CabinetDoor cabinetDoorResult = cabinetDoorService.selectDoorByCabinetIdAndCabinetDoorNumber(cabinetDoor.getCabinetId(),cabinetDoor.getCabinetDoorNumber());
 		if(cabinetDoorResult!=null){
 			Employee employee = cabinetDoorResult.getEmployee();
@@ -178,7 +188,7 @@ public class CabinetDoorController extends BaseController {
 				message.setStatusCode(this.SUCCESS);
 				message.setCallbackType("closeCurrent");
 				message.setNavTabId("cabinetDoor");
-				cabinetDoorService.saveOrUpdate(cabinetDoor);
+				//cabinetDoorService.saveOrUpdate(cabinetDoor);
 			}
 			return this.ajaxDone(message);
 		}else{
@@ -201,6 +211,7 @@ public class CabinetDoorController extends BaseController {
 						cabinet.setFullDoorCount(cabinet.getFullDoorCount()+1);
 						cabinetService.saveOrUpdate(cabinet);
 						cabinetDoorService.saveOrUpdate(cabinetDoor);
+						cabinetDoorService.saveCabinetImg(cabinetDoor.getCabinetId(),pageImg);
 					}else{
 						message.setContent(this.DOORFULL);
 						message.setStatusCode(this.FAIL);
@@ -209,6 +220,7 @@ public class CabinetDoorController extends BaseController {
 					}
 				}else {
 					cabinetDoorService.saveOrUpdate(cabinetDoor);
+					cabinetDoorService.saveCabinetImg(cabinetDoor.getCabinetId(),pageImg);
 				}
 				message.setStatusCode(this.SUCCESS);
 				message.setCallbackType("closeCurrent");
@@ -314,4 +326,11 @@ public class CabinetDoorController extends BaseController {
 		return "success";
 	}
 
+	@RequestMapping(value = "/getCabinedoorList",method=RequestMethod.POST,produces="application/json;charset=UTF-8")
+	@ResponseBody
+	public String getCabinedoorList(String cabinetId){
+		List<CabinetDoor> list = new ArrayList<CabinetDoor>();
+		list = cabinetDoorService.findCEByCabinetID(cabinetId);
+		return toJsonString(list);
+	}
 }

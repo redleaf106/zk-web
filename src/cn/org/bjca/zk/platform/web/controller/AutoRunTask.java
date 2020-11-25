@@ -492,7 +492,8 @@ public class AutoRunTask {
     @Scheduled(cron = "0 0 23 * * ?")
     public void petVideos(){
         List<CabinetDoorEvent> list = cabinetDoorEventService.findOneDay(new Date());
-        String filePath = "/usr/share/tomcat/hk/HKVideos/";
+        //String filePath = "/usr/share/tomcat/hk/HKVideos/";
+        String filePath = "/home/admin/HKVideos/";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         SendEventToKM sendEventToKM = new SendEventToKM();
         for(CabinetDoorEvent cabinetDoorEvent:list){

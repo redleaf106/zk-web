@@ -92,7 +92,7 @@ public class CabinetDoorEventController extends BaseController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping("kk")
+	@RequestMapping("")
 	public String list(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		CabinetDoorEventPage<CabinetDoorEvent> cabinetDoorEventPage = new CabinetDoorEventPage<CabinetDoorEvent>();
 		Page page = new Pagination();
@@ -112,14 +112,14 @@ public class CabinetDoorEventController extends BaseController {
 			cabinetDoorEventPage.setCabinetNumber("%"+cabinetNumber.trim()+"%");
 		}
 
-		String cabinetDoorNumber = request.getParameter("cabinetDoorNumber");//柜门编号
-		if(StringUtils.isNotBlank(cabinetDoorNumber)) {
-			cabinetDoorEventPage.setCabinetDoorNumber("%"+cabinetDoorNumber.trim()+"%");
+		String cabinetdoorname = request.getParameter("cabinetdoorname");//柜门名称
+		if(StringUtils.isNotBlank(cabinetdoorname)) {
+			cabinetDoorEventPage.setCabinetdoorname("%"+cabinetdoorname.trim()+"%");
 		}
 		cabinetDoorEventPage.setPageVO(page);
 		cabinetDoorEventPage = cabinetDoorEventService.findPage(cabinetDoorEventPage);
 		cabinetDoorEventPage.setCabinetNumber(cabinetNumber);
-		cabinetDoorEventPage.setCabinetDoorNumber(cabinetDoorNumber);
+		cabinetDoorEventPage.setCabinetdoorname(cabinetdoorname);
 		modelMap.put("cabinetDoorEventPage", cabinetDoorEventPage);
 		JSONObject jsonObject = new JSONObject();
 		if(source!=null&&source.length()>0){
@@ -129,7 +129,7 @@ public class CabinetDoorEventController extends BaseController {
 		return "/cabinet/cabinetDoorEvent/cabinetDoorEventList";
 	}
 
-	@RequestMapping("")
+	@RequestMapping("kk")
 	public String eventInfoList(ModelMap modelMap, HttpServletRequest request)throws IOException{
 		EventInfoPage<EventInfo> eventInfoPage = new EventInfoPage<EventInfo>();
 		Page page = new Pagination();
@@ -156,6 +156,8 @@ public class CabinetDoorEventController extends BaseController {
 		eventInfoPage = cabinetDoorEventService.findEventInfoPage(eventInfoPage);
 		eventInfoPage.setCabinetNumber(cabinetNumber);
 		eventInfoPage.setCabinetDoorName(cabinetDoorName);
+		System.out.println(eventInfoPage.getPageVO().getTotalPages());
+		System.out.println(eventInfoPage.getPageVO().getTotalRows());
 		modelMap.put("eventInfoPage", eventInfoPage);
 		return "/cabinet/cabinetDoorEvent/eventInfoList";
 	}
@@ -251,24 +253,6 @@ public class CabinetDoorEventController extends BaseController {
 		eventInfoPage.setCabinetDoorName(cabinetDoorName);
 		return "/cabinet/cabinetDoorEvent/eventInfoList";
 
-	}
-
-		/**
-         * <p>指向编辑表单页面</p>
-         * @Description:
-         * @return
-         */
-	@RequestMapping(value = "toDetailPage/{id}", method = RequestMethod.GET)
-	public String toDetailPage(@PathVariable String id,ModelMap modelMap) throws Exception {
-		CabinetDoorEvent cabinetDoorEvent = null;
-		if(StringUtils.isNotBlank(id)&& !BLANK_PARAM_VALUE.equals(id)){
-			cabinetDoorEvent = cabinetDoorEventService.findUniqueById(id);
-		}else if(BLANK_PARAM_VALUE.equals(id)){
-			List<Cabinet> cabinetList = cabinetService.getAll();
-			modelMap.put("cabinetList",cabinetList);
-		}
-		modelMap.put("cabinetDoorEvent",cabinetDoorEvent);
-		return "/cabinet/cabinetDoorEvent/cabinetDoorEventDetail";
 	}
 
 	@RequestMapping("jumpMedia")
@@ -687,11 +671,33 @@ public class CabinetDoorEventController extends BaseController {
 		}
 	}
 
+	@RequestMapping("shanghaitodayVideo")
+	public void shanghaitodayVideo(String date) throws ParseException {
+		SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		List<CabinetDoorEvent> list = cabinetDoorEventService.findOneDay(simpleDateFormat1.parse(date));
+		SendEventToKM sendEventToKM = new SendEventToKM();
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		for(CabinetDoorEvent cabinetDoorEvent:list){
+			long l = cabinetDoorEvent.getDoorOptTime().getTime();
+			Date date1 = new Date(l);
+			String starttime = simpleDateFormat.format(date1);
+			sendEventToKM.createSHANGHAIVideos(cabinetDoorEvent.getCabinetNumber(),cabinetDoorEvent.getId(),starttime);
+		}
+	}
+
+	@RequestMapping("clearlUserID")
+	@ResponseBody
+	public String clearlUserID(){
+		sendEventToKM.clearlUserID();
+		return "success";
+	}
+
+
 	@RequestMapping("jiematodayVideo")
 	public void jiemaTodayVideo(String date) throws ParseException {
 	    SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		List<CabinetDoorEvent> list = cabinetDoorEventService.findOneDay(simpleDateFormat1.parse(date));
-		String filePath = "/usr/share/tomcat/hk/HKVideos/";
+		String filePath = "/home/admin/HKVideos/";
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 		SendEventToKM sendEventToKM = new SendEventToKM();
 		for(CabinetDoorEvent cabinetDoorEvent:list){
@@ -727,18 +733,41 @@ public class CabinetDoorEventController extends BaseController {
 
 	}
 
-	@RequestMapping("showMonitorPic")
-	public String showPic(String picFilePath, ModelMap modelMap){
+	@RequestMapping(value = "showMonitorPic/{id}")
+	public String showMonitorPic(@PathVariable String id, ModelMap modelMap){
+		Monitor monitorMap = cabinetDoorEventService.getMonitorMapById(id);
+		String picFilePath = monitorMap.getPicFilePath();
+		System.out.println(picFilePath);
 		modelMap.addAttribute("picFilePath",picFilePath);
 		return "/cabinet/cabinetDoorEvent/showPic";
 	}
 
-	@RequestMapping("showMonitorVideo")
-	public String showVideo(String videoFilePath, ModelMap modelMap){
+	@RequestMapping(value = "showMonitorVideo/{id}")
+	public String showMonitorVideo(@PathVariable String id, ModelMap modelMap){
+		Monitor monitorMap = cabinetDoorEventService.getMonitorMapById(id);
+		String videoFilePath = monitorMap.getVideoFilePath();
+		System.out.println(videoFilePath);
 		modelMap.addAttribute("videoFilePath",videoFilePath);
 		return "/cabinet/cabinetDoorEvent/showVideo";
 	}
 
+	/**
+	 * <p>指向编辑表单页面</p>
+	 * @Description:
+	 * @return
+	 */
+	@RequestMapping(value = "toDetailPage/{id}", method = RequestMethod.GET)
+	public String toDetailPage(@PathVariable String id,ModelMap modelMap) throws Exception {
+		CabinetDoorEvent cabinetDoorEvent = null;
+		if(StringUtils.isNotBlank(id)&& !BLANK_PARAM_VALUE.equals(id)){
+			cabinetDoorEvent = cabinetDoorEventService.findUniqueById(id);
+		}else if(BLANK_PARAM_VALUE.equals(id)){
+			List<Cabinet> cabinetList = cabinetService.getAll();
+			modelMap.put("cabinetList",cabinetList);
+		}
+		modelMap.put("cabinetDoorEvent",cabinetDoorEvent);
+		return "/cabinet/cabinetDoorEvent/cabinetDoorEventDetail";
+	}
 	@RequestMapping("sendAllEvent")
 	@ResponseBody
 	public String sendAllEvent(){

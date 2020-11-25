@@ -33,7 +33,6 @@ public class AssistantController {
 
     @RequestMapping(value = "")
     public String list(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        System.out.println("ssssssssss");
         AssistantPage<Assistant> assistantPage = new AssistantPage<Assistant>();
         Page page = new Pagination();
         String purpose = request.getParameter("activation");

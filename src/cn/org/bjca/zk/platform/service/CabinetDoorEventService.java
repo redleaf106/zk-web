@@ -206,4 +206,9 @@ public class CabinetDoorEventService {
 	}
 
 
+	public Monitor getMonitorMapById(String id) {
+		//根据柜门事件的ID获取
+		Monitor monitor = monitorDao.findEntityByCabinetId(id);
+		return monitor;
+	}
 }
