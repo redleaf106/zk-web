@@ -88,8 +88,6 @@ public class DepartmentController extends BaseController {
 		departmentPage.setPageVO(page);
 		departmentPage = departmentService.findPage(departmentPage);
 		departmentPage.setDepartmentName(departmentName);
-		System.out.println(departmentPage.getData().get(0).getTimeAreas().get(0).getStartTime().getTime());
-		System.out.println(departmentPage.getData().get(0).getTimeAreas().get(0).getStartTime());
 		if("android".equals(from)){
 			try {
 				response.getWriter().write(JSONArray.toJSONString(departmentPage.getData()));

@@ -160,8 +160,8 @@ public class SocketServer {
                 OutputStream out = socketList.get(i).getOutputStream();
                 JSONObject dataJson = new JSONObject();
                 dataJson.put("departmentName", departmentName);
-                dataJson.put("startTime",startTime);
-                dataJson.put("endTime",endTime);
+                dataJson.put("startTime",subTimeList(startTime));
+                dataJson.put("endTime",subTimeList(endTime));
                 JSONArray jsonArray = new JSONArray();
                 jsonArray.add(dataJson);
                 JSONObject jsonObject = responseJson("5", "", jsonArray);
@@ -186,8 +186,8 @@ public class SocketServer {
                 for(Department department:list){
                     JSONObject dataJson = new JSONObject();
                     dataJson.put("departmentName", department.getDepartmentName());
-                    dataJson.put("startTime",department.getStartTime());
-                    dataJson.put("endTime",department.getEndTime());
+                    dataJson.put("startTime",subTimeList(department.getStartTime()));
+                    dataJson.put("endTime",subTimeList(department.getEndTime()));
                     jsonArray.add(dataJson);
                 }
                 JSONObject jsonObject = responseJson("5", "", jsonArray);
@@ -257,9 +257,15 @@ public class SocketServer {
         return jsonObject;
     }
 
-
-
-
+    public List<String> subTimeList(List<String> list){
+        List<String> resultList = new ArrayList<String>();
+        for (int i = 0; i <list.size() ; i++) {
+            String resultString = list.get(i).substring(0,5);
+            resultList.add(resultString);
+            System.out.println(resultString);
+        }
+        return resultList;
+    }
 
     //ip去斜杠
     public String quxiegang(Socket socket){
