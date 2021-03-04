@@ -181,5 +181,28 @@
 		SELECT * FROM BO_EMPLOYEE WHERE to_days(#{0}) >= to_days(opttime)
 	</select>
 
+	<select id="syncEmpAndDep" resultType="java.util.Map">
+		SELECT
+		e.iccardnumber,
+		d.departmentname
+		FROM
+		bo_employee AS e ,
+		bo_department AS d
+		WHERE
+		e.departmentid = d.id
+	</select>
+
+	<select id="syncEmpAndDepByDepartmentNumber" resultType="java.util.Map" parameterType="String">
+		SELECT
+		e.iccardnumber,
+		d.departmentname
+		FROM
+		bo_employee AS e ,
+		bo_department AS d
+		WHERE
+		e.departmentid = d.id
+		AND d.departmentnumber = #{departmentNumber}
+	</select>
+
 
 </mapper> 

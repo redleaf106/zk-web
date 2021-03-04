@@ -3,6 +3,7 @@ package cn.org.bjca.zk.platform.tools;
 import cn.org.bjca.zk.db.entity.Department;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -11,6 +12,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SocketServer {
 
@@ -201,6 +203,30 @@ public class SocketServer {
         }
     }
 
+    //同步人员部门信息
+    public void syncEmpAndDep(List<Map<String,String>> list){
+        System.out.println("syncEmpAndDep start");
+        try {
+            System.out.println("当前设备数："+socketList.size());
+            for (int i = 0; i < socketList.size(); i++) {
+                OutputStream out = socketList.get(i).getOutputStream();
+                JSONArray jsonArray = new JSONArray();
+                Gson gson = new Gson();
+                for(Map map:list){
+                    JSONObject dataJson = new JSONObject();
+                    dataJson.put("icCardNumber", map.get("iccardnumber"));
+                    dataJson.put("departmentName",map.get("departmentname"));
+                    jsonArray.add(dataJson);
+                }
+                JSONObject jsonObject = responseJson("9", jsonArray);
+//                System.out.println(jsonObject.toJSONString());
+                out.write(jsonObject.toJSONString().getBytes(StandardCharsets.UTF_8));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     //修改时间阈值
     public void updateDepartmentTime(int timeIndex,int timeEndIndex){
         System.out.println("updateDepartmentTime start");
@@ -253,6 +279,13 @@ public class SocketServer {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("CODE",code);
         jsonObject.put("IP", ip);
+        jsonObject.put("DATA", jsonArray);
+        return jsonObject;
+    }
+
+    public JSONObject responseJson(String code, JSONArray jsonArray){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("CODE",code);
         jsonObject.put("DATA", jsonArray);
         return jsonObject;
     }

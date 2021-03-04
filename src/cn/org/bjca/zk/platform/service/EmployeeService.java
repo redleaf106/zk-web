@@ -20,10 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /***************************************************************************
  * <pre></pre>
@@ -385,7 +382,12 @@ public class EmployeeService {
 		return employeeDao.findAssistantByIcCardNumber(icCardNumber);
 	}
 
+	public List<Map<String,String>> syncEmpAndDep(){
+		return employeeDao.syncEmpAndDep();
+	}
 
-
+	public List<Map<String,String>> syncEmpAndDepByDepartmentNumber(String departmentNumber) {
+		return employeeDao.syncEmpAndDepByDepartmentNumber(departmentNumber);
+	}
 
 }

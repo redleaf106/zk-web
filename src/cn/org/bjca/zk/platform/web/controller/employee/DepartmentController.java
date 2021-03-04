@@ -11,6 +11,7 @@ import cn.org.bjca.zk.platform.PDFSealConstants;
 import cn.org.bjca.zk.platform.bean.Message;
 import cn.org.bjca.zk.platform.exception.DialogException;
 import cn.org.bjca.zk.platform.service.DepartmentService;
+import cn.org.bjca.zk.platform.service.EmployeeService;
 import cn.org.bjca.zk.platform.tools.SocketServer;
 import cn.org.bjca.zk.platform.utils.EssPdfUtil;
 import cn.org.bjca.zk.platform.web.controller.BaseController;
@@ -54,6 +55,9 @@ public class DepartmentController extends BaseController {
 	 */
 	@Autowired
 	private DepartmentService departmentService;
+
+	@Autowired
+	private EmployeeService employeeService;
 
 	/**
 	 * <p>角色管理列表</p>
@@ -189,6 +193,9 @@ public class DepartmentController extends BaseController {
 			jsonObject.put("message", "信息添加成功");
 		}else if(status==201){
 			jsonObject.put("message", "信息修改成功");
+			SocketServer socketServer = SocketServer.getInstance();
+			List list = employeeService.syncEmpAndDepByDepartmentNumber(departmentNumber);
+			socketServer.syncEmpAndDep(list);
 		}else if(status==400){
 			jsonObject.put("message", "添加失败");
 		}

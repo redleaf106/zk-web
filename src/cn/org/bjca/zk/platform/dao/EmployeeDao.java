@@ -7,9 +7,11 @@ import cn.org.bjca.zk.platform.web.page.EmployeePage;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 
 @MyBatisRepository
@@ -143,5 +145,9 @@ public interface EmployeeDao {
 
 	@Select("SELECT * FROM BO_ASSISTANT WHERE LEADERID != NULL AND PICFILE = NULL")
 	List<Assistant> getAllNoActiveAssistant();
+
+	List<Map<String,String>> syncEmpAndDep();
+
+	List<Map<String,String>> syncEmpAndDepByDepartmentNumber(@Param("departmentNumber") String departmentNumber);
 
 }

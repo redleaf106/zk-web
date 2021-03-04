@@ -42,6 +42,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /***************************************************************************
 
@@ -837,4 +838,13 @@ public class EmployeeController extends BaseController{
 		}
 	}
 
+	//人员信息同步
+	@RequestMapping(value = "syncEmpAndDep", produces = "text/html;charset=utf-8")
+	@ResponseBody
+	public String syncEmpAndDep(){
+		List<Map<String,String>> list = employeeService.syncEmpAndDep();
+		SocketServer socketServer = SocketServer.getInstance();
+		socketServer.syncEmpAndDep(list);
+		return "sync end";
+	}
 }
