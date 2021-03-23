@@ -20,6 +20,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.cn.bjca.seal.esspdf.core.pagination.page.Page;
 import com.cn.bjca.seal.esspdf.core.pagination.page.Pagination;
+import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,6 +34,9 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /***************************************************************************
@@ -201,6 +205,40 @@ public class DepartmentController extends BaseController {
 		}
 		jsonObject.put("code", status);
 		return jsonObject.toString();
+	}
+
+	@ResponseBody
+	@RequestMapping("syncDepartmentInfo")
+	public String syncDepartmentInfo() throws InterruptedException {
+		Gson gson = new Gson();
+		SocketServer socketServer = SocketServer.getInstance();
+		List<Department> departmentList = departmentService.getAll();
+		for(Department department:departmentList){
+			List list = employeeService.syncEmpAndDepByDepartmentNumber(department.getDepartmentNumber());
+			if(list.size()>0){
+				Department d = departmentService.findUniqueById(department.getId());
+				List<TimeArea> t = d.getTimeAreas();
+				List<String> st = new ArrayList<>();
+				List<String> et = new ArrayList<>();
+				for(TimeArea ttt:t){
+					SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+					Date d1 = new Date(ttt.getStartTime().getTime());
+					st.add(simpleDateFormat.format(d1));
+					Date d2 = new Date(ttt.getEndTime().getTime());
+					et.add(simpleDateFormat.format(d2));
+				}
+				//todo 先更新部门名
+				socketServer.syncEmpAndDep(list);
+				Thread.sleep(4000);
+				//todo 再更新时间
+				socketServer.updateDepartmentTime(department.getDepartmentName(),st,et);
+				System.out.println(gson.toJson(st));
+				Thread.sleep(4000);
+			}
+		}
+
+
+		return "success";
 	}
 
 	/**

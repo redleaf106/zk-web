@@ -34,6 +34,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /***************************************************************************
@@ -382,6 +383,15 @@ public class CabinetController extends BaseController{
 	@ResponseBody
 	public String getCabinetTable(String cabinetId){
 		return "";
+	}
+
+
+	//安卓获服务器时间
+	@ResponseBody
+	@RequestMapping("getServerTime")
+	public String getServerTime(){
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMddHHmmyyyy.ss");
+		return simpleDateFormat.format(new Date());
 	}
 
 
